@@ -6,7 +6,7 @@ import WebSocket from 'ws';
 
 const app = express();
 app.use(express.json());
-app.use(express.static('../client'))
+
 
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
@@ -50,10 +50,11 @@ app
     const { token } = req.body;
     console.log("Got token!", token);
 
-    let accessToken = await getDiscordAccessToken(token, 'https://127.0.0.1', '1219346862423933098', 'Nb5IHf3V7pcgotzkzRToMhZiciL4P5mr')
+    let accessToken = await getDiscordAccessToken(token, 'https://jmtk.co/dzone', '1219346862423933098', 'Nb5IHf3V7pcgotzkzRToMhZiciL4P5mr')
     res.send(JSON.stringify({ access_token: accessToken }));
 });
 
+app.use(express.static('../client'))
 async function getDiscordAccessToken(code : string, redirectUri : string, clientId : string, clientSecret : string) {
     const data = {
         client_id: clientId,
