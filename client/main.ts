@@ -28,9 +28,10 @@ async function setupDiscordSdk() {
             "guilds",
         ],
     });
+    console.log("Got code", code);
 
     // Retrieve an access_token from your activity's server
-    const response = await fetch("http://localhost:3000/api/token", {
+    const response = await fetch("/api/token", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
