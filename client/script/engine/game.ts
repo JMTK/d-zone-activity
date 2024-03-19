@@ -2,9 +2,15 @@ import { EventEmitter } from 'events';
 import Input from './input';
 import util from './../common/util';
 import Canvas from './canvas';
+import Renderer from './renderer';
+import UI from '../ui/ui';
+import type World from '../environment/world';
+import type Users from '../actors/users';
 var now = performance?.now ?? Date.now;
 
 export default class Game extends EventEmitter {
+    users: Users;
+    world: World;
     step: number;
     lastUpdate: number;
     dt: number;
@@ -34,6 +40,8 @@ export default class Game extends EventEmitter {
     mouseOut: boolean;
     mouseX: number;
     mouseY: number;
+    renderer: Renderer;
+    ui: UI;
     destroy() {
         clearInterval(this.interval);
     }

@@ -52,8 +52,9 @@ var map = {
     }
 };
 
-module.exports = Sheet;
-
-function Sheet(spriteName) {
-    this.map = JSON.parse(JSON.stringify(map[spriteName]));
+export default class Sheet {
+    map: any;
+    constructor(spriteName) {
+        this.map = JSON.parse(JSON.stringify(map[spriteName]));
+    }
 }

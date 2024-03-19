@@ -1,19 +1,20 @@
 import { DiscordSDK } from "@discord/embedded-app-sdk";
-
+import { initGame } from "./dzone";
 // Will eventually store the authenticated user's access_token
 let auth;
 
 const clientId = '1219346862423933098';
-const discordSdk = new DiscordSDK(clientId);
+const discordSdk = window.location.search.includes('frame_id') ? new DiscordSDK(clientId) : null;
 
 setupDiscordSdk().then(() => {
     console.log("Discord SDK is authenticated");
-
+    initGame([]);
     // We can now make API calls within the scopes we requested in setupDiscordSDK()
     // Note: the access_token returned is a sensitive secret and should be treated as such
 });
 
 async function setupDiscordSdk() {
+    if (discordSdk == null) return;
     await discordSdk.ready();
     console.log("Discord SDK is ready");
 

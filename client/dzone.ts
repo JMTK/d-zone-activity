@@ -1,0 +1,106 @@
+import util from './script/common/util';
+import Game from './script/engine/game';
+import Renderer from './script/engine/renderer';
+import Canvas from './script/engine/canvas';
+import UI from './script/ui/ui';
+import packageInfo from './package.json';
+import socketConfig from './socket-config.json';
+import World from './script/environment/world';
+import Users from './script/actors/users';
+import Decorator from './script/props/decorator';
+
+// TODO: Loading screen while preloading images, connecting to websocket, and generating world
+console.log('Loading...');
+var version = packageInfo.version;
+var game: Game, ws: WebSocket;
+
+export function initGame(images: any[]) {
+    game = new Game({ step: 1000 / 60 });
+    game.renderer = new Renderer({ game: game, images: images });
+    var canvas = new Canvas({ id: 'main', game: game, initialScale: 2, backgroundColor: '#181213' });
+    game.renderer.addCanvas(canvas);
+    game.bindCanvas(canvas);
+    game.ui = new UI(game);
+    //game.showGrid = true;
+    //game.timeRenders = true;
+    initWebsocket();
+
+    //window.pause = function () { game.paused = true; };
+    //window.unpause = function () { game.paused = false; };
+    (window as any).game = game;
+}
+
+export function initWebsocket() {
+
+    var users : Users, world : World, decorator : Decorator;
+
+    var socketURL = (socketConfig.secure ? 'wss://' : 'ws://') + socketConfig.address + ':' + socketConfig.port;
+    console.log('Initializing websocket on', socketURL);
+
+    // Swap the comments on the next 3 lines to switch between your websocket server and a virtual one
+    ws = new WebSocket(socketURL);
+    //var TestSocket from './script/engine/tester.js'),
+    //ws = new TestSocket(50, 3000);
+    ws.addEventListener('message', function (event) {
+        var data = JSON.parse(event.data);
+        if (decorator) decorator.beacon.ping();
+        if (data.type === 'server-join') { // Initial server status
+            var requestServer = data.data.request.server;
+            var requestPass = data.data.request.password;
+            game.reset();
+            game.renderer.clear();
+            var userList = data.data.users;
+            //game.server = requestServer;
+            world = new World(game, Math.round(3.3 * Math.sqrt(Object.keys(userList).length)));
+            decorator = new Decorator(game, world);
+            //game.decorator = decorator;
+            users = new Users(game, world);
+            var params = '?s=' + data.data.request.server;
+            if (requestPass) params += '&p=' + requestPass;
+            if (window.location.protocol !== 'file:') window.history.replaceState(
+                data.data.request, requestServer, window.location.pathname + params
+            );
+            //return;
+            //console.log('Initializing actors',data.data);
+            game.setMaxListeners(Object.keys(userList).length + 50);
+            users.setMaxListeners(Object.keys(userList).length);
+            for (var uid in userList) {
+                if (!userList.hasOwnProperty(uid)) continue;
+                //if(uid != '86913608335773696') continue;
+                //if(data.data[uid].status != 'online') continue;
+                if (!userList[uid].username) continue;
+                users.addActor(userList[uid]);
+                //break;
+            }
+            console.log((Object.keys(users.actors).length).toString() + ' actors created');
+            game.renderer.canvases[0].onResize();
+        } else if (data.type === 'presence') { // User status update
+            users.updateActor(data.data)
+        } else if (data.type === 'message') { // Chatter
+            users.queueMessage(data.data);
+        } else if (data.type === 'error') {
+            window.alert(data.data.message);
+            //if (!game.world) joinServer({ id: 'default' });
+        } else {
+            console.log('Unmapped Websocket data:',data);
+        }
+    });
+    ws.addEventListener('open', function () { console.log('Websocket connected'); });
+    ws.addEventListener('close', function () { console.log('Websocket disconnected'); });
+    ws.addEventListener('error', function (err) { console.log('Websocket error:', err); });
+
+    // window.testMessage = function(message) {
+    //     var msg = message ? message.text : 'hello, test message yo!';
+    //     var uid = message ? message.uid : users.actors[Object.keys(users.actors)[0]].uid;
+    //     var channel = message ? message.channel : '1';
+    //     ws.send('data', JSON.stringify({ type: 'message', data: {
+    //         uid: uid, message: msg, channel: channel
+    //     }}));
+    // };
+}
+
+function joinServer(server : any) {
+    var connectionMessage = { type: 'connect', data: { server: server.id } };
+    console.log('Requesting to join server', server.id);
+    ws.send(JSON.stringify(connectionMessage));
+}
