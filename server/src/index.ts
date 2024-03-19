@@ -24,10 +24,10 @@ wss.on('connection', function connection(ws) {
 // Define a simple route for HTTP
 app
 .post('/api/token', async (req: Request, res: Response) => {
-    const { token } = req.body;
-    console.log("Got token!", token);
+    const { code } = req.body;
+    console.log("Got token!", code);
 
-    let accessToken = await getDiscordAccessToken(token, 'https://dzone.jmtk.co', '1219346862423933098', 'Nb5IHf3V7pcgotzkzRToMhZiciL4P5mr')
+    let accessToken = await getDiscordAccessToken(code, 'https://dzone.jmtk.co', '1219346862423933098', 'Nb5IHf3V7pcgotzkzRToMhZiciL4P5mr')
     res.send(JSON.stringify({ access_token: accessToken }));
 });
 
