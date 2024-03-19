@@ -67,7 +67,7 @@ async function getDiscordAccessToken(code : string, redirectUri : string, client
                 expires_in: number;
                 refresh_token: string;
                 scope: string;
-            };  
+            };
             return {
                 accessToken: json.access_token,
                 tokenType: json.token_type,

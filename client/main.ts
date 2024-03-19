@@ -54,16 +54,16 @@ async function setupDiscordSdk() {
     await discordSdk.ready();
     console.log("Discord SDK is ready");
 
+    let state = crypto.randomUUID();
     // Authorize with Discord Client
     const { code } = await discordSdk.commands.authorize({
         client_id: clientId,
         response_type: "code",
-        state: "",
+        state,
         prompt: "none",
         scope: [
             "identify",
             "guilds",
-            "voice",
             "rpc.voice.read"
         ],
     });
@@ -83,12 +83,15 @@ async function setupDiscordSdk() {
 
     // Authenticate with Discord client (using the access_token)
     const auth = await discordSdk.commands.authenticate({
-        access_token,
+        access_token
     });
 
+    
     if (auth == null) {
         throw new Error("Authenticate command failed");
     }
+
+    if (auth)
 
     return auth;
 }
