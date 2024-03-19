@@ -14,9 +14,9 @@ export default class GoTo {
         this.actor = actor;
         this.target = target;
         this.attempt = util.randomIntRange(1, 4);
-        this.target.on('movecomplete', this.resetAttempt); // Reset adjacent attempts if target moves
+        this.target.on('movecomplete', this.resetAttempt.bind(this)); // Reset adjacent attempts if target moves
         if (this.actor.destination) {
-            this.actor.once('movecomplete', this.startGoTo);
+            this.actor.once('movecomplete', this.startGoTo.bind(this));
         } else {
             this.startGoTo();
         }
@@ -45,14 +45,14 @@ export default class GoTo {
         if (moveAttempt) { // Try to move in the general direction of our target
             this.actor.destination = moveAttempt;
             this.actor.startMove();
-            this.actor.once('movecomplete', this.startGoTo);
+            this.actor.once('movecomplete', this.startGoTo.bind(this));
         } else { // If moving toward target is blocked, find a path
             this.path = Pathfinder.findPath({ start: this.actor.position, end: this.destination });
             if (this.path[0]) { // If there is a path
                 //this.attempt = util.randomIntRange(1,4); // Reset adjacent attempts
                 this.actor.destination = { x: this.path[0].x, y: this.path[0].y, z: this.path[0].z };
                 this.actor.startMove();
-                this.actor.once('movecomplete', this.startGoTo);
+                this.actor.once('movecomplete', this.startGoTo.bind(this));
             } else { // If no path, try next closest tile
                 this.attempt++;
                 this.startGoTo();

@@ -33,7 +33,7 @@ export default class Wander {
             if (canMove) {
                 this.actor.destination = canMove;
                 this.actor.startMove();
-                this.actor.once('movecomplete', this.impulseCompleteBound)
+                this.actor.once('movecomplete', this.impulseCompleteBound.bind(this))
             } else {
                 this.wait();
             }

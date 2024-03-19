@@ -16,10 +16,10 @@ export default class Button extends UIElement {
         if (options.text) this.changeText(options.text);
         if (options.onPress) this.onPress = options.onPress;
         if (options.disabled) this.disabled = true;
-        this.on('mouse-on', this.onMouseOn);
-        this.on('mouse-off', this.onMouseOff);
-        this.on('mouse-down', this.onMouseDown);
-        this.on('mouse-up', this.onMouseUp);
+        this.on('mouse-on', this.onMouseOn.bind(this));
+        this.on('mouse-off', this.onMouseOff.bind(this));
+        this.on('mouse-down', this.onMouseDown.bind(this));
+        this.on('mouse-up', this.onMouseUp.bind(this));
     }
 
     changeText(text) {

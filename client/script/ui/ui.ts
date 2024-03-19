@@ -20,15 +20,16 @@ export default class UI extends EventEmitter {
 
     constructor(game : Game) {
         super();
-        console.log("UI args", game);
         this.game = game;
+        console.log("UI args", this.game);
         TextBlotter.loadImage(this.game.renderer.images.font);
-        this.game.on('resize', this.onResize);
-        this.game.on('mousemove', this.onMouseMove);
-        this.game.on('mousedown', this.onMouseDown);
-        this.game.on('mouseup', this.onMouseUp);
-        this.game.on('keydown', this.onKeyDown);
-        this.game.on('keyup', this.onKeyUp);
+        this.game
+            .on('resize', this.onResize.bind(this))
+            .on('mousemove', this.onMouseMove.bind(this))
+            .on('mousedown', this.onMouseDown.bind(this))
+            .on('mouseup', this.onMouseUp.bind(this))
+            .on('keydown', this.onKeyDown.bind(this))
+            .on('keyup', this.onKeyUp.bind(this));
         this.elements = [];
         this.x = 0; this.y = 0;
         this.canvas = new BetterCanvas(1, 1);
@@ -43,9 +44,9 @@ export default class UI extends EventEmitter {
         var newButton = new Button(options);
         options.parent.elements.push(newButton);
         if (options.parent !== this) this.elements.push(newButton);
-        newButton.on('redraw', this.redraw);
-        newButton.on('mouse-on-element', this.onMouseOnElement);
-        newButton.on('mouse-off-element', this.onMouseOffElement);
+        newButton.on('redraw', this.redraw.bind(this));
+        newButton.on('mouse-on-element', this.onMouseOnElement.bind(this));
+        newButton.on('mouse-off-element', this.onMouseOffElement.bind(this));
         return newButton;
     };
 
@@ -55,7 +56,7 @@ export default class UI extends EventEmitter {
         var newPanel = new Panel(options);
         options.parent.elements.push(newPanel);
         if (options.parent !== this) this.elements.push(newPanel);
-        newPanel.on('redraw', this.redraw);
+        newPanel.on('redraw', this.redraw.bind(this));
         return newPanel;
     };
 
@@ -65,9 +66,9 @@ export default class UI extends EventEmitter {
         var newInput = new Input(options);
         options.parent.elements.push(newInput);
         if (options.parent !== this) this.elements.push(newInput);
-        newInput.on('redraw', this.redraw);
-        newInput.on('mouse-on-element', this.onMouseOnElement);
-        newInput.on('mouse-off-element', this.onMouseOffElement);
+        newInput.on('redraw', this.redraw.bind(this));
+        newInput.on('mouse-on-element', this.onMouseOnElement.bind(this));
+        newInput.on('mouse-off-element', this.onMouseOffElement.bind(this));
         return newInput;
     };
 
@@ -77,9 +78,9 @@ export default class UI extends EventEmitter {
         var newLabel = new Label(options);
         options.parent.elements.push(newLabel);
         if (options.parent !== this) this.elements.push(newLabel);
-        newLabel.on('redraw', this.redraw);
-        newLabel.on('mouse-on-element', this.onMouseOnElement);
-        newLabel.on('mouse-off-element', this.onMouseOffElement);
+        newLabel.on('redraw', this.redraw.bind(this));
+        newLabel.on('mouse-on-element', this.onMouseOnElement.bind(this));
+        newLabel.on('mouse-off-element', this.onMouseOffElement.bind(this));
         return newLabel;
     };
 

@@ -15,11 +15,11 @@ export default class Input extends UIElement {
         super(options);
         this.changeText(options.text || '');
         if (options.onSubmit) this.onSubmit = options.onSubmit;
-        this.on('mouse-on', this.onMouseOn);
-        this.on('mouse-off', this.onMouseOff);
-        this.on('mouse-down', this.onMouseDown);
-        this.on('mouse-up', this.onMouseUp);
-        this.on('key-down', this.onKeyDown);
+        this.on('mouse-on', this.onMouseOn.bind(this));
+        this.on('mouse-off', this.onMouseOff.bind(this));
+        this.on('mouse-down', this.onMouseDown.bind(this));
+        this.on('mouse-up', this.onMouseUp.bind(this));
+        this.on('key-down', this.onKeyDown.bind(this));
     }
 
     changeText(text) {

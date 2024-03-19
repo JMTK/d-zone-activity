@@ -84,7 +84,7 @@ export default class Actor extends WorldObject {
         });
         this.nametag.addToGame(game);
         this.game.on('update', this.onUpdate.bind(this));
-        this.game.users.on('message', this.boundOnMessage);
+        this.game.users.on('message', this.boundOnMessage.bind(this));
     };
 
     updatePresence(presence) {

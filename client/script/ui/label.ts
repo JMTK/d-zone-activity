@@ -22,10 +22,10 @@ export default class Label extends UIElement {
         if (options.hyperlink) this.hyperlink = options.hyperlink;
         if (options.maxWidth) this.maxWidth = options.maxWidth;
         if (options.text) this.changeText(options.text);
-        this.on('mouse-on', this.onMouseOn);
-        this.on('mouse-off', this.onMouseOff);
-        this.on('mouse-down', this.onMouseDown);
-        this.on('mouse-up', this.onMouseUp);
+        this.on('mouse-on', this.onMouseOn.bind(this));
+        this.on('mouse-off', this.onMouseOff.bind(this));
+        this.on('mouse-down', this.onMouseDown.bind(this));
+        this.on('mouse-up', this.onMouseUp.bind(this));
     }
 
     changeText(text) {
