@@ -16,8 +16,8 @@ var game: Game, ws: WebSocket;
 
 export function initDzone(options: { ServerID: string, ChannelID: string, token: string }) {
     var preloader = new Preloader();
+    game = new Game({ step: 1000 / 60 });
     preloader.on('complete', (images) => {
-        game = new Game({ step: 1000 / 60 });
         game.renderer = new Renderer({ game: game, images });
         var canvas = new Canvas({ id: 'main', game: game, initialScale: 1, backgroundColor: '#181213' });
         game.renderer.addCanvas(canvas);
