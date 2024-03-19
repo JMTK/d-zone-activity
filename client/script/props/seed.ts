@@ -37,7 +37,7 @@ export default class Seed extends WorldObject {
     }
 
     addToGame(game) {
-        WorldObject.prototype.addToGame.call(this, game);
+        this.addToGame(game);
         this.tickDelay(this.boundGrow, this.growTime + util.randomIntRange(this.growTime / -6, this.growTime / 6));
     };
 
