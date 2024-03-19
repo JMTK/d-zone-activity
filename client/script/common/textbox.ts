@@ -29,8 +29,8 @@ function cleanString(text) {
 function calcScrollSpeed(text) {
     var speed = 1;
     for (var i = 0; i < TEXTBOX_SCROLL_SPEEDS.length; i++) {
-        if (text.length >= TEXTBOX_SCROLL_SPEEDS[i][0]) speed = TEXTBOX_SCROLL_SPEEDS[i][1];
-        else if (text.length < TEXTBOX_SCROLL_SPEEDS[i][0]) break;
+        if (text.length >= TEXTBOX_SCROLL_SPEEDS[i]![0]!) speed = TEXTBOX_SCROLL_SPEEDS[i]![1]!;
+        else if (text.length < TEXTBOX_SCROLL_SPEEDS[i]![0]!) break;
     }
     return speed;
 }
