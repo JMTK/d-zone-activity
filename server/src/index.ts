@@ -24,8 +24,8 @@ app
     const { code } = req.body;
     console.log("Got token!", code);
 
-    let accessToken = await getDiscordAccessToken(code, 'https://dzone.jmtk.co', '1219346862423933098', 'Nb5IHf3V7pcgotzkzRToMhZiciL4P5mr')
-    res.send(JSON.stringify({ access_token: accessToken }));
+    let response = await getDiscordAccessToken(code, 'https://dzone.jmtk.co', '1219346862423933098', 'Nb5IHf3V7pcgotzkzRToMhZiciL4P5mr');
+    res.send(JSON.stringify({ access_token: response.accessToken }));
 });
 
 app.use(express.static('../client'))
