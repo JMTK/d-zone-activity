@@ -1,7 +1,7 @@
 'use strict';
 import Entity from './../engine/entity';
 import TextBlotter from './../common/textblotter';
-var miscConfig = JSON.parse(require('fs').readFileSync('./misc-config.json')) || {};
+import miscConfig from '../../misc-config.json';
 
 var textboxConfig = miscConfig.textbox || {};
 var TEXTBOX_MAX_WIDTH = textboxConfig.maxWidth || 96;
