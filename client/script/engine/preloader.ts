@@ -10,20 +10,22 @@ export default class Preloader extends EventEmitter {
         super();
         this.images = {};
         this.imagesLoaded = 0;
-        for (var i = 0; i < imageList.length; i++) {
-            var imageName = imageList[i];
-            var fileName = imageName + '.png';
-            var image = new Image;
-            image.addEventListener('load', this.onImageLoad.bind(this, image, imageName));
-            image.src = './img/' + fileName;
-        }
     }
 
-    onImageLoad(image, imageName) {
-        var canvas = new BetterCanvas(image.width, image.height);
-        this.images[imageName] = canvas.canvas;
-        canvas.drawImage(image, 0, 0, image.width, image.height, 0, 0, image.width, image.height, 1);
-        this.imagesLoaded++;
-        if (this.imagesLoaded == imageList.length) this.emit('complete', this.images);
-    };
+    async load() {
+        return await Promise.all(imageList.map(imageName => {
+            return new Promise(resolve => {
+                var fileName = imageName + '.png';
+                var image = new Image;
+                image.addEventListener('load', () => resolve(image));
+                image.src = './img/' + fileName;
+            }).then((image : HTMLImageElement) => {
+                var canvas = new BetterCanvas(image.width, image.height);
+                this.images[imageName] = canvas.canvas;
+                canvas.drawImage(image, 0, 0, image.width, image.height, 0, 0, image.width, image.height, 1);
+
+                return image;
+            });
+        }));
+    }
 }
