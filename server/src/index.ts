@@ -6,7 +6,6 @@ import WebSocket from 'ws';
 const app = express();
 app.use(express.json());
 
-
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
@@ -17,8 +16,6 @@ wss.on('connection', function connection(ws) {
     ws.on('message', function incoming(message) {
         console.log('received: %s', message);
     });
-
-    ws.send('Welcome to the WebSocket server!');
 });
 
 // Define a simple route for HTTP
