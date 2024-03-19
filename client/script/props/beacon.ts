@@ -37,7 +37,7 @@ export default class Beacon extends WorldObject {
     }
 
     addToGame(game) {
-        WorldObject.prototype.addToGame.call(this, game);
+        this.addToGame(game);
         this.game.on('update', this.onUpdate.bind(this));
         this.drawSprite();
     };
