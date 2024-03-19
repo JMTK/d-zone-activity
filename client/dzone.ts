@@ -7,27 +7,28 @@ import packageInfo from './package.json';
 import World from './script/environment/world';
 import Users from './script/actors/users';
 import Decorator from './script/props/decorator';
+import Preloader from './script/engine/preloader';
 
 // TODO: Loading screen while preloading images, connecting to websocket, and generating world
-console.log('Loading...');
 var version = packageInfo.version;
+console.log('Loading...', version);
 var game: Game, ws: WebSocket;
 
 export function initDzone(options: { ServerID: string, ChannelID: string, token: string }) {
-    game = new Game({ step: 1000 / 60 });
-    game.renderer = new Renderer({ game: game, images: [] });
-    var canvas = new Canvas({ id: 'main', game: game, initialScale: 1, backgroundColor: '#181213' });
-    game.renderer.addCanvas(canvas);
-    game.bindCanvas(canvas);
-    game.ui = new UI(game);
-    //game.showGrid = true;
-    //game.timeRenders = true;
-    //initWebsocket(options);
+    var preloader = new Preloader();
+    preloader.on('complete', (images) => {
+        game = new Game({ step: 1000 / 60 });
+        game.renderer = new Renderer({ game: game, images });
+        var canvas = new Canvas({ id: 'main', game: game, initialScale: 1, backgroundColor: '#181213' });
+        game.renderer.addCanvas(canvas);
+        game.bindCanvas(canvas);
+        game.ui = new UI(game);
+        //game.showGrid = true;
+        //game.timeRenders = true;
+        //initWebsocket(options);
 
-    //window.pause = function () { game.paused = true; };
-    //window.unpause = function () { game.paused = false; };
-    (window as any).game = game;
-    return game;
+        (window as any).game = game;
+    })
 }
 
 export async function handleEventData(eventData: { type: 'server-join' | 'presence' | 'message' | 'error', data: any }) {

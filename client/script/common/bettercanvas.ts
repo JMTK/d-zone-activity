@@ -20,7 +20,6 @@ export default class BetterCanvas {
         if (!img || !(sx >= 0) || !(sy >= 0) || !(sw >= 0) || !(sh >= 0)
             || !isNumeric(dx) || !isNumeric(dy) || !(dw >= 0) || !(dh >= 0)) {
             console.error('bad drawImage params!', ...arguments);
-            (window as any).pause();
         }
         if (opacity) {
             this.context.save();
