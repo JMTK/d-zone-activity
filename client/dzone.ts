@@ -4,7 +4,6 @@ import Renderer from './script/engine/renderer';
 import Canvas from './script/engine/canvas';
 import UI from './script/ui/ui';
 import packageInfo from './package.json';
-import socketConfig from './socket-config.json';
 import World from './script/environment/world';
 import Users from './script/actors/users';
 import Decorator from './script/props/decorator';
@@ -34,7 +33,7 @@ export function initWebsocket() {
 
     var users : Users, world : World, decorator : Decorator;
 
-    var socketURL = (socketConfig.secure ? 'wss://' : 'ws://') + socketConfig.address + (socketConfig.port ? ':' + socketConfig.port : '');
+    var socketURL = `wss://${window.location.hostname}`;
     console.log('Initializing websocket on', socketURL);
 
     // Swap the comments on the next 3 lines to switch between your websocket server and a virtual one
