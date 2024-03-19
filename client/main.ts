@@ -63,6 +63,8 @@ async function setupDiscordSdk() {
         scope: [
             "identify",
             "guilds",
+            "voice",
+            "rpc.voice.read"
         ],
     });
     console.log("Got code", code);
