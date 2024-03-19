@@ -1,5 +1,4 @@
 var EventEmitter = require('events').EventEmitter;
-var inherits = require('inherits');
 var Input = require('./input.js');
 var util = require('./../common/util.js');
 var now = global.performance && global.performance.now ? function () {
@@ -101,7 +100,7 @@ export class Game extends EventEmitter {
         this.input.on('touchstart', this.touchstart.bind(this));
         this.input.on('touchend', this.touchend.bind(this));
         this.input.on('touchcancel', this.touchcancel.bind(this));
-        canvas.on('resize', this.viewResize.bind(this));
+        canvas.addEventListener('resize', this.viewResize.bind(this));
     };
 
     viewResize(resize: { width: number, height: number, scale: number }) {
@@ -111,7 +110,7 @@ export class Game extends EventEmitter {
         this.emit('resize', resize);
     };
 
-    mousemove(mouseEvent : mouseEvent : MouseEvent) {
+    mousemove(mouseEvent : MouseEvent) {
         if (this.mouseOut) return;
         //this.mouseOut = false;
         this.mouseX = mouseEvent.x;
@@ -121,24 +120,24 @@ export class Game extends EventEmitter {
         //mouseEvent.centerMouseX = this.centerMouseX;
         //mouseEvent.centerMouseY = this.centerMouseY;
         //console.log({mouseX: this.mouseX, mouseY:this.mouseY, centerMouseX:this.centerMouseX, centerMouseY:this.centerMouseY});
-        this.emit('mousemove', mouseEvent : MouseEvent);
+        this.emit('mousemove', mouseEvent);
     };
 
-    mousedown(mouseEvent : mouseEvent : MouseEvent) {
+    mousedown(mouseEvent : MouseEvent) {
         if (this.mouseOver) {
             console.log(this.mouseOver);
             window.actor = this.mouseOver;
         }
         this.mouseButtons.push(mouseEvent.button);
-        this.emit('mousedown', mouseEvent : MouseEvent);
+        this.emit('mousedown', mouseEvent);
     };
 
-    touchend(mouseEvent : mouseEvent : MouseEvent) {
+    touchend(mouseEvent : MouseEvent) {
         util.findAndRemove(mouseEvent.button, this.mouseButtons);
-        this.emit('touchend', mouseEvent : MouseEvent);
+        this.emit('touchend', mouseEvent);
     };
 
-    touchmove(mouseEvent : mouseEvent : MouseEvent) {
+    touchmove(mouseEvent : MouseEvent) {
         if (this.mouseOut) return;
         this.mouseOut = false;
         this.mouseX = mouseEvent.x;
@@ -147,7 +146,7 @@ export class Game extends EventEmitter {
         this.centerMouseY = Math.floor(mouseEvent.y - this.viewHeight / 2);
         mouseEvent.centerMouseX = this.centerMouseX;
         mouseEvent.centerMouseY = this.centerMouseY;
-        this.emit('touchmove', mouseEvent : MouseEvent);
+        this.emit('touchmove', mouseEvent);
     };
 
     touchcancel(mouseEvent : MouseEvent) {
