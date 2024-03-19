@@ -1,8 +1,14 @@
 {
+  "scripts": {
+    "build": "browserify main.ts -p [ tsify --noImplicitAny ] > bundle.js"
+  },
   "dependencies": {
     "@discord/embedded-app-sdk": "^1.0.0",
     "browserify": "^17.0.0",
     "tsify": "^5.0.4",
     "typescript": "^5.4.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.29"
   }
 }
