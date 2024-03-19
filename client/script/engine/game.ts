@@ -6,7 +6,6 @@ import Renderer from './renderer';
 import UI from '../ui/ui';
 import type World from '../environment/world';
 import type Users from '../actors/users';
-var now = performance?.now ?? Date.now;
 
 export default class Game extends EventEmitter {
     users: Users;
@@ -67,7 +66,7 @@ export default class Game extends EventEmitter {
         var self = this;
         this.interval = setInterval(function () {
             if (self.crashed) return;
-            var rightNow = now();
+            var rightNow = performance.now();
             self.dt += rightNow - self.lastUpdate;
             //if((self.ticks & 7) == 0) console.log(delta);
             if (self.lastUpdate > 0 && self.dt > 60000) {
@@ -82,7 +81,7 @@ export default class Game extends EventEmitter {
                     self.update();
                 }
             }
-            self.lastUpdate = now();
+            self.lastUpdate = performance.now();
         }, this.step);
     }
 
