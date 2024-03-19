@@ -17,7 +17,7 @@ export default class Canvas extends EventEmitter {
     images: any;
     context: CanvasRenderingContext2D;
 
-    constructor(options : {
+    constructor(options: {
         id: string,
         game: any,
         backgroundColor: string,
@@ -42,14 +42,14 @@ export default class Canvas extends EventEmitter {
         }
         this.onZoom();
         this.onResize();
-        window.addEventListener('resize', this.onResize.bind(this));
+        window.addEventListener('resize', this.onResize);
         this.panning = {
             buttons: [],
             origin: { x: 0, y: 0 },
             panned: { x: 0, y: 32 }
         };
         var self = this;
-        this.game.on('mousedown', function (mouseEvent : MouseEvent) {
+        this.game.on('mousedown', function (mouseEvent: MouseEvent) {
             if (self.game.ui.mouseOnElement) return;
             if (self.panning.buttons.length == 0) {
                 self.panning.origin.x = mouseEvent.x;
@@ -57,10 +57,10 @@ export default class Canvas extends EventEmitter {
             }
             self.panning.buttons.push(mouseEvent.button);
         });
-        this.game.on('mouseup', function (mouseEvent : MouseEvent) {
+        this.game.on('mouseup', function (mouseEvent: MouseEvent) {
             util.findAndRemove(mouseEvent.button, self.panning.buttons);
         });
-        this.game.on('mousemove', function (mouseEvent : MouseEvent) {
+        this.game.on('mousemove', function (mouseEvent: MouseEvent) {
             var dx = mouseEvent.x - self.panning.origin.x,
                 dy = mouseEvent.y - self.panning.origin.y;
             if (self.panning.buttons.length > 0) {
@@ -72,7 +72,7 @@ export default class Canvas extends EventEmitter {
         });
 
         //touch handling
-        this.game.on('touchstart', function (mouseEvent : MouseEvent) {
+        this.game.on('touchstart', function (mouseEvent: MouseEvent) {
             if (self.game.ui.mouseOnElement) return;
             if (self.panning.buttons.length == 0) {
                 self.panning.origin.x = mouseEvent.x;
@@ -81,11 +81,11 @@ export default class Canvas extends EventEmitter {
             self.panning.buttons.push(mouseEvent.button);
         });
 
-        this.game.on('touchend', function (mouseEvent : MouseEvent) {
+        this.game.on('touchend', function (mouseEvent: MouseEvent) {
             util.findAndRemove(mouseEvent.button, self.panning.buttons);
         });
 
-        this.game.on('touchmove', function (mouseEvent : MouseEvent) {
+        this.game.on('touchmove', function (mouseEvent: MouseEvent) {
             var dx = mouseEvent.x - self.panning.origin.x,
                 dy = mouseEvent.y - self.panning.origin.y;
             if (self.panning.buttons.length > 0) {
@@ -113,7 +113,7 @@ export default class Canvas extends EventEmitter {
         });
     }
 
-    setRenderer(renderer : any) {
+    setRenderer(renderer: any) {
         this.images = renderer.images;
     };
 
@@ -146,11 +146,11 @@ export default class Canvas extends EventEmitter {
         this.context.fillText('connecting...', Math.round(this.width / 2), Math.round(this.height / 2 - 4));
     };
 
-    drawStatic(staticCanvas : any) {
+    drawStatic(staticCanvas: any) {
         this.context.drawImage(staticCanvas, 0, 0);
     };
 
-    drawBG(bgCanvas : any) {
+    drawBG(bgCanvas: any) {
         var x = bgCanvas.x + this.halfWidth + this.panning.panned.x,
             y = bgCanvas.y + this.halfHeight + this.panning.panned.y;
         if (x >= this.width || y >= this.height
@@ -180,7 +180,7 @@ export default class Canvas extends EventEmitter {
         );
     };
 
-    drawEntity(sprite : any) {
+    drawEntity(sprite: any) {
         if (!sprite || !sprite.image || sprite.hidden) return;
         if (sprite.position && sprite.position.z > this.game.hideZ) return;
         var screen = {

@@ -20,6 +20,7 @@ export default class UI extends EventEmitter {
 
     constructor(game : Game) {
         super();
+        console.log("UI args", game);
         this.game = game;
         TextBlotter.loadImage(this.game.renderer.images.font);
         this.game.on('resize', this.onResize);

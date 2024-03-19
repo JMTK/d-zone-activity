@@ -17,7 +17,7 @@ var game: Game, ws: WebSocket;
 export function initGame(images: any[]) {
     game = new Game({ step: 1000 / 60 });
     game.renderer = new Renderer({ game: game, images: images });
-    var canvas = new Canvas({ id: 'main', game: game, initialScale: 2, backgroundColor: '#181213' });
+    var canvas = new Canvas({ id: 'main', game: game, initialScale: 1, backgroundColor: '#181213' });
     game.renderer.addCanvas(canvas);
     game.bindCanvas(canvas);
     game.ui = new UI(game);
@@ -34,7 +34,7 @@ export function initWebsocket() {
 
     var users : Users, world : World, decorator : Decorator;
 
-    var socketURL = (socketConfig.secure ? 'wss://' : 'ws://') + socketConfig.address + ':' + socketConfig.port;
+    var socketURL = (socketConfig.secure ? 'wss://' : 'ws://') + socketConfig.address + (socketConfig.port ? ':' + socketConfig.port : '');
     console.log('Initializing websocket on', socketURL);
 
     // Swap the comments on the next 3 lines to switch between your websocket server and a virtual one
