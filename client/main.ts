@@ -8,7 +8,7 @@ const discordSdk = window.location.search.includes('frame_id') ? new DiscordSDK(
 setupDiscordSdk().then(async (auth) => {
     console.log("Discord SDK is authenticated");
     
-    let game = initDzone({
+    let game = await initDzone({
         ServerID: discordSdk?.guildId ?? '',
         ChannelID: discordSdk?.channelId ?? '',
         token: auth?.access_token ?? ''
