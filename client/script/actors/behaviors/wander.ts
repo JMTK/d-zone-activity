@@ -15,6 +15,7 @@ export default class Wander {
         this.impulseInterval = 300;
         this.wait();
         this.impulseBound = this.impulse.bind(this);
+        this.impulseCompleteBound = this.impulseComplete.bind(this);
     }
 
     wait() {
@@ -34,7 +35,7 @@ export default class Wander {
             if (canMove) {
                 this.actor.destination = canMove;
                 this.actor.startMove();
-                this.actor.once('movecomplete', this.impulseCompleteBound.bind(this))
+                this.actor.once('movecomplete', this.impulseCompleteBound)
             } else {
                 this.wait();
             }
