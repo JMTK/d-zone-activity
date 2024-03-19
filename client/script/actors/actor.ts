@@ -77,7 +77,7 @@ export default class Actor extends WorldObject {
     };
 
     addToGame(game: Game) {
-        this.addToGame(game);
+        super.addToGame(game);
         if (this.roleColor) this.game.renderer.addColorSheet({
             sheet: 'actors', color: this.roleColor, alpha: 0.8,
             regions: [{ alpha: 0.4, x: 70, y: 0, w: 28, h: 14 }] // Less colorizing for offline sprites

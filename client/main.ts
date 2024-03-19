@@ -86,7 +86,6 @@ async function setupDiscordSdk() {
         access_token
     });
 
-    
     if (auth == null) {
         throw new Error("Authenticate command failed");
     }
