@@ -14,6 +14,7 @@ export default class Wander {
         this.state = 'idle';
         this.impulseInterval = 300;
         this.wait();
+        this.impulseBound = this.impulse.bind(this);
     }
 
     wait() {
