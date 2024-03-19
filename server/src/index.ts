@@ -2,7 +2,8 @@ import express from 'express';
 import type { Request, Response } from 'express';
 import http from 'http';
 import WebSocket from 'ws';
-
+import { REST } from '@discordjs/rest';
+import { Routes, APIGuildVoiceChannel } from 'discord-api-types/v10';
 const app = express();
 app.use(express.json());
 
@@ -10,9 +11,19 @@ const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
 // Handle WebSocket connections
-wss.on('connection', function connection(ws) {
+wss.on('connection', async function connection(ws, request) {
     console.log('A new client connected!');
+    const params = new URL(request.url!).searchParams
+    const ServerID = params.get('ServerID');
+    const ChannelID = params.get('ChannelID');
+    const AuthToken = params.get('Token');
+    if (!AuthToken) throw new Error('No AuthToken');
+    if (!ServerID) throw new Error('No ServerID');
+    if (!ChannelID) throw new Error('No ChannelID');
 
+    const discordRest = new REST().setToken(AuthToken);
+    const channel = await discordRest.get(Routes.channel(ChannelID)) as APIGuildVoiceChannel;
+    //channel.
     ws.on('message', function incoming(message) {
         console.log('received: %s', message);
     });
@@ -24,7 +35,7 @@ app
     const { code } = req.body;
     console.log("Got token!", code);
 
-    let response = await getDiscordAccessToken(code, 'https://dzone.jmtk.co', '1219346862423933098', 'Nb5IHf3V7pcgotzkzRToMhZiciL4P5mr');
+    let response = await getDiscordAccessToken(code, 'https://dzone.jmtk.co', process.env.BOT_CLIENT_ID, process.env.BOT_CLIENT_SECRET);
     res.send(JSON.stringify({ access_token: response.accessToken }));
 });
 
