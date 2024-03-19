@@ -1,6 +1,5 @@
-'use strict';
 import util from '../common/util';
-import EventEmitter from 'events';
+import { EventEmitter } from 'events';
 import BetterCanvas from '../common/bettercanvas';
 
 export default class Canvas extends EventEmitter {
