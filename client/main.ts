@@ -7,7 +7,7 @@ const discordSdk = window.location.search.includes('frame_id') ? new DiscordSDK(
 
 setupDiscordSdk().then(async (auth) => {
     console.log("Discord SDK is authenticated");
-    
+
     let game = await initDzone({
         ServerID: discordSdk?.guildId ?? '',
         ChannelID: discordSdk?.channelId ?? '',
@@ -27,8 +27,11 @@ setupDiscordSdk().then(async (auth) => {
                 }
                 return agg;
             }, {})
-        }      
+        }
     })
+    discordSdk?.subscribe('VOICE_STATE_UPDATE', voiceStateUpdateEvent => {
+        console.log("VOICE_STATE_UPDATE", voiceStateUpdateEvent);
+    }, { channel_id: discordSdk.channelId! });
     discordSdk?.subscribe('ACTIVITY_INSTANCE_PARTICIPANTS_UPDATE', activityInstanceParticipantsUpdateEvent => {
         console.log("ACTIVITY_INSTANCE_PARTICIPANTS_UPDATE", activityInstanceParticipantsUpdateEvent);
     });
@@ -42,8 +45,8 @@ setupDiscordSdk().then(async (auth) => {
                 channel: speakingStartEvent.channel_id
             }
         });
-        
-    }, { channel_id: discordSdk.channelId });
+
+    }, { channel_id: discordSdk.channelId, lobby_id: discordSdk.instanceId });
 });
 
 async function setupDiscordSdk() {
