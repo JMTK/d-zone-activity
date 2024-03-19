@@ -46,7 +46,7 @@ setupDiscordSdk().then(async (auth) => {
             }
         });
 
-    }, { channel_id: discordSdk.channelId, lobby_id: discordSdk.instanceId });
+    }, { channel_id: discordSdk.channelId });
 });
 
 async function setupDiscordSdk() {
