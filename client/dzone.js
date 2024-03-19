@@ -1,6 +1,6 @@
 var util = require('./script/common/util.js');
 var Preloader = require('./script/engine/preloader.js');
-import { Game } from './script/engine/game.js';
+import Game from './script/engine/game.js';
 var Renderer = require('./script/engine/renderer.js');
 var Canvas = require('./script/engine/canvas.js');
 var UI = require('./script/ui/ui.js');

@@ -1,13 +1,43 @@
-var EventEmitter = require('events').EventEmitter;
-var Input = require('./input.js');
-var util = require('./../common/util.js');
-var now = global.performance && global.performance.now ? function () {
-    return performance.now()
-} : Date.now || function () {
-    return +new Date()
-};
+import { EventEmitter } from 'events';
+import Input from './input';
+import util from './../common/util';
+import Canvas from './canvas';
+var now = performance?.now ?? Date.now;
 
-export class Game extends EventEmitter {
+export default class Game extends EventEmitter {
+    step: number;
+    lastUpdate: number;
+    dt: number;
+    ticks: number;
+    crashed: boolean;
+    paused: boolean;
+    input: Input;
+    mouseButtons: any[];
+    centerMouseX: number;
+    centerMouseY: number;
+    entities: any[];
+    schedule: any[];
+    mouseOver: boolean;
+    viewWidth: number;
+    viewHeight: number;
+    viewScale: number;
+    mouseScale: number;
+    centerViewX: number;
+    centerViewY: number;
+    viewX: number;
+    viewY: number;
+    viewZ: number;
+    centerViewZ: number;
+    centerViewScale: number;
+    timeUpdates: boolean;
+    interval: any;
+    mouseOut: boolean;
+    mouseX: number;
+    mouseY: number;
+    destroy() {
+        clearInterval(this.interval);
+    }
+
     constructor(options: { step?: number }) {
         super();
         this.setMaxListeners(0);
@@ -85,7 +115,7 @@ export class Game extends EventEmitter {
         //if(timeThis) lastUpdateTime = thisUpdateTime;
     };
 
-    bindCanvas(canvas : HTMLCanvasElement) {
+    bindCanvas(canvas: Canvas) {
         this.input.bindCanvas(canvas);
         this.viewWidth = canvas.width;
         this.viewHeight = canvas.height;
@@ -100,7 +130,7 @@ export class Game extends EventEmitter {
         this.input.on('touchstart', this.touchstart.bind(this));
         this.input.on('touchend', this.touchend.bind(this));
         this.input.on('touchcancel', this.touchcancel.bind(this));
-        canvas.addEventListener('resize', this.viewResize.bind(this));
+        canvas.on('resize', this.viewResize.bind(this));
     };
 
     viewResize(resize: { width: number, height: number, scale: number }) {
@@ -110,7 +140,7 @@ export class Game extends EventEmitter {
         this.emit('resize', resize);
     };
 
-    mousemove(mouseEvent : MouseEvent) {
+    mousemove(mouseEvent: MouseEvent) {
         if (this.mouseOut) return;
         //this.mouseOut = false;
         this.mouseX = mouseEvent.x;
@@ -123,68 +153,68 @@ export class Game extends EventEmitter {
         this.emit('mousemove', mouseEvent);
     };
 
-    mousedown(mouseEvent : MouseEvent) {
+    mousedown(mouseEvent: MouseEvent) {
         if (this.mouseOver) {
             console.log(this.mouseOver);
-            window.actor = this.mouseOver;
+            (window as any).actor = this.mouseOver;
         }
         this.mouseButtons.push(mouseEvent.button);
         this.emit('mousedown', mouseEvent);
     };
 
-    touchend(mouseEvent : MouseEvent) {
+    touchend(mouseEvent: MouseEvent) {
         util.findAndRemove(mouseEvent.button, this.mouseButtons);
         this.emit('touchend', mouseEvent);
     };
 
-    touchmove(mouseEvent : MouseEvent) {
+    touchmove(mouseEvent: MouseEvent) {
         if (this.mouseOut) return;
         this.mouseOut = false;
         this.mouseX = mouseEvent.x;
         this.mouseY = mouseEvent.y;
         this.centerMouseX = Math.floor(mouseEvent.x - this.viewWidth / 2);
         this.centerMouseY = Math.floor(mouseEvent.y - this.viewHeight / 2);
-        mouseEvent.centerMouseX = this.centerMouseX;
-        mouseEvent.centerMouseY = this.centerMouseY;
+        (mouseEvent as any).centerMouseX = this.centerMouseX;
+        (mouseEvent as any).centerMouseY = this.centerMouseY;
         this.emit('touchmove', mouseEvent);
     };
 
-    touchcancel(mouseEvent : MouseEvent) {
+    touchcancel(mouseEvent: MouseEvent) {
         this.mouseOut = true;
         this.mouseOver = false;
         this.emit('touchcancel', mouseEvent);
     };
 
-    touchstart(mouseEvent : MouseEvent) {
+    touchstart(mouseEvent: MouseEvent) {
         if (this.mouseOver) {
             console.log(this.mouseOver);
-            window.actor = this.mouseOver;
+            (window as any).actor = this.mouseOver;
         }
         this.mouseButtons.push(mouseEvent.button);
         this.emit('touchstart', mouseEvent);
     };
 
-    mouseup(mouseEvent : MouseEvent) {
+    mouseup(mouseEvent: MouseEvent) {
         util.findAndRemove(mouseEvent.button, this.mouseButtons);
         this.emit('mouseup', mouseEvent);
     };
 
-    mouseout(mouseEvent : MouseEvent) {
+    mouseout(mouseEvent: MouseEvent) {
         this.mouseOut = true;
         this.mouseOver = false;
         this.emit('mouseout', mouseEvent);
     };
 
-    mouseover(mouseEvent : MouseEvent) {
+    mouseover(mouseEvent: MouseEvent) {
         this.mouseOut = false;
         this.emit('mouseover', mouseEvent);
     };
 
-    mousewheel(mouseEvent : MouseEvent) {
+    mousewheel(mouseEvent: MouseEvent) {
         this.emit('mousewheel', mouseEvent);
     };
 
-    keydown(keyEvent : KeyboardEvent) {
+    keydown(keyEvent: KeyboardEvent) {
         this.emit('keydown', keyEvent);
     };
 
@@ -201,5 +231,3 @@ export class Game extends EventEmitter {
         }
     };
 }
-
-var lastUpdateTime = 0;
