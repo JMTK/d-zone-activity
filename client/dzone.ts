@@ -31,8 +31,8 @@ export async function initDzone(options: { ServerID: string, ChannelID: string, 
     (window as any).game = game;
 }
 
-export async function handleEventData(eventData: { type: 'server-join' | 'presence' | 'message' | 'error', data: any }) {
-    var userList = eventData.data.users as { [uid: string]: { username: string, status: string } };
+export async function handleEventData(eventData: { type: 'server-join' | 'presence' | 'message' | 'error' | 'userjoined' | 'userleft', data: any }) {
+    var userList = eventData.data.users as { [uid: string]: { uid: string, username: string, status: string, roleColor?: string } };
     const world = game.world ??= new World(game, Math.round(3.3 * Math.sqrt(Object.keys(userList).length)));
     const decorator = new Decorator(game, world);
     const users = game.users ??= new Users(game, world);
@@ -49,10 +49,16 @@ export async function handleEventData(eventData: { type: 'server-join' | 'presen
         for (var uid in userList) {
             if (!userList.hasOwnProperty(uid)) continue;
             if (!userList[uid]?.username) continue;
-            users.addActor(userList[uid]);
+            users.addActor(userList[uid]!);
         }
         console.log((Object.keys(users.actors).length).toString() + ' actors created');
         game.renderer.canvases[0].onResize();
+    } else if (eventData.type === 'userjoined') {
+        users.addActor(eventData.data);
+    } else if (eventData.type === 'userleft') {
+        const actor = users.actors[eventData.data.uid];
+        if (!actor) return;
+        users.removeActor(actor);
     } else if (eventData.type === 'presence') { // User status update
         users.updateActor(eventData.data)
     } else if (eventData.type === 'message') { // Chatter

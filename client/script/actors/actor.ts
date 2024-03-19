@@ -19,7 +19,7 @@ export default class Actor extends WorldObject {
     destination: any;
     facing: string;
     behaviors: any[];
-    roleColor: string;
+    roleColor?: string;
     moveStart: any;
     messageBox: any;
     lastMessage: any;
@@ -31,7 +31,7 @@ export default class Actor extends WorldObject {
     preciseScreen: any;
     boundOnMessage: any;
     frame: any;
-    constructor(options: { x: number, y: number, z: number, uid: string, username: string, maxListeners: number, roleColor: string }) {
+    constructor(options: { x: number, y: number, z: number, uid: string, username: string, maxListeners: number, roleColor?: string }) {
         super({
             position: { x: options.x, y: options.y, z: options.z },
             pixelSize: { x: 7, y: 7, z: 8 },

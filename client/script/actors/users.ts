@@ -19,7 +19,7 @@ export default class Users extends EventEmitter {
         this.actors = {};
         this.messageQueue = {};
     }
-    addActor(data) {
+    addActor(data : { uid: string, username: string, status: string, roleColor?: string }) {
         var grid = this.world.randomEmptyGrid();
         var actor = new Actor({
             x: +grid.split(':')[0], y: +grid.split(':')[1], z: 0,
@@ -33,7 +33,7 @@ export default class Users extends EventEmitter {
         actor.updatePresence(data.status);
     };
 
-    updateActor(data : { uid: string, delete: boolean, status: string }) {
+    updateActor(data : { uid: string, delete: boolean, status: string, username: string }) {
         let actor = this.actors[data.uid]
         if (actor) {
             if (data.delete) {

@@ -268,7 +268,7 @@ export default class World {
         if (this.objects[obj.position.x]) {
             if (this.objects[obj.position.x][obj.position.y]) {
                 if (this.objects[obj.position.x][obj.position.y][obj.position.z]) {
-                    console.error('occupado!', obj.position.x, obj.position.y, obj.position.z,
+                    console.trace('occupado!', obj.position.x, obj.position.y, obj.position.z,
                         obj, this.objects[obj.position.x][obj.position.y][obj.position.z]);
                     return false;
                 }
