@@ -31,6 +31,8 @@
     "noUnusedLocals": true, // Report errors on unused local variables.
     "noUnusedParameters": true // Report errors on unused parameters in functions
   },
+  "types": [ "node" ],
+  "typeRoots": [ "node_modules/@types" ],
   "include": ["./**/*.ts"],
   "exclude": [
     "node_modules/**/*"
