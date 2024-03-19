@@ -1,6 +1,7 @@
 import { DiscordSDK } from "@discord/embedded-app-sdk";
 import { handleEventData, initDzone } from "./dzone";
 
+window.onunhandledrejection = (err) => console.error(err);
 const clientId = '1219346862423933098';
 const discordSdk = window.location.search.includes('frame_id') ? new DiscordSDK(clientId) : null;
 

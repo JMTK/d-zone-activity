@@ -1,3 +1,4 @@
+import 'dotenv/config'
 import express from 'express';
 import type { Request, Response } from 'express';
 import http from 'http';
@@ -35,7 +36,7 @@ app
     const { code } = req.body;
     console.log("Got token!", code);
 
-    let response = await getDiscordAccessToken(code, 'https://dzone.jmtk.co', process.env.BOT_CLIENT_ID, process.env.BOT_CLIENT_SECRET);
+    let response = await getDiscordAccessToken(code, 'https://dzone.jmtk.co', process.env.BOT_CLIENT_ID!, process.env.BOT_CLIENT_SECRET!);
     res.send(JSON.stringify({ access_token: response.accessToken }));
 });
 
