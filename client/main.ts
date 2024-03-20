@@ -62,9 +62,11 @@ setupDiscordSdk().then(async (auth) => {
     discordSdk?.subscribe('SPEAKING_START', speakingStartEvent => {
         console.log("SPEAKING_START", speakingStartEvent);
         userIsSpeaking[speakingStartEvent.user_id] = true;
-
     }, { channel_id: discordSdk.channelId });
-
+    discordSdk?.subscribe('SPEAKING_STOP', speakingStartEvent => {
+        console.log("SPEAKING_STOP", speakingStartEvent);
+        userIsSpeaking[speakingStartEvent.user_id] = false;
+    }, { channel_id: discordSdk.channelId });
     setInterval(async () => {
         for (let uid in userIsSpeaking) {
             if (userIsSpeaking[uid]) {
@@ -85,7 +87,7 @@ function generateText() {
     var numWordsToGenerate = Math.floor(Math.random() * 10000) + 1;
     var punctuationSeed = Math.random();
     var punctuation = punctuationSeed > 0.5 ? '.' : (punctuationSeed > 0.25 ? '!' : '?')
-    var words = ['flingin', 'flargle', 'argle', 'bargle', 'fop', 'doodle', 'swoop', 'zoodle', 'larkin', 'blarkin', 'zarkin', 'sul', 'feebee', 'dag', 'woofum', 'lalo', 'hooba', 'nobee', 'waa'];
+    var words = ['flingin', 'gibbin', 'zib', 'zonk', 'flargle', 'argle', 'bargle', 'fop', 'doodle', 'swoop', 'zoodle', 'larkin', 'blarkin', 'zarkin', 'sul', 'feebee', 'dag', 'woofum', 'lalo', 'hooba', 'nobee', 'waa'];
 
     let sentence = new Array(numWordsToGenerate).fill(null).map(() => words[Math.floor(Math.random() * words.length)]).join(' ') + punctuation;
     return sentence.charAt(0).toUpperCase() + sentence.slice(1);
