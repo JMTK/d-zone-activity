@@ -36,18 +36,18 @@ export async function initDzone() {
 export async function handleEventData(eventData: { type: 'server-join' | 'presence' | 'message' | 'error' | 'userchange', data: any }) {
     var userList = eventData.data.users as { [uid: string]: { uid: string, username: string, status: string, roleColor?: string } };
     const world = game.world ??= new World(game, Math.round(3.3 * Math.sqrt(Object.keys(userList).length)));
-    decorator ??= new Decorator(game, world);
+    
     const users = game.users ??= new Users(game, world);
     
     decorator?.beacon.ping();
 
-    //game.decorator = decorator;
     if (eventData.type === 'server-join') { // Initial server status
         var requestServer = eventData.data.serverID;
         console.log("Joined server", requestServer);
         game.reset();
         game.renderer.clear();
-        
+        decorator ??= new Decorator(game, world);
+        game.decorator = decorator;
         game.setMaxListeners(Object.keys(userList).length + 50);
         users.setMaxListeners(Object.keys(userList).length);
         for (var uid in userList) {
@@ -61,8 +61,6 @@ export async function handleEventData(eventData: { type: 'server-join' | 'presen
         const dataUsers = (eventData.data.users as Record<string, { username: string, status: string }>);
         const existingActors = game.users.actors;
         const actorsToRemove = Object.keys(existingActors).filter(uid => !dataUsers[uid]);
-        console.log(existingActors);
-        console.log(dataUsers);
         for (const uid of actorsToRemove) {
             users.removeActor(existingActors[uid]!);
         }

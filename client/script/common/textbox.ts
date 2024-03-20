@@ -55,7 +55,9 @@ export default class TextBox extends Entity {
     }
 
     updateScreen() {
-        if (!this.canvas) return;
+        if (!this.canvas) {
+            this.canvas = (window as any).game.ui.canvas;
+        };
         this.screen.x = this.parent.preciseScreen.x - this.canvas.width / 2 + this.parent.pixelSize.x;
         this.screen.y = this.parent.preciseScreen.y - this.canvas.height + 2;
     };

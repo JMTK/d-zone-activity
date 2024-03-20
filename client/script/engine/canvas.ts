@@ -49,68 +49,64 @@ export default class Canvas extends EventEmitter {
             panned: { x: 0, y: 32 }
         };
         var self = this;
-        this.game.on('mousedown', function (mouseEvent: MouseEvent) {
-            if (self.game.ui.mouseOnElement) return;
-            if (self.panning.buttons.length == 0) {
+        this.game
+            .on('mousedown', function (mouseEvent: MouseEvent) {
+                if (self.game.ui.mouseOnElement) return;
+                if (self.panning.buttons.length == 0) {
+                    self.panning.origin.x = mouseEvent.x;
+                    self.panning.origin.y = mouseEvent.y;
+                }
+                self.panning.buttons.push(mouseEvent.button);
+            })
+            .on('mouseup', function (mouseEvent: MouseEvent) {
+                util.findAndRemove(mouseEvent.button, self.panning.buttons);
+            })
+            .on('mousemove', function (mouseEvent: MouseEvent) {
+                var dx = mouseEvent.x - self.panning.origin.x,
+                    dy = mouseEvent.y - self.panning.origin.y;
+                if (self.panning.buttons.length > 0) {
+                    self.panning.panned.x += dx;
+                    self.panning.panned.y += dy;
+                }
                 self.panning.origin.x = mouseEvent.x;
                 self.panning.origin.y = mouseEvent.y;
-            }
-            self.panning.buttons.push(mouseEvent.button);
-        });
-        this.game.on('mouseup', function (mouseEvent: MouseEvent) {
-            util.findAndRemove(mouseEvent.button, self.panning.buttons);
-        });
-        this.game.on('mousemove', function (mouseEvent: MouseEvent) {
-            var dx = mouseEvent.x - self.panning.origin.x,
-                dy = mouseEvent.y - self.panning.origin.y;
-            if (self.panning.buttons.length > 0) {
-                self.panning.panned.x += dx;
-                self.panning.panned.y += dy;
-            }
-            self.panning.origin.x = mouseEvent.x;
-            self.panning.origin.y = mouseEvent.y;
-        });
-
-        //touch handling
-        this.game.on('touchstart', function (mouseEvent: MouseEvent) {
-            if (self.game.ui.mouseOnElement) return;
-            if (self.panning.buttons.length == 0) {
+            })
+            .on('touchstart', function (mouseEvent: MouseEvent) {
+                if (self.game.ui.mouseOnElement) return;
+                if (self.panning.buttons.length == 0) {
+                    self.panning.origin.x = mouseEvent.x;
+                    self.panning.origin.y = mouseEvent.y;
+                }
+                self.panning.buttons.push(mouseEvent.button);
+            })
+            .on('touchend', function (mouseEvent: MouseEvent) {
+                util.findAndRemove(mouseEvent.button, self.panning.buttons);
+            })
+            .on('touchmove', function (mouseEvent: MouseEvent) {
+                var dx = mouseEvent.x - self.panning.origin.x,
+                    dy = mouseEvent.y - self.panning.origin.y;
+                if (self.panning.buttons.length > 0) {
+                    self.panning.panned.x += dx;
+                    self.panning.panned.y += dy;
+                }
                 self.panning.origin.x = mouseEvent.x;
                 self.panning.origin.y = mouseEvent.y;
-            }
-            self.panning.buttons.push(mouseEvent.button);
-        });
+            })
+            .on('mouseout', function (mouseEvent: MouseEvent) {
 
-        this.game.on('touchend', function (mouseEvent: MouseEvent) {
-            util.findAndRemove(mouseEvent.button, self.panning.buttons);
-        });
-
-        this.game.on('touchmove', function (mouseEvent: MouseEvent) {
-            var dx = mouseEvent.x - self.panning.origin.x,
-                dy = mouseEvent.y - self.panning.origin.y;
-            if (self.panning.buttons.length > 0) {
-                self.panning.panned.x += dx;
-                self.panning.panned.y += dy;
-            }
-            self.panning.origin.x = mouseEvent.x;
-            self.panning.origin.y = mouseEvent.y;
-        });
-
-        this.game.on('mouseout', function (mouseEvent: MouseEvent) {
-
-        });
-        this.game.on('mouseover', function (mouseEvent: MouseEvent) {
-            self.panning.origin.x = mouseEvent.x;
-            self.panning.origin.y = mouseEvent.y;
-            if (!mouseEvent.button) self.panning.buttons = [];
-        });
-        this.game.on('mousewheel', function (mouseEvent: any) {
-            var newScale = util.clamp(self.scale + (mouseEvent.direction == 'up' ? 1 : -1), 1, 4);
-            if (newScale == self.scale) return;
-            self.scale = newScale;
-            self.onZoom();
-            self.onResize();
-        });
+            })
+            .on('mouseover', function (mouseEvent: MouseEvent) {
+                self.panning.origin.x = mouseEvent.x;
+                self.panning.origin.y = mouseEvent.y;
+                if (!mouseEvent.button) self.panning.buttons = [];
+            })
+            .on('mousewheel', function (mouseEvent: any) {
+                var newScale = util.clamp(self.scale + (mouseEvent.direction == 'up' ? 1 : -1), 1, 4);
+                if (newScale == self.scale) return;
+                self.scale = newScale;
+                self.onZoom();
+                self.onResize();
+            });
     }
 
     setRenderer(renderer: any) {
@@ -118,6 +114,10 @@ export default class Canvas extends EventEmitter {
     };
 
     onResize() {
+        if (!this.canvas) {
+            this.canvas = this.canvases?.[0] ?? (window as any).game.canvas;
+            this.context = this.canvas.context;
+        }
         this.width = this.canvas.canvas.width = Math.ceil(window.innerWidth / this.scale);
         this.height = this.canvas.canvas.height = Math.ceil(window.innerHeight / this.scale);
         this.halfWidth = Math.round(this.width / 2);

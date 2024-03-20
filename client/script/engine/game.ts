@@ -6,6 +6,7 @@ import Renderer from './renderer';
 import UI from '../ui/ui';
 import type World from '../environment/world';
 import type Users from '../actors/users';
+import type Decorator from '../props/decorator';
 
 export default class Game extends EventEmitter {
     users: Users;
@@ -41,6 +42,7 @@ export default class Game extends EventEmitter {
     mouseY: number;
     renderer: Renderer;
     ui: UI;
+    decorator: Decorator;
     destroy() {
         clearInterval(this.interval);
     }
@@ -71,7 +73,7 @@ export default class Game extends EventEmitter {
             //if((self.ticks & 7) == 0) console.log(delta);
             if (self.lastUpdate > 0 && self.dt > 60000) {
                 console.log('too many updates missed! game crash...');
-                self.crashed = true; self.paused = true;
+                window.location.reload();
             }
             if (self.dt > self.step) {
                 while (self.dt >= self.step) {

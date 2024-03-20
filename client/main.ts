@@ -28,7 +28,6 @@ setupDiscordSdk().then(async (auth) => {
         }
     })
     discordSdk?.subscribe('VOICE_STATE_UPDATE', voiceStateUpdateEvent => {
-        console.log("VOICE_STATE_UPDATE", voiceStateUpdateEvent);
         handleEventData({
             type: 'presence',
             data: {
@@ -40,7 +39,6 @@ setupDiscordSdk().then(async (auth) => {
 
     }, { channel_id: discordSdk.channelId! });
     discordSdk?.subscribe('ACTIVITY_INSTANCE_PARTICIPANTS_UPDATE', activityInstanceParticipantsUpdateEvent => {
-        console.log("ACTIVITY_INSTANCE_PARTICIPANTS_UPDATE", activityInstanceParticipantsUpdateEvent);
         const users = activityInstanceParticipantsUpdateEvent.participants.reduce((agg, curr) => {
             if (!agg[curr.id]) {
                 agg[curr.id] = {
@@ -58,29 +56,25 @@ setupDiscordSdk().then(async (auth) => {
         })
     });
 
-    let userIsSpeaking = {} as Record<string, boolean>;
+    let userIsSpeaking = {} as Record<string, NodeJS.Timeout>;
     discordSdk?.subscribe('SPEAKING_START', speakingStartEvent => {
-        console.log("SPEAKING_START", speakingStartEvent);
-        userIsSpeaking[speakingStartEvent.user_id] = true;
+        let uid = speakingStartEvent.user_id;
+        const talkingHandler = () => handleEventData({
+            type: 'message',
+            data: {
+                uid,
+                message: generateText(),
+                channel: 'global'
+            }
+        });
+        userIsSpeaking[speakingStartEvent.user_id] = setInterval(talkingHandler, 2500);
+        // small timeout initially incase the user is not actually speaking and was just a blip
+        setTimeout(talkingHandler, 50);
     }, { channel_id: discordSdk.channelId });
     discordSdk?.subscribe('SPEAKING_STOP', speakingStartEvent => {
-        console.log("SPEAKING_STOP", speakingStartEvent);
-        userIsSpeaking[speakingStartEvent.user_id] = false;
+        clearInterval(userIsSpeaking[speakingStartEvent.user_id]);
+        delete userIsSpeaking[speakingStartEvent.user_id];
     }, { channel_id: discordSdk.channelId });
-    setInterval(async () => {
-        for (let uid in userIsSpeaking) {
-            if (userIsSpeaking[uid]) {
-                handleEventData({
-                    type: 'message',
-                    data: {
-                        uid,
-                        message: generateText(),
-                        channel: 'global'
-                    }
-                });
-            }
-        }
-    }, 1000);
 });
 
 function generateText() {

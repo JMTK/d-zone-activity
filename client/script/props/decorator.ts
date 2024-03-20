@@ -15,11 +15,13 @@ export default class Decorator {
         this.createBeacon();
     }
 
-    sewSeed(options) {
+    sewSeed(options: {
+        origin: { x: number, y: number, z: number },
+    }) {
         var destination;
         for (var i = 0; i < geometry.closestGrids.length; i++) {
             var close = geometry.closestGrids[i]!;
-            var grid = this.world.map[(options.origin.x + close[0]) + ':' + (options.origin.y + close[1])];
+            var grid = this.world.map[(options.origin.x + close[0]!) + ':' + (options.origin.y + close[1]!)];
             if (!grid || grid.style == 'plain') continue;
             if (this.world.objectAtXYZ(grid.position.x, grid.position.y, grid.position.z + grid.height)) continue;
             destination = grid.position;
