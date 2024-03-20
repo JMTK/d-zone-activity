@@ -18,7 +18,7 @@ setupDiscordSdk().then(async (auth) => {
                 if (!agg[curr.user.id]) {
                     agg[curr.user.id] = {
                         username: curr.nick || curr.user.username,
-                        status: 'online'
+                        status: curr.voice_state.deaf ? 'offline' : 'online'
                     }
                 }
                 return agg;
@@ -71,7 +71,6 @@ setupDiscordSdk().then(async (auth) => {
 async function setupDiscordSdk() {
     if (discordSdk == null) return;
     await discordSdk.ready();
-    console.log("Discord SDK is ready");
 
     let state = crypto.randomUUID();
     // Authorize with Discord Client
@@ -86,7 +85,6 @@ async function setupDiscordSdk() {
             "rpc.voice.read"
         ],
     });
-    console.log("Got code", code);
 
     // Retrieve an access_token from your activity's server
     const response = await fetch("/api/token", {
@@ -109,7 +107,5 @@ async function setupDiscordSdk() {
         throw new Error("Authenticate command failed");
     }
 
-    if (auth)
-
-        return auth;
+    return auth;
 }
