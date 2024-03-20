@@ -84,7 +84,7 @@ setupDiscordSdk().then(async (auth) => {
 });
 
 function generateText() {
-    var numWordsToGenerate = Math.floor(Math.random() * 10000) + 1;
+    var numWordsToGenerate = Math.floor(Math.random() * 10) + 1;
     var punctuationSeed = Math.random();
     var punctuation = punctuationSeed > 0.5 ? '.' : (punctuationSeed > 0.25 ? '!' : '?')
     var words = ['flingin', 'gibbin', 'zib', 'zonk', 'flargle', 'argle', 'bargle', 'fop', 'doodle', 'swoop', 'zoodle', 'larkin', 'blarkin', 'zarkin', 'sul', 'feebee', 'dag', 'woofum', 'lalo', 'hooba', 'nobee', 'waa'];
