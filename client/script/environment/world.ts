@@ -118,7 +118,7 @@ export default class World {
             for (var y = this.mapBounds.yl; y <= this.mapBounds.yh; y++) {
                 var currentTile = this.map[x + ':' + y]; if (!currentTile) continue;
                 if (crawled[currentTile.grid]) continue; // Skip already-crawled tiles
-                var neighborsToCrawl : any[] = [];
+                var neighborsToCrawl: any[] = [];
                 while (true) { // Keep crawling outward until no neighbors are left
                     crawled[currentTile.grid] = currentTile;
                     if (this.islands[thisIsland]) this.islands[thisIsland].push(currentTile);
@@ -263,12 +263,11 @@ export default class World {
     };
 
     addToWorld(obj) {
-        //console.log('world: adding object at',obj.position.x,obj.position.y,obj.position.z);
+        console.log('world: adding object at',obj.position.x,obj.position.y,obj.position.z);
         if (this.objects[obj.position.x]) {
             if (this.objects[obj.position.x][obj.position.y]) {
                 if (this.objects[obj.position.x][obj.position.y][obj.position.z]) {
-                    console.trace('occupado!', obj.position.x, obj.position.y, obj.position.z,
-                        obj, this.objects[obj.position.x][obj.position.y][obj.position.z]);
+                    console.trace('occupado!', obj, this.objects);
                     return false;
                 }
             } else {
@@ -303,7 +302,7 @@ export default class World {
             //console.log('world: ',x,y,'is now unwalkable');
             return;
         }
-        var zKeys = Object.keys(objects).sort(function (a, b) { return ('' + a).localeCompare(b); });
+        var zKeys = Object.keys(objects).sort(function (a : any , b : any) { return a - b; });
         var topObject = objects[zKeys[zKeys.length - 1]!];
         if (topObject.unWalkable) {
             delete this.walkable[x + ':' + y];

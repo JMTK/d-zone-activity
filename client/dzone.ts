@@ -58,6 +58,8 @@ export async function handleEventData(eventData: { type: 'server-join' | 'presen
         const dataUsers = (eventData.data.users as Record<string, { username: string, status: string }>);
         const existingActors = game.users.actors;
         const actorsToRemove = Object.keys(existingActors).filter(uid => !dataUsers[uid]);
+        console.log(existingActors);
+        console.log(dataUsers);
         for (const uid of actorsToRemove) {
             users.removeActor(existingActors[uid]!);
         }
