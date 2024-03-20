@@ -5,15 +5,11 @@ window.onunhandledrejection = (err) => console.error(err);
 const clientId = '1219346862423933098';
 const discordSdk = window.location.search.includes('frame_id') ? new DiscordSDK(clientId) : null;
 
+let dzone = initDzone();
 setupDiscordSdk().then(async (auth) => {
     console.log("Discord SDK is authenticated");
-
-    let game = await initDzone({
-        ServerID: discordSdk?.guildId ?? '',
-        ChannelID: discordSdk?.channelId ?? '',
-        token: auth?.access_token ?? ''
-    });
     let channel = await discordSdk?.commands.getChannel({ channel_id: discordSdk!.channelId! });
+    await dzone;
     handleEventData({
         type: 'server-join',
         data: {
@@ -31,6 +27,14 @@ setupDiscordSdk().then(async (auth) => {
     })
     discordSdk?.subscribe('VOICE_STATE_UPDATE', voiceStateUpdateEvent => {
         console.log("VOICE_STATE_UPDATE", voiceStateUpdateEvent);
+        handleEventData({
+            type: 'presence',
+            data: {
+                uid: voiceStateUpdateEvent.user.id,
+                delete: voiceStateUpdateEvent.voice_state.deaf
+            }
+        });
+
     }, { channel_id: discordSdk.channelId! });
     discordSdk?.subscribe('ACTIVITY_INSTANCE_PARTICIPANTS_UPDATE', activityInstanceParticipantsUpdateEvent => {
         console.log("ACTIVITY_INSTANCE_PARTICIPANTS_UPDATE", activityInstanceParticipantsUpdateEvent);
@@ -107,5 +111,5 @@ async function setupDiscordSdk() {
 
     if (auth)
 
-    return auth;
+        return auth;
 }

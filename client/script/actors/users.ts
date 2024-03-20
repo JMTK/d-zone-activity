@@ -43,7 +43,7 @@ export default class Users extends EventEmitter {
                 actor.updatePresence(data.status)
             }
         } else {
-            this.addActor(data)
+            this.addActor(data);
         }
     }
 

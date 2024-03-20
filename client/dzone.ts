@@ -8,14 +8,13 @@ import World from './script/environment/world';
 import Users from './script/actors/users';
 import Decorator from './script/props/decorator';
 import Preloader from './script/engine/preloader';
-import { once } from 'events';
 
 // TODO: Loading screen while preloading images, connecting to websocket, and generating world
 var version = packageInfo.version;
 console.log('Loading...', version);
 var game: Game, ws: WebSocket;
 
-export async function initDzone(options: { ServerID: string, ChannelID: string, token: string }) {
+export async function initDzone() {
     var preloader = new Preloader();
     await preloader.load();
     game = new Game({ step: 1000 / 60 });
