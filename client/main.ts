@@ -1,5 +1,6 @@
 import { DiscordSDK } from "@discord/embedded-app-sdk";
 import { handleEventData, initDzone } from "./dzone";
+const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 window.onunhandledrejection = (err) => console.error(err);
 const clientId = '1219346862423933098';
@@ -9,6 +10,7 @@ let dzone = initDzone();
 setupDiscordSdk().then(async (auth) => {
     console.log("Discord SDK is authenticated");
     let channel = await discordSdk?.commands.getChannel({ channel_id: discordSdk!.channelId! });
+    
     await dzone;
     handleEventData({
         type: 'server-join',
@@ -31,7 +33,8 @@ setupDiscordSdk().then(async (auth) => {
             type: 'presence',
             data: {
                 uid: voiceStateUpdateEvent.user.id,
-                delete: voiceStateUpdateEvent.voice_state.deaf
+                delete: voiceStateUpdateEvent.voice_state.deaf,
+                status: voiceStateUpdateEvent.voice_state.deaf ? 'offline' : 'online',
             }
         });
 
@@ -54,19 +57,40 @@ setupDiscordSdk().then(async (auth) => {
             }
         })
     });
+    
+    let userIsSpeaking = {} as Record<string, boolean>;
     discordSdk?.subscribe('SPEAKING_START', speakingStartEvent => {
         console.log("SPEAKING_START", speakingStartEvent);
-        handleEventData({
-            type: 'message',
-            data: {
-                uid: speakingStartEvent.user_id,
-                message: 'I am speaking!',
-                channel: speakingStartEvent.channel_id
-            }
-        });
-
+        userIsSpeaking[speakingStartEvent.user_id] = true;
+        
     }, { channel_id: discordSdk.channelId });
+
+    while (true) {
+        for (let uid in userIsSpeaking) {
+            if (userIsSpeaking[uid]) {
+                handleEventData({
+                    type: 'message',
+                    data: {
+                        uid,
+                        message: generateText(),
+                        channel: 'global'
+                    }
+                });
+                await sleep(Math.random() * 1000);
+            }
+        }
+    }
 });
+
+function generateText() {
+    var numWordsToGenerate = Math.floor(Math.random() * 10000) + 1;
+    var punctuationSeed = Math.random();
+    var punctuation = punctuationSeed > 0.5 ? '.' : (punctuationSeed > 0.25 ? '!' : '?')
+    var words = ['flingin', 'flargle', 'argle', 'bargle', 'fop', 'doodle', 'swoop', 'zoodle', 'larkin', 'blarkin', 'zarkin', 'sul', 'feebee', 'dag', 'woofum', 'lalo', 'hooba', 'nobee', 'waa'];
+
+    let sentence = new Array(numWordsToGenerate).fill(null).map(() => words[Math.floor(Math.random() * words.length)]).join(' ') + punctuation;
+    return sentence.charAt(0).toUpperCase() + sentence.slice(1);
+}
 
 async function setupDiscordSdk() {
     if (discordSdk == null) return;

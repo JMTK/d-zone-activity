@@ -12,7 +12,7 @@ import Preloader from './script/engine/preloader';
 // TODO: Loading screen while preloading images, connecting to websocket, and generating world
 var version = packageInfo.version;
 console.log('Loading...', version);
-var game: Game, ws: WebSocket;
+var game: Game, ws: WebSocket, decorator : Decorator;
 
 export async function initDzone() {
     var preloader = new Preloader();
@@ -32,12 +32,15 @@ export async function initDzone() {
     return game;
 }
 
+
 export async function handleEventData(eventData: { type: 'server-join' | 'presence' | 'message' | 'error' | 'userchange', data: any }) {
     var userList = eventData.data.users as { [uid: string]: { uid: string, username: string, status: string, roleColor?: string } };
     const world = game.world ??= new World(game, Math.round(3.3 * Math.sqrt(Object.keys(userList).length)));
-    const decorator = new Decorator(game, world);
+    decorator ??= new Decorator(game, world);
     const users = game.users ??= new Users(game, world);
     
+    decorator?.beacon.ping();
+
     //game.decorator = decorator;
     if (eventData.type === 'server-join') { // Initial server status
         var requestServer = eventData.data.serverID;
