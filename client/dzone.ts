@@ -35,9 +35,8 @@ export async function initDzone() {
 
 export async function handleEventData(eventData: { type: 'server-join' | 'presence' | 'message' | 'error' | 'userchange', data: any }) {
     var userList = eventData.data.users as { [uid: string]: { uid: string, username: string, status: string, roleColor?: string } };
-    const world = game.world ??= new World(game, Math.round(3.3 * Math.sqrt(Object.keys(userList).length)));
-    
-    const users = game.users ??= new Users(game, world);
+    let world = game.world;
+    let users = game.users;
     
     decorator?.beacon.ping();
 
@@ -46,7 +45,9 @@ export async function handleEventData(eventData: { type: 'server-join' | 'presen
         console.log("Joined server", requestServer);
         game.reset();
         game.renderer.clear();
+        world = game.world = new World(game, Math.round(3.3 * Math.sqrt(Object.keys(userList).length)))
         decorator ??= new Decorator(game, world);
+        users = game.users = new Users(game, world)
         game.decorator = decorator;
         game.setMaxListeners(Object.keys(userList).length + 50);
         users.setMaxListeners(Object.keys(userList).length);
