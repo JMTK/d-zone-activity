@@ -10,7 +10,7 @@ let dzone = initDzone();
 setupDiscordSdk().then(async (auth) => {
     console.log("Discord SDK is authenticated");
     let channel = await discordSdk?.commands.getChannel({ channel_id: discordSdk!.channelId! });
-    
+
     await dzone;
     handleEventData({
         type: 'server-join',
@@ -57,15 +57,15 @@ setupDiscordSdk().then(async (auth) => {
             }
         })
     });
-    
+
     let userIsSpeaking = {} as Record<string, boolean>;
     discordSdk?.subscribe('SPEAKING_START', speakingStartEvent => {
         console.log("SPEAKING_START", speakingStartEvent);
         userIsSpeaking[speakingStartEvent.user_id] = true;
-        
+
     }, { channel_id: discordSdk.channelId });
 
-    while (true) {
+    setInterval(async () => {
         for (let uid in userIsSpeaking) {
             if (userIsSpeaking[uid]) {
                 handleEventData({
@@ -76,10 +76,9 @@ setupDiscordSdk().then(async (auth) => {
                         channel: 'global'
                     }
                 });
-                await sleep(Math.random() * 1000);
             }
         }
-    }
+    }, 1000);
 });
 
 function generateText() {

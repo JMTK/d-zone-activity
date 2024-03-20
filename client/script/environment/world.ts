@@ -263,7 +263,7 @@ export default class World {
     };
 
     addToWorld(obj) {
-        console.log('world: adding object at',obj.position.x,obj.position.y,obj.position.z);
+        //console.log('world: adding object at',obj.position.x,obj.position.y,obj.position.z);
         if (this.objects[obj.position.x]) {
             if (this.objects[obj.position.x][obj.position.y]) {
                 if (this.objects[obj.position.x][obj.position.y][obj.position.z]) {
