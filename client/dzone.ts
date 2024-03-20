@@ -29,9 +29,11 @@ export async function initDzone(options: { ServerID: string, ChannelID: string, 
     //initWebsocket(options);
 
     (window as any).game = game;
+
+    return game;
 }
 
-export async function handleEventData(eventData: { type: 'server-join' | 'presence' | 'message' | 'error' | 'userjoined' | 'userleft', data: any }) {
+export async function handleEventData(eventData: { type: 'server-join' | 'presence' | 'message' | 'error' | 'userchange', data: any }) {
     var userList = eventData.data.users as { [uid: string]: { uid: string, username: string, status: string, roleColor?: string } };
     const world = game.world ??= new World(game, Math.round(3.3 * Math.sqrt(Object.keys(userList).length)));
     const decorator = new Decorator(game, world);
@@ -53,12 +55,22 @@ export async function handleEventData(eventData: { type: 'server-join' | 'presen
         }
         console.log((Object.keys(users.actors).length).toString() + ' actors created');
         game.renderer.canvases[0].onResize();
-    } else if (eventData.type === 'userjoined') {
-        users.addActor(eventData.data);
-    } else if (eventData.type === 'userleft') {
-        const actor = users.actors[eventData.data.uid];
-        if (!actor) return;
-        users.removeActor(actor);
+    } else if (eventData.type === 'userchange') {
+        const dataUsers = (eventData.data.users as Record<string, { username: string, status: string }>);
+        const existingActors = game.users.actors;
+        const actorsToRemove = Object.keys(existingActors).filter(uid => !dataUsers[uid]);
+        for (const uid of actorsToRemove) {
+            users.removeActor(existingActors[uid]!);
+        }
+        for (const uid in dataUsers) {
+            const user = dataUsers[uid]!;
+            if (!existingActors[uid]) {
+                users.addActor({
+                    ...user,
+                    uid
+                });
+            }
+        }
     } else if (eventData.type === 'presence') { // User status update
         users.updateActor(eventData.data)
     } else if (eventData.type === 'message') { // Chatter

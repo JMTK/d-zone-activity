@@ -52,7 +52,8 @@ export default class Users extends EventEmitter {
         actor.remove();
     };
 
-    queueMessage(data : { uid: string, message: string, channel: string }) {
+    queueMessage(data: { uid: string, message: string, channel: string }) {
+        console.log("Queueing message", data);
         if (!data.message || !this.actors[data.uid]) return;
         if (!this.messageQueue[data.channel]) this.messageQueue[data.channel] = { busy: false, messages: [] };
         this.messageQueue[data.channel].messages.push({

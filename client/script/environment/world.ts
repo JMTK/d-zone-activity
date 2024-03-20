@@ -9,7 +9,6 @@ import type Game from '../engine/game';
 import Canvas from '../common/bettercanvas';
 var testCanvas = new Canvas(200, 100);
 var unoccupiedGrids; // For faster actor placement on init
-//document.body.appendChild(testCanvas.canvas);
 
 export default class World {
     game: Game;

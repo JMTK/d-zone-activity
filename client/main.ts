@@ -34,6 +34,21 @@ setupDiscordSdk().then(async (auth) => {
     }, { channel_id: discordSdk.channelId! });
     discordSdk?.subscribe('ACTIVITY_INSTANCE_PARTICIPANTS_UPDATE', activityInstanceParticipantsUpdateEvent => {
         console.log("ACTIVITY_INSTANCE_PARTICIPANTS_UPDATE", activityInstanceParticipantsUpdateEvent);
+        const users = activityInstanceParticipantsUpdateEvent.participants.reduce((agg, curr) => {
+            if (!agg[curr.id]) {
+                agg[curr.id] = {
+                    username: curr.nickname || curr.username,
+                    status: 'online'
+                }
+            }
+            return agg;
+        }, {});
+        handleEventData({
+            type: 'userchange',
+            data: {
+                users
+            }
+        })
     });
     discordSdk?.subscribe('SPEAKING_START', speakingStartEvent => {
         console.log("SPEAKING_START", speakingStartEvent);
