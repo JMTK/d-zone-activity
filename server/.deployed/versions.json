@@ -2,16 +2,11 @@
   {
     "apihost": "https://faas-nyc1-2ef2e6cc.doserverless.co",
     "namespace": "fn-2ee313fe-438e-4dae-ba1c-c841e6d1ba23",
-    "packageVersions": {
-      "dzone": {
-        "version": "0.0.1",
-        "digest": "185d5addf2480bb7eafa9f76eb2b7c84336b29d3a0323451927761124ba5c496"
-      }
-    },
+    "packageVersions": {},
     "actionVersions": {
       "dzone/discordauthtoken": {
-        "version": "0.0.1",
-        "digest": "dbaf1ce580998fa0ed881788eeea34b818bfb2127a491eea07366f341f1588c3"
+        "digest": "5e340d930156d408d8dcee8dc98508baa9954323834e03136cf89e2dcf76519f",
+        "version": "0.0.9"
       }
     }
   }

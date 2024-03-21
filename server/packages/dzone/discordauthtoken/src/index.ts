@@ -3,7 +3,7 @@ import http from 'http';
 import { REST } from '@discordjs/rest';
 import { Routes, APIGuildVoiceChannel } from 'discord-api-types/v10';
 export async function main(args) {
-    const { code } = args.body;
+    const { code } = args;
     console.log("Got token!", code);
 
     let response = await getDiscordAccessToken(code, 'https://dzone.jmtk.co', process.env.BOT_CLIENT_ID!, process.env.BOT_CLIENT_SECRET!);
