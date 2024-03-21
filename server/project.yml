@@ -1,0 +1,19 @@
+parameters: {}
+environment: {}
+packages:
+    - name: dzone
+      shared: false
+      environment: {}
+      parameters: {}
+      annotations: {}
+      functions:
+        - name: discordauthtoken
+          binary: false
+          main: ""
+          runtime: nodejs:18
+          web: true
+          webSecure: false
+          parameters: {}
+          environment: {}
+          annotations: {}
+          limits: {}
