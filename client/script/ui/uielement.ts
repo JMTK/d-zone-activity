@@ -4,6 +4,8 @@ import BetterCanvas from '../common/bettercanvas';
 import util from '../common/util';
 import type UI from './ui';
 
+
+export interface UIElementOptions { ui: UI, parent: any, w?: number, h?: number, top?: number | 'auto', bottom?: number | 'auto', left?: number | 'auto', right?: number | 'auto' }
 export default class UIElement extends EventEmitter {
     ui: UI;
     parent: any;
@@ -18,18 +20,18 @@ export default class UIElement extends EventEmitter {
     left: number | 'auto';
     right: number | 'auto';
     canvas: BetterCanvas;
-    constructor(options) {
+    constructor(options : UIElementOptions) {
         super();
         this.ui = options.ui;
         this.parent = options.parent;
         this.elements = [];
         this.w = 1; this.h = 1;
-        if (options.hasOwnProperty('w')) this.w = options.w; else this.autosize = true;
-        if (options.hasOwnProperty('h')) this.h = options.h; else this.autosize = true;
-        if (options.hasOwnProperty('top')) this.top = options.top;
-        if (options.hasOwnProperty('bottom')) this.bottom = options.bottom;
-        if (options.hasOwnProperty('left')) this.left = options.left;
-        if (options.hasOwnProperty('right')) this.right = options.right;
+        if (options.w) this.w = options.w; else this.autosize = true;
+        if (options.h) this.h = options.h; else this.autosize = true;
+        if (options.top) this.top = options.top;
+        if (options.bottom) this.bottom = options.bottom;
+        if (options.left) this.left = options.left;
+        if (options.right) this.right = options.right;
         this.canvas = new BetterCanvas(this.w || 1, this.h || 1);
         this.reposition();
     }

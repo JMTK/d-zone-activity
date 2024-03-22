@@ -1,7 +1,14 @@
 'use strict';
-import UIElement from './uielement'
+import UIElement, { UIElementOptions } from './uielement'
 import TextBlotter from '../common/textblotter'
 
+export interface LabelOptions extends UIElementOptions {
+    text: string,
+    hyperlink?: string,
+    maxWidth?: number,
+    onPress?: any,
+    autosize?: boolean
+}
 export default class Label extends UIElement {
     text: string;
     textCanvas: any;
@@ -10,13 +17,7 @@ export default class Label extends UIElement {
     onPress: any;
     mouseOn: boolean;
     pressed: boolean;
-    constructor(options: {
-        text: string,
-        hyperlink?: string,
-        maxWidth?: number,
-        onPress?: any,
-        autosize?: boolean
-    }) {
+    constructor(options: LabelOptions) {
         super(options);
         if (options.onPress) this.onPress = options.onPress;
         if (options.hyperlink) this.hyperlink = options.hyperlink;
@@ -28,7 +29,7 @@ export default class Label extends UIElement {
         this.on('mouse-up', this.onMouseUp.bind(this));
     }
 
-    changeText(text) {
+    changeText(text : string) {
         this.text = text;
         this.textCanvas = TextBlotter.blot({ text: this.text, maxWidth: this.maxWidth });
         if (this.autosize) {

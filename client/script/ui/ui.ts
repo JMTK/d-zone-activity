@@ -5,7 +5,7 @@ import TextBlotter from '../common/textblotter';
 import Button from './button';
 import Panel from './panel';
 import Input from './input';
-import Label from './label';
+import Label, { LabelOptions } from './label';
 import type Game from '../engine/game';
 
 export default class UI extends EventEmitter {
@@ -72,10 +72,9 @@ export default class UI extends EventEmitter {
         return newInput;
     };
 
-    addLabel(options) {
+    addLabel(options: { parent?: any } & Omit<LabelOptions, "ui">) {
         if (!options.parent) options.parent = this;
-        options.ui = this;
-        var newLabel = new Label(options);
+        var newLabel = new Label({ ...options, ui: this });
         options.parent.elements.push(newLabel);
         if (options.parent !== this) this.elements.push(newLabel);
         newLabel.on('redraw', this.redraw.bind(this));

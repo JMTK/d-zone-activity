@@ -1,5 +1,6 @@
 import { DiscordSDK } from "@discord/embedded-app-sdk";
 import { handleEventData, initDzone } from "./dzone";
+import type Game from "script/engine/game";
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 window.onunhandledrejection = (err) => console.error(err);
@@ -13,7 +14,8 @@ setupDiscordSdk().then(async (auth) => {
     initializeBackgroundMusic();
     let channel = await discordSdk?.commands.getChannel({ channel_id: discordSdk!.channelId! });
 
-    await dzone;
+    let game = await dzone;
+    initializeUIOverlay(game, auth!.user);
     handleEventData({
         type: 'server-join',
         data: {
@@ -28,7 +30,10 @@ setupDiscordSdk().then(async (auth) => {
                 return agg;
             }, {})
         }
-    })
+    });
+
+    // Override open function with Discord's SDK to allow opening external links
+    window.open = (url : string) => discordSdk?.commands.openExternalLink({ url }) as any;
     discordSdk?.subscribe('VOICE_STATE_UPDATE', voiceStateUpdateEvent => {
         handleEventData({
             type: 'presence',
@@ -139,3 +144,17 @@ function initializeBackgroundMusic() {
     audio.play();
 }
 
+function initializeUIOverlay(game: Game, user: {
+    username: string;
+    discriminator: string;
+    id: string;
+    public_flags: number;
+    avatar?: string | null | undefined;
+    global_name?: string | null | undefined;
+}) {
+    console.log(user);
+    game.ui.addLabel({
+        text: `@${user.username}`, top: 3, left: 3, w: 18, h: 18,
+        parent: game.ui
+    })
+}

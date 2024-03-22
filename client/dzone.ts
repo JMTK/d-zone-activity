@@ -132,11 +132,20 @@ function addUIOverlay(game: Game) {
             game.helpPanel = game.ui.addPanel({ left: 'auto', top: 'auto', w: 200, h: 75 });
             game.ui.addLabel({ text: 'D-Zone ' + version, top: 5, left: 'auto', parent: game.helpPanel });
             game.ui.addLabel({
-                text: packageInfo.description, top: 20, left: 2, maxWidth: 196, parent: game.helpPanel
+                text: packageInfo.description, top: 30, left: 2, maxWidth: 196, parent: game.helpPanel
             });
             game.ui.addLabel({
                 text: ':icon-github: View on GitHub', hyperlink: 'https://github.com/JMTK/d-zone-activity',
-                top: 50, right: 8, parent: game.helpPanel
+                top: 60, right: 8, parent: game.helpPanel
+            });
+            game.ui.addLabel({
+                text: `
+Morning Dew by Arthur Vyncke | https://soundcloud.com/arthurvost
+Music promoted by https://www.free-stock-music.com
+Creative Commons / Attribution-ShareAlike 3.0 Unported (CC BY-SA 3.0)
+https://creativecommons.org/licenses/by-sa/3.0/deed.en_US
+                `.trim(),
+                top: 90, right: 8, parent: game.helpPanel
             });
         }
     });
