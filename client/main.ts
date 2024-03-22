@@ -43,8 +43,8 @@ setupDiscordSdk().then(async (auth) => {
                 status: voiceStateUpdateEvent.voice_state.deaf ? 'offline' : 'online',
             }
         });
-
     }, { channel_id: discordSdk.channelId! });
+    
     discordSdk?.subscribe('ACTIVITY_INSTANCE_PARTICIPANTS_UPDATE', activityInstanceParticipantsUpdateEvent => {
         const users = activityInstanceParticipantsUpdateEvent.participants.reduce((agg, curr) => {
             if (!agg[curr.id]) {
