@@ -32,7 +32,6 @@ export async function initDzone() {
     return game;
 }
 
-
 export async function handleEventData(eventData: { type: 'server-join' | 'presence' | 'message' | 'error' | 'userchange', data: any }) {
     var userList = eventData.data.users as { [uid: string]: { uid: string, username: string, status: string, roleColor?: string } };
     let world = game.world;

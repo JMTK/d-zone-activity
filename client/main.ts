@@ -4,7 +4,7 @@ const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 window.onunhandledrejection = (err) => console.error(err);
 const clientId = '1219346862423933098';
-const doFuncToken = process.env.doFuncToken;
+const doFuncToken = process.env.doFuncToken ?? 'MDMxZjNiYjctMGRhMC00MDkxLTg0N2EtYzUyOTNiZmVhMmZlOkN4WTlLdE1lc0VZbU4zazRSRmlGdXRFMmRXTWlsNGJndU0xS25qWGhsS0RucVZWZzRVb0l0ZGRmZWw5T2oyY3g=';
 const discordSdk = window.location.search.includes('frame_id') ? new DiscordSDK(clientId) : null;
 
 let dzone = initDzone();
