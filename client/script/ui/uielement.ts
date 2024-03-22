@@ -29,10 +29,10 @@ export default class UIElement extends EventEmitter {
         this.w = 1; this.h = 1;
         if (options.w) this.w = options.w; else this.autosize = true;
         if (options.h) this.h = options.h; else this.autosize = true;
-        if (options.top) this.top = options.top;
-        if (options.bottom) this.bottom = options.bottom;
-        if (options.left) this.left = options.left;
-        if (options.right) this.right = options.right;
+        if (options.top) this.top = options.top; else 0;
+        if (options.bottom) this.bottom = options.bottom; else 0;
+        if (options.left) this.left = options.left; else 0;
+        if (options.right) this.right = options.right; else 0;
         this.canvas = new BetterCanvas(this.w || 1, this.h || 1);
         this.reposition();
     }
