@@ -1,4 +1,6 @@
 import 'dotenv/config'
+import express from 'express';
+
 export async function main(args) {
     const { code } = args;
     if (!code) return { error: 'No code provided' };
@@ -56,3 +58,17 @@ async function getDiscordAccessToken(code: string, redirectUri: string, clientId
         return { error: 'Error fetching access token', details: error };
     }
 }
+
+const app = express();
+
+app.use(express.json());
+
+app.listen(3009, () => {
+    console.log('Server running on port 3009');
+});
+
+app.post('/api/token', async (req, res) => {
+    const { code } = req.body;
+    // ... handle the code parameter
+    res.json(await main({ code }));
+});
