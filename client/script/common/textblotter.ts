@@ -60,7 +60,7 @@ var padding = { x: 4, y: 3 };
 var vertOffset = 1;
 var image;
 
-export interface BlotOptions { x?: number, y?: number, canvas?: BetterCanvas, maxChars?: number, lineStart?: number, lineCount?: number, metrics?: any, bg?: string, text?: string }
+export interface BlotOptions { maxWidth?: number, x?: number, y?: number, canvas?: BetterCanvas, maxChars?: number, lineStart?: number, lineCount?: number, metrics?: any, bg?: string, text?: string }
 export default {
     /**
      * Renders a blot (a text block) on a canvas with optional customization options.

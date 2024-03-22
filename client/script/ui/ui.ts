@@ -130,7 +130,7 @@ export default class UI extends EventEmitter {
 
     onMouseOnElement(elem) {
         this.mouseOnElement = elem;
-        this.game.mouseOver = false;
+        this.game.mouseOver = null;
     };
 
     onMouseOffElement(elem : HTMLElement) {
