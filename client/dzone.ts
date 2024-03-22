@@ -12,7 +12,7 @@ import Preloader from './script/engine/preloader';
 // TODO: Loading screen while preloading images, connecting to websocket, and generating world
 var version = packageInfo.version;
 console.log('Loading...', version);
-var game: Game, ws: WebSocket, decorator : Decorator;
+var game: Game, ws: WebSocket, decorator: Decorator;
 
 export async function initDzone() {
     var preloader = new Preloader();
@@ -37,7 +37,7 @@ export async function handleEventData(eventData: { type: 'server-join' | 'presen
     var userList = eventData.data.users as { [uid: string]: { uid: string, username: string, status: string, roleColor?: string } };
     let world = game.world;
     let users = game.users;
-    
+
     decorator?.beacon.ping();
 
     if (eventData.type === 'server-join') { // Initial server status
@@ -87,7 +87,7 @@ export async function handleEventData(eventData: { type: 'server-join' | 'presen
 
 export function initWebsocket(options: { ServerID: string, ChannelID: string, token: string }) {
 
-    var users : Users, world : World, decorator : Decorator;
+    var users: Users, world: World, decorator: Decorator;
 
     var socketURL = `wss://${window.location.hostname}?ServerID=${options.ServerID}&ChannelID=${options.ChannelID}&Token=${options.token}`;
     console.log('Initializing websocket on', socketURL);
@@ -115,7 +115,7 @@ export function initWebsocket(options: { ServerID: string, ChannelID: string, to
     // };
 }
 
-function joinServer(server : any) {
+function joinServer(server: any) {
     var connectionMessage = { type: 'connect', data: { server: server.id } };
     console.log('Requesting to join server', server.id);
     ws.send(JSON.stringify(connectionMessage));
@@ -129,24 +129,28 @@ function addUIOverlay(game: Game) {
                 game.helpPanel = null;
                 return;
             }
-            game.helpPanel = game.ui.addPanel({ left: 'auto', top: 'auto', w: 200, h: 75 });
+            game.helpPanel = game.ui.addPanel({ left: 'auto', top: 'auto', w: 200, h: 200 });
             game.ui.addLabel({ text: 'D-Zone ' + version, top: 5, left: 'auto', parent: game.helpPanel });
             game.ui.addLabel({
-                text: packageInfo.description, top: 30, left: 2, maxWidth: 196, parent: game.helpPanel
+                text: packageInfo.description, top: 20, left: 2, maxWidth: 196, parent: game.helpPanel
             });
             game.ui.addLabel({
                 text: ':icon-github: View on GitHub', hyperlink: 'https://github.com/JMTK/d-zone-activity',
                 top: 60, right: 8, parent: game.helpPanel
             });
-            game.ui.addLabel({
-                text: `
-Morning Dew by Arthur Vyncke | https://soundcloud.com/arthurvost
+
+            let musicAttr = `Morning Dew by Arthur Vyncke | https://soundcloud.com/arthurvost
 Music promoted by https://www.free-stock-music.com
 Creative Commons / Attribution-ShareAlike 3.0 Unported (CC BY-SA 3.0)
-https://creativecommons.org/licenses/by-sa/3.0/deed.en_US
-                `.trim(),
-                top: 90, right: 8, parent: game.helpPanel
-            });
+https://creativecommons.org/licenses/by-sa/3.0/deed.en_US`;
+
+            for (let i = 0, musicAttrSpl = musicAttr.split('\n'); i < musicAttrSpl.length; i++) {
+                game.ui.addLabel({
+                    text: musicAttrSpl[i]!,
+                    maxWidth: 196,
+                    top: 90 + i * 10, right: 8, parent: game.helpPanel
+                });
+            }
         }
     });
 }

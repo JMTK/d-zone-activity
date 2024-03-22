@@ -38,7 +38,9 @@ export default class Image extends UIElement {
         this.canvas.clear();
         const imageElement = new globalThis.Image();
         imageElement.src = this.url;
-        this.canvas.drawImage(imageElement, 0, 0, this.options.w!, this.options.h!, this.options.right as number ?? (-1 * (this.options.left as number)), this.options.top as number, this.options.w!, this.options.h!, 1);
+        imageElement.onload = () => {
+            this.canvas.drawImage(imageElement, 0, 0, this.options.w!, this.options.h!, this.options.right as number ?? (-1 * (this.options.left as number)), this.options.top as number, this.options.w!, this.options.h!, 1);
+        };
         this.emit('redraw');
     };
 

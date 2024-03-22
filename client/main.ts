@@ -152,7 +152,6 @@ function initializeUIOverlay(game: Game, user: {
     avatar?: string | null | undefined;
     global_name?: string | null | undefined;
 }) {
-    console.log(user);
     const avatarUrl = `${user.avatar ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png` : `https://cdn.discordapp.com/embed/avatars/${parseInt(user.discriminator) % 5}.png`}`
     game.ui.addImage({
         url: avatarUrl,
