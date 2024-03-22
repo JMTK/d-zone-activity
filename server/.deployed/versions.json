@@ -15,14 +15,14 @@
     "namespace": "fn-80c10ca2-4275-488d-94d8-5c714275c0f8",
     "packageVersions": {
       "dzone": {
-        "version": "0.0.23",
+        "version": "0.0.24",
         "digest": "185d5addf2480bb7eafa9f76eb2b7c84336b29d3a0323451927761124ba5c496"
       }
     },
     "actionVersions": {
       "dzone/discordauthtoken": {
-        "version": "0.0.14",
-        "digest": "dee8eb08e62c661f99b5cbd66b42d3ece6edcd68f4133486b74312bf875089ec"
+        "version": "0.0.15",
+        "digest": "241b54eb5e3bf24779b554c2a43b129040ea6d3416f4a770e2c6749fb1b2b4e4"
       }
     }
   }
