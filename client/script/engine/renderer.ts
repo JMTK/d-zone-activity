@@ -32,10 +32,9 @@ export default class Renderer extends EventEmitter {
         var draw = function () {
             if (self.updateDrawn == false) {
                 if (self.canvases) {
-                    var timeThis = self.game.timeRenders && (self.game.ticks & 511) == 0;
-                    if (timeThis) console.time('render');
-                    //if(timeThis) console.log(self.zBuffer);
-                    //if(timeThis) var renderStart = performance.now();
+                    const timeThis = self.game.timeRenders && (self.game.ticks & 511) == 0;
+                    const renderStart = performance.now();
+
                     for (var c = 0; c < self.canvases.length; c++) {
                         var canvas = self.canvases[c];
                         canvas.draw();
@@ -53,12 +52,15 @@ export default class Renderer extends EventEmitter {
                         }
                         if (self.game.ui) self.game.ui.emit('draw', canvas);
                     }
-                    if (timeThis) console.timeEnd('render');
-                    //if(timeThis) var thisRenderTime = performance.now() - renderStart;
-                    //if(timeThis) var renderTimeChange = thisRenderTime-lastRenderTime;
-                    //if(timeThis && renderTimeChange <= 0) console.log('%c'+renderTimeChange, 'color: #00bb00');
-                    //if(timeThis && renderTimeChange > 0) console.log('%c'+renderTimeChange, 'color: #ff0000');
-                    //if(timeThis) lastRenderTime = thisRenderTime;
+                    if (timeThis) {
+                        var thisRenderTime = performance.now() - renderStart;
+                        if (thisRenderTime > 1) {
+                            var renderTimeChange = thisRenderTime - lastRenderTime;
+                            if (renderTimeChange <= 0) console.log('%c' + renderTimeChange, 'color: #00bb00');
+                            else if (renderTimeChange > 0) console.log('%c' + renderTimeChange, 'color: #ff0000');
+                            lastRenderTime = thisRenderTime;
+                        }
+                    }
                 }
                 //self.frames++;
                 //if((self.game.ticks & 63) == 0) {
