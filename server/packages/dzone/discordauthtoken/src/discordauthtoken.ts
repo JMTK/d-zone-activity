@@ -10,7 +10,7 @@ export async function main(args) {
     let response = await getDiscordAccessToken(code, 'https://dzone.jmtk.co', process.env.BOT_CLIENT_ID!, process.env.BOT_CLIENT_SECRET!);
     if (!response.accessToken) {
         console.log(response);
-        throw new Error(JSON.stringify(response));
+        return response;
     }
     return { access_token: response.accessToken };
 }
@@ -49,7 +49,7 @@ async function getDiscordAccessToken(code: string, redirectUri: string, clientId
                 scope: json.scope,
             };
         } else {
-            
+
             // Handle errors, such as invalid code or invalid redirect URI
             return { error: 'Failed to obtain access token', statusCode: response.status, ...(await response.json()) };
         }
@@ -67,8 +67,17 @@ app.listen(3009, () => {
     console.log('Server running on port 3009');
 });
 
+process
+    .on('unhandledRejection', (error) => {
+        console.error(error);
+    })
+    .on('uncaughtException', (error) => {
+        console.error(error);
+    })
+
 app.post('/api/token', async (req, res) => {
     const { code } = req.body;
     // ... handle the code parameter
-    res.json(await main({ code }));
+    let response = await main({ code });
+    res.status(code.statusCode ?? 200).json(response);
 });
