@@ -129,10 +129,12 @@ function addUIOverlay(game: Game) {
                 game.helpPanel = null;
                 return;
             }
-            game.helpPanel = game.ui.addPanel({ left: 'auto', top: 'auto', w: 200, h: 200 });
+
+            let panelWidth = 300;
+            game.helpPanel = game.ui.addPanel({ left: 'auto', top: 'auto', w: panelWidth, h: 150 });
             game.ui.addLabel({ text: 'D-Zone ' + version, top: 5, left: 'auto', parent: game.helpPanel });
             game.ui.addLabel({
-                text: packageInfo.description, top: 20, left: 2, maxWidth: 196, parent: game.helpPanel
+                text: packageInfo.description, top: 20, left: 2, maxWidth: panelWidth - 8, parent: game.helpPanel
             });
             game.ui.addLabel({
                 text: ':icon-github: View on GitHub', hyperlink: 'https://github.com/JMTK/d-zone-activity',
@@ -147,8 +149,8 @@ https://creativecommons.org/licenses/by-sa/3.0/deed.en_US`;
             for (let i = 0, musicAttrSpl = musicAttr.split('\n'); i < musicAttrSpl.length; i++) {
                 game.ui.addLabel({
                     text: musicAttrSpl[i]!.trim(),
-                    maxWidth: 196,
-                    top: 90 + i * 10,
+                    maxWidth: panelWidth - 8,
+                    top: 80 + i * 11,
                     left: 2,
                     parent: game.helpPanel
                 });

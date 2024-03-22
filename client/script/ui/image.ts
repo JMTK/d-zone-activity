@@ -4,6 +4,7 @@ import TextBlotter from '../common/textblotter'
 
 export interface ImageOptions extends UIElementOptions {
     url: string,
+    borderRadius?: string;
     hyperlink?: string,
     maxWidth?: number,
     onPress?: any,
@@ -16,6 +17,7 @@ export default class Image extends UIElement {
     onPress: any;
     mouseOn: boolean;
     pressed: boolean;
+    options: ImageOptions;
     constructor(options: ImageOptions) {
         super(options);
         if (options.onPress) this.onPress = options.onPress;
@@ -39,7 +41,8 @@ export default class Image extends UIElement {
         const imageElement = new globalThis.Image();
         imageElement.src = this.url;
         imageElement.style.width = `${this.options.w!}px`;
-        imageElement.style.height = `${this.options.h!}`;
+        imageElement.style.height = `${this.options.h!}px`;
+        imageElement.style.borderRadius = this.options.borderRadius!;
         imageElement.onload = () => {
             this.canvas.drawImage(imageElement, 0, 0, this.options.w!, this.options.h!, this.options.right as number ?? (-1 * (this.options.left as number)), this.options.top as number, this.options.w!, this.options.h!, 1);
         };
