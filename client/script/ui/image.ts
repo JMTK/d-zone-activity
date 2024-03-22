@@ -30,7 +30,7 @@ export default class Image extends UIElement {
 
     changeImage(url : string) {
         this.url = url;
-        const imageElement = new HTMLImageElement();
+        const imageElement = new globalThis.Image();
         imageElement.src = this.url;
         this.canvas.drawImage(imageElement, 0, 0, this.options.w!, this.options.h!, this.options.left as number, this.options.top as number, this.options.w!, this.options.h!, 1);
         this.reposition();
