@@ -60,9 +60,25 @@ var padding = { x: 4, y: 3 };
 var vertOffset = 1;
 var image;
 
+export interface BlotOptions { x?: number, y?: number, canvas?: BetterCanvas, maxChars?: number, lineStart?: number, lineCount?: number, metrics?: any, bg?: string, text?: string }
 export default {
+    /**
+     * Renders a blot (a text block) on a canvas with optional customization options.
+     *
+     * @param {Object} options - The customization options for the blot.
+     * @param {number} [options.x=0] - The x-coordinate of the top-left corner of the blot.
+     * @param {number} [options.y=0] - The y-coordinate of the top-left corner of the blot.
+     * @param {BetterCanvas} [options.canvas] - The canvas to render the blot on. If not provided, a new canvas is created.
+     * @param {number} [options.maxChars] - The maximum number of characters to render.
+     * @param {number} [options.lineStart=0] - The index of the line to start rendering from.
+     * @param {number} [options.lineCount] - The number of lines to render. If not provided, all lines are rendered.
+     * @param {Object} [options.metrics] - The metrics of the blot. If not provided, the metrics are calculated.
+     * @param {string} [options.bg] - The background color of the canvas. If provided, the canvas is filled with this color before rendering the blot.
+     * @param {string} [options.text] - The text to render. If not provided, the text is taken from the metrics.
+     * @return {HTMLCanvasElement} The canvas with the rendered blot.
+     */
     loadImage: function (img) { image = img; },
-    blot: function (options) {
+    blot: function (options: BlotOptions) {
         var x = options.x || 0, y = options.y || 0;
         var metrics = options.metrics || this.calculateMetrics(options);
         var lineStart = options.lineStart ? options.lineStart : 0;
@@ -82,7 +98,7 @@ export default {
                 if (char.char.text == ' ') continue;
                 canvas.drawImage(image, char.char.x, char.char.y, char.w, char.char.h,
                     padding.x + x + char.x, padding.y + y + (l - lineStart) * 10 + (char.oy || 0) + vertOffset,
-                    char.w, char.char.h);
+                    char.w, char.char.h, 1);
             }
             charCount += metrics.lines[l].chars.length;
         }
@@ -103,15 +119,15 @@ export default {
     calculateMetrics: function (options) {
         // TODO: Normalize line lengths so there are no single-word remainders
         var text = options.text;
-        var lines : { chars: { x: number, char: any, oy?: number }[], w: number }[] = [];
+        var lines: { chars: { x: number, char: any, oy?: number }[], w: number }[] = [];
         var words = text.split(' ');
         var space = fontMap[' '];
-        var lineWidth = 0, lineChars : { x: number, char: any, w: number, oy?: number }[] = [], maxLineWidth = 0;
+        var lineWidth = 0, lineChars: { x: number, char: any, w: number, oy?: number }[] = [], maxLineWidth = 0;
         for (var w = 0; w < words.length; w++) {
             var word = words[w];
             if (word == '') continue; // Skip empty words
             var wordWidth = 0;
-            var wordChars : { x: number, char: any, w: number, oy?: number }[] = [];
+            var wordChars: { x: number, char: any, w: number, oy?: number }[] = [];
             if (lineChars.length > 0) { // Add space before word unless starting a line
                 wordChars.push({ x: lineWidth, char: space, w: space.w });
                 wordWidth += space.w;

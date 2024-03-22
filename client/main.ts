@@ -61,6 +61,7 @@ setupDiscordSdk().then(async (auth) => {
     let userIsSpeaking = {} as Record<string, NodeJS.Timeout>;
     discordSdk?.subscribe('SPEAKING_START', speakingStartEvent => {
         let uid = speakingStartEvent.user_id;
+        if (userIsSpeaking[uid]) return;
         const talkingHandler = () => handleEventData({
             type: 'message',
             data: {
@@ -69,7 +70,7 @@ setupDiscordSdk().then(async (auth) => {
                 channel: 'global'
             }
         });
-        userIsSpeaking[speakingStartEvent.user_id] = setInterval(talkingHandler, 2500);
+        userIsSpeaking[speakingStartEvent.user_id] = setInterval(talkingHandler, 5000);
         // small timeout initially incase the user is not actually speaking and was just a blip
         setTimeout(talkingHandler, 50);
     }, { channel_id: discordSdk.channelId });

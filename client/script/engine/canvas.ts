@@ -1,10 +1,11 @@
 import util from '../common/util';
 import { EventEmitter } from 'events';
 import BetterCanvas from '../common/bettercanvas';
+import type Game from './game';
 
 export default class Canvas extends EventEmitter {
     id: string;
-    game: any;
+    game: Game;
     scale: number;
     width: number;
     height: number;
@@ -34,6 +35,8 @@ export default class Canvas extends EventEmitter {
             newCanvas.canvas.id = this.id + s;
             document.body.appendChild(newCanvas.canvas);
             newCanvas.canvas.style.transform = 'scale(' + s + ', ' + s + ')';
+
+            // https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/imageSmoothingEnabled
             newCanvas.context.imageSmoothingEnabled = false;
             newCanvas.canvas.addEventListener("contextmenu", function (e) {
                 e.preventDefault();
@@ -195,7 +198,7 @@ export default class Canvas extends EventEmitter {
             || screen.x + sprite.metrics.w <= 0 || screen.y + sprite.metrics.h <= 0) return;
         var image = sprite.image.constructor === Array ? this.images[sprite.image[0]][sprite.image[1]]
             : (this.images[sprite.image] || sprite.image);
-        var highlight = sprite === this.game.mouseOver.sprite;
+        var highlight = sprite === this.game.mouseOver?.sprite;
         if (highlight) {
             this.context.save();
             this.context.shadowColor = 'rgba(255,255,255,1)';

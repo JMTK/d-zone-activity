@@ -1,6 +1,6 @@
 'use strict';
 import Entity from './../engine/entity';
-import TextBlotter from './../common/textblotter';
+import TextBlotter, { BlotOptions } from './../common/textblotter';
 import miscConfig from '../../misc-config.json';
 
 var textboxConfig = miscConfig.textbox || {};
@@ -43,7 +43,7 @@ export default class TextBox extends Entity {
     textMetrics: any;
     canvas: any;
     
-    constructor(parent : any, text : string, stay : boolean = true) {
+    constructor(parent : any, text : string, stay : boolean = false) {
         super();
         this.parent = parent;
         this.text = text;
@@ -68,7 +68,7 @@ export default class TextBox extends Entity {
         this.sprite.metrics.h = this.sprite.image.height;
     };
 
-    blotText(options? : any) {
+    blotText(options?: BlotOptions) {
         if (!options) options = {};
         options.bg = options.bg || TEXTBOX_BG_COLOR;
         options.text = options.text || this.text;
@@ -78,7 +78,7 @@ export default class TextBox extends Entity {
         this.updateSprite();
     };
 
-    scrollMessage(cb) {
+    scrollMessage(cb : Function) {
         var self = this;
         function complete() {
             self.remove();

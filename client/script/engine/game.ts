@@ -7,6 +7,8 @@ import UI from '../ui/ui';
 import type World from '../environment/world';
 import type Users from '../actors/users';
 import type Decorator from '../props/decorator';
+import type Actor from '../actors/actor';
+import type Panel from 'script/ui/panel';
 
 export default class Game extends EventEmitter {
     users: Users;
@@ -23,7 +25,7 @@ export default class Game extends EventEmitter {
     centerMouseY: number;
     entities: any[];
     schedule: any[];
-    mouseOver: boolean;
+    mouseOver: Actor | null;
     viewWidth: number;
     viewHeight: number;
     viewScale: number;
@@ -43,6 +45,11 @@ export default class Game extends EventEmitter {
     renderer: Renderer;
     ui: UI;
     decorator: Decorator;
+    servers: any;
+    hideZ: any;
+    showGrid: boolean = false;
+    timeRenders: boolean = false;
+    helpPanel: Panel | null;
     destroy() {
         clearInterval(this.interval);
     }
@@ -63,7 +70,7 @@ export default class Game extends EventEmitter {
         this.centerMouseY = -999;
         this.entities = [];
         this.schedule = [];
-        this.mouseOver = false;
+        this.mouseOver = null;
 
         var self = this;
         this.interval = setInterval(function () {
@@ -190,7 +197,7 @@ export default class Game extends EventEmitter {
 
     touchcancel(mouseEvent: MouseEvent) {
         this.mouseOut = true;
-        this.mouseOver = false;
+        this.mouseOver = null;
         this.emit('touchcancel', mouseEvent);
     };
 
@@ -210,7 +217,7 @@ export default class Game extends EventEmitter {
 
     mouseout(mouseEvent: MouseEvent) {
         this.mouseOut = true;
-        this.mouseOver = false;
+        this.mouseOver = null;
         this.emit('mouseout', mouseEvent);
     };
 

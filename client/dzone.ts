@@ -19,14 +19,15 @@ export async function initDzone() {
     await preloader.load();
     game = new Game({ step: 1000 / 60 });
     game.renderer = new Renderer({ game: game, images: preloader.images });
-    var canvas = new Canvas({ id: 'main', game: game, initialScale: 1, backgroundColor: '#181213' });
+    var canvas = new Canvas({ id: 'main', game: game, initialScale: 2, backgroundColor: '#181213' });
     game.renderer.addCanvas(canvas);
     game.bindCanvas(canvas);
     game.ui = new UI(game);
-    //game.showGrid = true;
-    //game.timeRenders = true;
+    game.showGrid = true;
+    game.timeRenders = true;
     //initWebsocket(options);
 
+    addUIOverlay(game);
     (window as any).game = game;
 
     return game;
@@ -118,4 +119,25 @@ function joinServer(server : any) {
     var connectionMessage = { type: 'connect', data: { server: server.id } };
     console.log('Requesting to join server', server.id);
     ws.send(JSON.stringify(connectionMessage));
+}
+
+function addUIOverlay(game: Game) {
+    game.ui.addButton({
+        text: '?', bottom: 3, right: 3, w: 18, h: 18, onPress: function () {
+            if (game.helpPanel) {
+                game.helpPanel.remove();
+                game.helpPanel = null;
+                return;
+            }
+            game.helpPanel = game.ui.addPanel({ left: 'auto', top: 'auto', w: 200, h: 75 });
+            game.ui.addLabel({ text: 'D-Zone ' + version, top: 5, left: 'auto', parent: game.helpPanel });
+            game.ui.addLabel({
+                text: packageInfo.description, top: 20, left: 2, maxWidth: 196, parent: game.helpPanel
+            });
+            game.ui.addLabel({
+                text: ':icon-github: View on GitHub', hyperlink: 'https://github.com/JMTK/d-zone-activity',
+                top: 50, right: 8, parent: game.helpPanel
+            });
+        }
+    });
 }

@@ -1,5 +1,6 @@
 {
   "version": "1.0.0",
+  "description": "D-Zone Activity is a reimagining of @vegeta897's D-Zone project, using Discord Embedded SDK for Activities!",
   "scripts": {
     "build": "browserify main.ts -p [ tsify ] > bundle.js"
   },

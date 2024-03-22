@@ -21,7 +21,7 @@ export default class Actor extends WorldObject {
     behaviors: any[];
     roleColor?: string;
     moveStart: any;
-    messageBox: any;
+    messageBox: TextBox | null;
     lastMessage: any;
     lastSeed: any;
     movePlaceholder: any;
@@ -146,7 +146,7 @@ export default class Actor extends WorldObject {
                 }
             }
         }
-        if (this.talking) this.messageBox.updateScreen();
+        if (this.talking) this.messageBox?.updateScreen();
         this.sprite.metrics = metrics;
         this.sprite.image = this.roleColor ? [this.roleColor, 'actors'] : 'actors';
     };
@@ -254,7 +254,7 @@ export default class Actor extends WorldObject {
         this.messageBox.addToGame(this.game);
         var self = this;
         this.messageBox.scrollMessage(function () {
-            delete self.messageBox;
+            self.messageBox = null;
             self.talking = false;
             self.nametag.sprite.hidden = false;
             self.updateSprite();
