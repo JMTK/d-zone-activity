@@ -9,7 +9,8 @@ const discordSdk = window.location.search.includes('frame_id') ? new DiscordSDK(
 let dzone = initDzone();
 setupDiscordSdk().then(async (auth) => {
     console.log("Discord SDK is authenticated");
-    document.querySelector('audio')?.play()
+
+    initializeBackgroundMusic();
     let channel = await discordSdk?.commands.getChannel({ channel_id: discordSdk!.channelId! });
 
     await dzone;
@@ -128,3 +129,12 @@ async function setupDiscordSdk() {
 
     return auth;
 }
+function initializeBackgroundMusic() {
+    const audio = document.querySelector('audio');
+    if (!audio) return console.warn('No background music element found');;
+
+    audio.volume = 0.5;
+    audio.loop = true;
+    audio.play();
+}
+
