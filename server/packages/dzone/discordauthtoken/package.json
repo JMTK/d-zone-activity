@@ -2,7 +2,7 @@
   "name": "server",
   "version": "1.0.0",
   "description": "",
-  "main": "dist/index.js",
+  "main": "dist/discordauthtoken.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc -b",
@@ -15,9 +15,8 @@
     "ts-node": "^10.9.2"
   },
   "dependencies": {
-    "@discordjs/rest": "^2.2.0",
     "@types/node": "^20.11.28",
-    "discord-api-types": "^0.37.75",
-    "dotenv": "^16.4.5"
+    "dotenv": "^16.4.5",
+    "typescript": "^5.4.3"
   }
 }

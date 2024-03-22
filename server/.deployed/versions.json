@@ -5,8 +5,24 @@
     "packageVersions": {},
     "actionVersions": {
       "dzone/discordauthtoken": {
-        "digest": "5e340d930156d408d8dcee8dc98508baa9954323834e03136cf89e2dcf76519f",
-        "version": "0.0.9"
+        "digest": "205a7dbb40e8f1a75c296cde7086d39ed62091532c0235737f21de0902da95fc",
+        "version": "0.0.10"
+      }
+    }
+  },
+  {
+    "apihost": "https://faas-nyc1-2ef2e6cc.doserverless.co",
+    "namespace": "fn-80c10ca2-4275-488d-94d8-5c714275c0f8",
+    "packageVersions": {
+      "dzone": {
+        "version": "0.0.23",
+        "digest": "185d5addf2480bb7eafa9f76eb2b7c84336b29d3a0323451927761124ba5c496"
+      }
+    },
+    "actionVersions": {
+      "dzone/discordauthtoken": {
+        "version": "0.0.14",
+        "digest": "dee8eb08e62c661f99b5cbd66b42d3ece6edcd68f4133486b74312bf875089ec"
       }
     }
   }

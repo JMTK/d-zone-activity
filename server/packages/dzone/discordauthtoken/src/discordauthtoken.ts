@@ -1,16 +1,19 @@
 import 'dotenv/config'
-import http from 'http';
-import { REST } from '@discordjs/rest';
-import { Routes, APIGuildVoiceChannel } from 'discord-api-types/v10';
 export async function main(args) {
     const { code } = args;
-    console.log("Got token!", code);
+    if (!code) return { error: 'No code provided' };
+
+    console.log("Received new access token request with oauth code:", code);
 
     let response = await getDiscordAccessToken(code, 'https://dzone.jmtk.co', process.env.BOT_CLIENT_ID!, process.env.BOT_CLIENT_SECRET!);
+    if (!response.accessToken) {
+        console.log(response);
+        throw new Error(JSON.stringify(response));
+    }
     return { access_token: response.accessToken };
 }
 
-async function getDiscordAccessToken(code : string, redirectUri : string, clientId : string, clientSecret : string) {
+async function getDiscordAccessToken(code: string, redirectUri: string, clientId: string, clientSecret: string) {
     const data = {
         client_id: clientId,
         client_secret: clientSecret,
@@ -21,6 +24,7 @@ async function getDiscordAccessToken(code : string, redirectUri : string, client
     };
 
     try {
+        console.log(new URLSearchParams(data));
         const response = await fetch('https://discord.com/api/oauth2/token', {
             method: 'POST',
             body: new URLSearchParams(data),
@@ -46,7 +50,7 @@ async function getDiscordAccessToken(code : string, redirectUri : string, client
             };
         } else {
             // Handle errors, such as invalid code or invalid redirect URI
-            return { error: 'Failed to obtain access token', statusCode: response.status };
+            return { error: 'Failed to obtain access token', statusCode: response.status, ...(await response.json()) };
         }
     } catch (error) {
         // Handle fetch error
