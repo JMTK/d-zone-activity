@@ -155,7 +155,7 @@ function initializeUIOverlay(game: Game, user: {
     const avatarUrl = `${user.avatar ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png` : `https://cdn.discordapp.com/embed/avatars/${parseInt(user.discriminator) % 5}.png`}`
     game.ui.addImage({
         url: avatarUrl,
-        top: 0, left: 3, w: 18, h: 18,
+        top: 1, left: 3, w: 18, h: 18,
         parent: game.ui,
         borderRadius: "25%"
     })

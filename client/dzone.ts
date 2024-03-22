@@ -130,7 +130,7 @@ function addUIOverlay(game: Game) {
                 return;
             }
 
-            let panelWidth = 300;
+            let panelWidth = 400;
             game.helpPanel = game.ui.addPanel({ left: 'auto', top: 'auto', w: panelWidth, h: 150 });
             game.ui.addLabel({ text: 'D-Zone ' + version, top: 5, left: 'auto', parent: game.helpPanel });
             game.ui.addLabel({
