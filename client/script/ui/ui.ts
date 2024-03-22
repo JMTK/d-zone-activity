@@ -6,6 +6,7 @@ import Button from './button';
 import Panel from './panel';
 import Input from './input';
 import Label, { LabelOptions } from './label';
+import Image, { ImageOptions } from './image';
 import type Game from '../engine/game';
 
 export default class UI extends EventEmitter {
@@ -71,6 +72,17 @@ export default class UI extends EventEmitter {
         newInput.on('mouse-off-element', this.onMouseOffElement.bind(this));
         return newInput;
     };
+
+    addImage(options: { parent?: any } & Omit<ImageOptions, "ui">) {
+        if (!options.parent) options.parent = this;
+        var newImage = new Image({ ...options, ui: this });
+        options.parent.elements.push(newImage);
+        if (options.parent !== this) this.elements.push(newImage);
+        newImage.on('redraw', this.redraw.bind(this));
+        newImage.on('mouse-on-element', this.onMouseOnElement.bind(this));
+        newImage.on('mouse-off-element', this.onMouseOffElement.bind(this));
+        return newImage;
+    }
 
     addLabel(options: { parent?: any } & Omit<LabelOptions, "ui">) {
         if (!options.parent) options.parent = this;

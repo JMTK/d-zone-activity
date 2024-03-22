@@ -4,7 +4,6 @@ import BetterCanvas from '../common/bettercanvas';
 import util from '../common/util';
 import type UI from './ui';
 
-
 export interface UIElementOptions { ui: UI, parent: any, w?: number, h?: number, top?: number | 'auto', bottom?: number | 'auto', left?: number | 'auto', right?: number | 'auto' }
 export default class UIElement extends EventEmitter {
     ui: UI;
@@ -20,8 +19,10 @@ export default class UIElement extends EventEmitter {
     left: number | 'auto';
     right: number | 'auto';
     canvas: BetterCanvas;
+    options: UIElementOptions;
     constructor(options : UIElementOptions) {
         super();
+        this.options = options;
         this.ui = options.ui;
         this.parent = options.parent;
         this.elements = [];
