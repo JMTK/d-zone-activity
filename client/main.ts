@@ -4,6 +4,7 @@ const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 window.onunhandledrejection = (err) => console.error(err);
 const clientId = '1219346862423933098';
+const doFuncToken = process.env.doFuncToken;
 const discordSdk = window.location.search.includes('frame_id') ? new DiscordSDK(clientId) : null;
 
 let dzone = initDzone();
@@ -109,6 +110,7 @@ async function setupDiscordSdk() {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
+            "Authorization": `Basic ${doFuncToken}`
         },
         body: JSON.stringify({
             code,

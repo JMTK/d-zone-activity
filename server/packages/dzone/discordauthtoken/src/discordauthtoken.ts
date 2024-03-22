@@ -18,13 +18,11 @@ async function getDiscordAccessToken(code: string, redirectUri: string, clientId
         client_id: clientId,
         client_secret: clientSecret,
         grant_type: 'authorization_code',
-        code: code,
-        redirect_uri: redirectUri,
-        scope: 'identify', // Include other scopes as needed
+        code: code
     };
 
+    console.log(data);
     try {
-        console.log(new URLSearchParams(data));
         const response = await fetch('https://discord.com/api/oauth2/token', {
             method: 'POST',
             body: new URLSearchParams(data),
@@ -49,6 +47,7 @@ async function getDiscordAccessToken(code: string, redirectUri: string, clientId
                 scope: json.scope,
             };
         } else {
+            
             // Handle errors, such as invalid code or invalid redirect URI
             return { error: 'Failed to obtain access token', statusCode: response.status, ...(await response.json()) };
         }
