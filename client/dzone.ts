@@ -146,9 +146,11 @@ https://creativecommons.org/licenses/by-sa/3.0/deed.en_US`;
 
             for (let i = 0, musicAttrSpl = musicAttr.split('\n'); i < musicAttrSpl.length; i++) {
                 game.ui.addLabel({
-                    text: musicAttrSpl[i]!,
+                    text: musicAttrSpl[i]!.trim(),
                     maxWidth: 196,
-                    top: 90 + i * 10, right: 8, parent: game.helpPanel
+                    top: 90 + i * 10,
+                    left: 2,
+                    parent: game.helpPanel
                 });
             }
         }
