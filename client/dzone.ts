@@ -1,4 +1,3 @@
-import util from './script/common/util';
 import Game from './script/engine/game';
 import Renderer from './script/engine/renderer';
 import Canvas from './script/engine/canvas';
@@ -9,6 +8,7 @@ import Users from './script/actors/users';
 import Decorator from './script/props/decorator';
 import Preloader from './script/engine/preloader';
 
+console.time('Init');
 // TODO: Loading screen while preloading images, connecting to websocket, and generating world
 var version = packageInfo.version;
 console.log('Loading...', version);
@@ -58,17 +58,20 @@ export async function handleEventData(eventData: { type: 'server-join' | 'presen
         }
         console.log(userlistLength, 'actors created');
         game.renderer.canvases[0].onResize();
+        console.timeEnd('Init');
     } else if (eventData.type === 'userchange') {
-        for (const [uid, user] of Object.entries(game.world.actors)) {
-            // user is not in the full participants list
-            if (!userList[uid]) {
-                users.removeActor(user);
+        if (game?.world?.actors) {
+            for (const [uid, user] of Object.entries(game.world.actors)) {
+                // user is not in the full participants list
+                if (!userList[uid]) {
+                    users.removeActor(user);
+                }
             }
-        }
-        for (const [uid, user] of Object.entries(userList)) {
-            users.updateActor({
-                ...user
-            });
+            for (const [uid, user] of Object.entries(userList)) {
+                users.updateActor({
+                    ...user
+                });
+            }
         }
     } else if (eventData.type === 'presence') { // User status update
         users.updateActor(eventData.data)
@@ -119,47 +122,46 @@ function joinServer(server: any) {
 
 function addUIOverlay(game: Game) {
     game.ui.addButton({
-        text: '🗺️', bottom: 13, right: 23, w: 18, h: 18, onPress: function () {
+        text: 'Map', bottom: 47, right: 3, w: 40, h: 18, onPress: function () {
             if (game.mapPanel) {
                 game.mapPanel.remove();
                 game.mapPanel = null;
                 return;
             }
 
-            let panelWidth = 400;
-            game.mapPanel = game.ui.addPanel({ left: 'auto', top: 'auto', w: panelWidth, h: 150 });
-            game.ui.addLabel({ text: 'Choose a level', top: 5, left: 'auto', parent: game.helpPanel });
+            game.mapPanel = game.ui.addPanel({ left: 'auto', top: 'auto', w: 200, h: 100 });
+            game.ui.addLabel({ text: 'Choose a level', top: 1, left: 'auto', parent: game.mapPanel });
             game.ui.addButton({
-                text: '🌲 Plains', top: 15, left: 'auto', parent: game.helpPanel, onPress: function () {
+                text: 'Plains', top: 15, left: 'auto', parent: game.mapPanel, onPress: function () {
                     // game.world
                 }
             });
             game.ui.addButton({
-                text: '🏖️ Beach', top: 25, left: 'auto', parent: game.helpPanel, onPress: function () {
+                text: 'Beach', top: 35, left: 'auto', parent: game.mapPanel, onPress: function () {
                     // game.world
                 } });
             game.ui.addButton({
-                text: '🏭 Factory', top: 35, left: 'auto', parent: game.helpPanel, onPress: function () {
+                text: 'Factory', top: 55, left: 'auto', parent: game.mapPanel, onPress: function () {
                     // game.world
                 } });
         }
     })
     const soundBtn = game.ui.addButton({
-        text: '🔊', bottom: 13, right: 3, w: 18, h: 18, onPress: function () {
+        text: '♪ On', bottom: 25, right: 3, w: 40, h: 18, onPress: function () {
             const audio = document.querySelector('audio');
             if (!audio) return;
             if (audio.volume > 0) {
                 audio.volume = 0;
-                soundBtn.changeText('🔇');
+                soundBtn.changeText('♪ Off');
             }
             else {
                 audio.volume = 0.4;
-                soundBtn.changeText('🔊');
+                soundBtn.changeText('♪ On');
             }
         }
     })
     game.ui.addButton({
-        text: '?', bottom: 3, right: 3, w: 18, h: 18, onPress: function () {
+        text: '?', bottom: 3, right: 3, w: 40, h: 18, onPress: function () {
             if (game.helpPanel) {
                 game.helpPanel.remove();
                 game.helpPanel = null;

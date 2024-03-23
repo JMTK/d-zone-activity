@@ -34,18 +34,19 @@ setupDiscordSdkPromise.then(async (auth) => {
 
     // Override open function with Discord's SDK to allow opening external links
     window.open = (url: string) => discordSdk?.commands.openExternalLink({ url }) as any;
-    discordSdk?.subscribe('VOICE_STATE_UPDATE', voiceStateUpdateEvent => {
+    await discordSdk?.subscribe('VOICE_STATE_UPDATE', voiceStateUpdateEvent => {
         handleEventData({
             type: 'presence',
             data: {
                 uid: voiceStateUpdateEvent.user.id,
+                username: voiceStateUpdateEvent.user.username,
                 delete: voiceStateUpdateEvent.voice_state.deaf,
                 status: voiceStateUpdateEvent.voice_state.deaf ? 'offline' : 'online',
             }
         });
     }, { channel_id: discordSdk.channelId! });
 
-    discordSdk?.subscribe('ACTIVITY_INSTANCE_PARTICIPANTS_UPDATE', activityInstanceParticipantsUpdateEvent => {
+    await discordSdk?.subscribe('ACTIVITY_INSTANCE_PARTICIPANTS_UPDATE', activityInstanceParticipantsUpdateEvent => {
         const users = activityInstanceParticipantsUpdateEvent.participants.reduce((agg, curr) => {
             if (!agg[curr.id]) {
                 agg[curr.id] = {
@@ -64,7 +65,7 @@ setupDiscordSdkPromise.then(async (auth) => {
     });
 
     let userIsSpeaking = {} as Record<string, NodeJS.Timeout>;
-    discordSdk?.subscribe('SPEAKING_START', speakingStartEvent => {
+    await discordSdk?.subscribe('SPEAKING_START', speakingStartEvent => {
         let uid = speakingStartEvent.user_id;
         if (userIsSpeaking[uid]) return;
         const talkingHandler = () => handleEventData({
@@ -79,7 +80,8 @@ setupDiscordSdkPromise.then(async (auth) => {
         // small timeout initially incase the user is not actually speaking and was just a blip
         setTimeout(talkingHandler, 50);
     }, { channel_id: discordSdk.channelId });
-    discordSdk?.subscribe('SPEAKING_STOP', speakingStartEvent => {
+    
+    await discordSdk?.subscribe('SPEAKING_STOP', speakingStartEvent => {
         clearInterval(userIsSpeaking[speakingStartEvent.user_id]);
         delete userIsSpeaking[speakingStartEvent.user_id];
     }, { channel_id: discordSdk.channelId });
