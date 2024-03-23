@@ -16,16 +16,21 @@ export default class BetterCanvas {
         this.context = this.canvas.getContext('2d')!;
     }
 
-    drawImage(img : HTMLImageElement, sx : number, sy : number, sw : number, sh : number, dx : number, dy : number, dw : number, dh : number, opacity : number) {
+    drawImage(img : HTMLImageElement, sx : number, sy : number, sw : number, sh : number, dx?: number, dy?: number, dw?: number, dh?: number, opacity?: number) {
         if (!img || !(sx >= 0) || !(sy >= 0) || !(sw >= 0) || !(sh >= 0)
-            || !isNumeric(dx) || !isNumeric(dy) || !(dw >= 0) || !(dh >= 0)) {
+            || !isNumeric(dx) || !isNumeric(dy) || !(dw! >= 0) || !(dh! >= 0)) {
             console.error('bad drawImage params!', ...arguments);
         }
         if (opacity) {
             this.context.save();
             this.context.globalAlpha = opacity;
         }
-        this.context.drawImage(img, sx, sy, sw, sh, dx, dy, dw, dh);
+        if (typeof dx === 'undefined') {
+            this.context.drawImage(img, sx, sy, sw, sh);
+        }
+        else {
+            this.context.drawImage(img, sx, sy, sw, sh, dx, dy!, dw!, dh!);
+        }
         if (opacity) {
             this.context.restore();
         }

@@ -44,7 +44,7 @@ export default class Image extends UIElement {
         imageElement.style.height = `${this.options.h!}px`;
         imageElement.style.borderRadius = this.options.borderRadius!;
         imageElement.onload = () => {
-            this.canvas.drawImage(imageElement, 0, 0, this.options.w!, this.options.h!, this.options.right as number ?? (-1 * (this.options.left as number)), this.options.top as number, this.options.w!, this.options.h!, 1);
+            this.canvas.drawImage(imageElement, 0, 0, this.options.w!, this.options.h!);
         };
         this.emit('redraw');
     };
