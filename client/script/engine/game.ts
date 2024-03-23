@@ -45,11 +45,11 @@ export default class Game extends EventEmitter {
     renderer: Renderer;
     ui: UI;
     decorator: Decorator;
-    servers: any;
     hideZ: any;
     showGrid: boolean = false;
     timeRenders: boolean = false;
     helpPanel: Panel | null;
+    mapPanel: Panel | null;
     destroy() {
         clearInterval(this.interval);
     }

@@ -7,6 +7,7 @@ import Tile from './tile';
 import TileSheet from './sheet2';
 import type Game from '../engine/game';
 import Canvas from '../common/bettercanvas';
+import type Actor from '../actors/actor';
 var testCanvas = new Canvas(200, 100);
 var unoccupiedGrids; // For faster actor placement on init
 
@@ -19,7 +20,7 @@ export default class World {
     walkable: any;
     pathfinder: any;
     tileMap: any;
-    actors: any;
+    actors: Record<string, Actor>;
     mapBounds: any;
     slab: Slab;
     staticMap: any;

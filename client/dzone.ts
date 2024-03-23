@@ -45,34 +45,30 @@ export async function handleEventData(eventData: { type: 'server-join' | 'presen
         console.log("Joined server", requestServer);
         game.reset();
         game.renderer.clear();
-        world = game.world = new World(game, Math.round(3.3 * Math.sqrt(Object.keys(userList).length)))
+
+        const userlistLength = Object.keys(userList).length;
+        world = game.world = new World(game, Math.round(3.3 * Math.sqrt(userlistLength)))
         decorator ??= new Decorator(game, world);
         users = game.users = new Users(game, world)
         game.decorator = decorator;
-        game.setMaxListeners(Object.keys(userList).length + 50);
-        users.setMaxListeners(Object.keys(userList).length);
+        game.setMaxListeners(userlistLength + 50);
+        users.setMaxListeners(userlistLength);
         for (var uid in userList) {
-            if (!userList.hasOwnProperty(uid)) continue;
-            if (!userList[uid]?.username) continue;
-            users.addActor(userList[uid]!);
+            users.updateActor(userList[uid]!);
         }
-        console.log((Object.keys(users.actors).length).toString() + ' actors created');
+        console.log(userlistLength, 'actors created');
         game.renderer.canvases[0].onResize();
     } else if (eventData.type === 'userchange') {
-        const dataUsers = (eventData.data.users as Record<string, { username: string, status: string }>);
-        const existingActors = game.users.actors;
-        const actorsToRemove = Object.keys(existingActors).filter(uid => !dataUsers[uid]);
-        for (const uid of actorsToRemove) {
-            users.removeActor(existingActors[uid]!);
-        }
-        for (const uid in dataUsers) {
-            const user = dataUsers[uid]!;
-            if (!existingActors[uid]) {
-                users.addActor({
-                    ...user,
-                    uid
-                });
+        for (const [uid, user] of Object.entries(game.world.actors)) {
+            // user is not in the full participants list
+            if (!userList[uid]) {
+                users.removeActor(user);
             }
+        }
+        for (const [uid, user] of Object.entries(userList)) {
+            users.updateActor({
+                ...user
+            });
         }
     } else if (eventData.type === 'presence') { // User status update
         users.updateActor(eventData.data)
@@ -122,6 +118,46 @@ function joinServer(server: any) {
 }
 
 function addUIOverlay(game: Game) {
+    game.ui.addButton({
+        text: '🗺️', bottom: 13, right: 23, w: 18, h: 18, onPress: function () {
+            if (game.mapPanel) {
+                game.mapPanel.remove();
+                game.mapPanel = null;
+                return;
+            }
+
+            let panelWidth = 400;
+            game.mapPanel = game.ui.addPanel({ left: 'auto', top: 'auto', w: panelWidth, h: 150 });
+            game.ui.addLabel({ text: 'Choose a level', top: 5, left: 'auto', parent: game.helpPanel });
+            game.ui.addButton({
+                text: '🌲 Plains', top: 15, left: 'auto', parent: game.helpPanel, onPress: function () {
+                    // game.world
+                }
+            });
+            game.ui.addButton({
+                text: '🏖️ Beach', top: 25, left: 'auto', parent: game.helpPanel, onPress: function () {
+                    // game.world
+                } });
+            game.ui.addButton({
+                text: '🏭 Factory', top: 35, left: 'auto', parent: game.helpPanel, onPress: function () {
+                    // game.world
+                } });
+        }
+    })
+    const soundBtn = game.ui.addButton({
+        text: '🔊', bottom: 13, right: 3, w: 18, h: 18, onPress: function () {
+            const audio = document.querySelector('audio');
+            if (!audio) return;
+            if (audio.volume > 0) {
+                audio.volume = 0;
+                soundBtn.changeText('🔇');
+            }
+            else {
+                audio.volume = 0.4;
+                soundBtn.changeText('🔊');
+            }
+        }
+    })
     game.ui.addButton({
         text: '?', bottom: 3, right: 3, w: 18, h: 18, onPress: function () {
             if (game.helpPanel) {

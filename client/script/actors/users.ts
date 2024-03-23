@@ -33,8 +33,11 @@ export default class Users extends EventEmitter {
         actor.updatePresence(data.status);
     };
 
-    updateActor(data : { uid: string, delete: boolean, status: string, username: string }) {
-        let actor = this.actors[data.uid]
+    updateActor(data : { uid: string, delete?: boolean, status: string, username: string }) {
+        let actor = this.actors[data.uid];
+        if (!data.username) {
+            console.trace('No username', data);
+        }
         if (actor) {
             if (data.delete) {
                 actor.updatePresence('offline')

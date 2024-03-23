@@ -45,7 +45,7 @@ export default class Canvas extends EventEmitter {
         }
         this.onZoom();
         this.onResize();
-        window.addEventListener('resize', this.onResize);
+        window.addEventListener('resize', this.onResize.bind(this));
         this.panning = {
             buttons: [],
             origin: { x: 0, y: 0 },
@@ -142,7 +142,6 @@ export default class Canvas extends EventEmitter {
 
     draw() {
         this.canvas.fill(this.backgroundColor);
-        if (this.game.servers) return;
         this.context.fillStyle = '#d4cfb6';
         this.context.font = '14px Arial';
         this.context.textAlign = 'center';

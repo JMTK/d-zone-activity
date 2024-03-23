@@ -1,14 +1,14 @@
 import { DiscordSDK } from "@discord/embedded-app-sdk";
 import { handleEventData, initDzone } from "./dzone";
 import type Game from "script/engine/game";
-const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 window.onunhandledrejection = (err) => console.error(err);
 const clientId = '1219346862423933098';
 const discordSdk = window.location.search.includes('frame_id') ? new DiscordSDK(clientId) : null;
 
+let setupDiscordSdkPromise = setupDiscordSdk();
 let dzone = initDzone();
-setupDiscordSdk().then(async (auth) => {
+setupDiscordSdkPromise.then(async (auth) => {
     console.log("Discord SDK is authenticated");
 
     initializeBackgroundMusic();
@@ -33,7 +33,7 @@ setupDiscordSdk().then(async (auth) => {
     });
 
     // Override open function with Discord's SDK to allow opening external links
-    window.open = (url : string) => discordSdk?.commands.openExternalLink({ url }) as any;
+    window.open = (url: string) => discordSdk?.commands.openExternalLink({ url }) as any;
     discordSdk?.subscribe('VOICE_STATE_UPDATE', voiceStateUpdateEvent => {
         handleEventData({
             type: 'presence',
@@ -44,7 +44,7 @@ setupDiscordSdk().then(async (auth) => {
             }
         });
     }, { channel_id: discordSdk.channelId! });
-    
+
     discordSdk?.subscribe('ACTIVITY_INSTANCE_PARTICIPANTS_UPDATE', activityInstanceParticipantsUpdateEvent => {
         const users = activityInstanceParticipantsUpdateEvent.participants.reduce((agg, curr) => {
             if (!agg[curr.id]) {
@@ -99,7 +99,6 @@ async function setupDiscordSdk() {
     if (discordSdk == null) return;
     await discordSdk.ready();
 
-    let state = crypto.randomUUID();
     // Authorize with Discord Client
     const { code } = await discordSdk.commands.authorize({
         client_id: clientId,
@@ -139,7 +138,7 @@ function initializeBackgroundMusic() {
     const audio = document.querySelector('audio');
     if (!audio) return console.warn('No background music element found');;
 
-    audio.volume = 0.5;
+    audio.volume = 0.4;
     audio.loop = true;
     audio.play();
 }

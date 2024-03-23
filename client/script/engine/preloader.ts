@@ -16,7 +16,7 @@ export default class Preloader extends EventEmitter {
         return await Promise.all(imageList.map(imageName => {
             return new Promise(resolve => {
                 var fileName = imageName + '.png';
-                var image = new Image;
+                var image = new globalThis.Image();
                 image.addEventListener('load', () => resolve(image));
                 image.src = './img/' + fileName;
             }).then((image : HTMLImageElement) => {

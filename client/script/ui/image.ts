@@ -1,6 +1,5 @@
 'use strict';
 import UIElement, { UIElementOptions } from './uielement'
-import TextBlotter from '../common/textblotter'
 
 export interface ImageOptions extends UIElementOptions {
     url: string,
@@ -43,10 +42,12 @@ export default class Image extends UIElement {
         imageElement.style.width = `${this.options.w!}px`;
         imageElement.style.height = `${this.options.h!}px`;
         imageElement.style.borderRadius = this.options.borderRadius!;
+
+        //https://stackoverflow.com/a/6011402
         imageElement.onload = () => {
             this.canvas.drawImage(imageElement, 0, 0, this.options.w!, this.options.h!);
+            this.emit('redraw');
         };
-        this.emit('redraw');
     };
 
     onMouseOn(mouseEvent) {

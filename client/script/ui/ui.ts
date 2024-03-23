@@ -8,15 +8,16 @@ import Input from './input';
 import Label, { LabelOptions } from './label';
 import Image, { ImageOptions } from './image';
 import type Game from '../engine/game';
+import type UIElement from './uielement';
 
 export default class UI extends EventEmitter {
     game: Game;
-    elements: any[];
+    elements: UIElement[];
     x: number;
     y: number;
     w: number;
     h: number;
-    canvas: any;
+    canvas: BetterCanvas;
     mouseOnElement: HTMLElement | null;
 
     constructor(game : Game) {
@@ -97,14 +98,14 @@ export default class UI extends EventEmitter {
     redraw() {
         this.canvas.clear();
         for (var i = 0; i < this.elements.length; i++) {
-            this.elements[i].redraw(this.canvas);
+            this.elements[i]!.redraw(this.canvas);
         }
     };
 
     onMouseMove(mouseEvent) {
         if (this.game.mouseButtons.length > 0) return;
         for (var i = 0; i < this.elements.length; i++) {
-            var elem = this.elements[i];
+            var elem = this.elements[i]!;
             if (mouseEvent.x >= elem.x && mouseEvent.x < elem.x + elem.w
                 && mouseEvent.y >= elem.y && mouseEvent.y < elem.y + elem.h) {
                 elem.emit('mouse-on', mouseEvent);
@@ -116,25 +117,25 @@ export default class UI extends EventEmitter {
 
     onMouseDown(mouseEvent) {
         for (var i = 0; i < this.elements.length; i++) {
-            this.elements[i].emit('mouse-down', mouseEvent);
+            this.elements[i]!.emit('mouse-down', mouseEvent);
         }
     };
 
     onMouseUp(mouseEvent) {
         for (var i = 0; i < this.elements.length; i++) {
-            this.elements[i].emit('mouse-up', mouseEvent);
+            this.elements[i]!.emit('mouse-up', mouseEvent);
         }
     };
 
     onKeyDown(keyEvent) {
         for (var i = 0; i < this.elements.length; i++) {
-            this.elements[i].emit('key-down', keyEvent);
+            this.elements[i]!.emit('key-down', keyEvent);
         }
     };
 
     onKeyUp(keyEvent) {
         for (var i = 0; i < this.elements.length; i++) {
-            this.elements[i].emit('key-up', keyEvent);
+            this.elements[i]!.emit('key-up', keyEvent);
         }
     };
 
@@ -152,7 +153,7 @@ export default class UI extends EventEmitter {
         this.canvas.canvas.width = this.w;
         this.canvas.canvas.height = this.h;
         for (var i = 0; i < this.elements.length; i++) {
-            this.elements[i].reposition();
+            this.elements[i]!.reposition();
         }
         this.redraw();
     };
