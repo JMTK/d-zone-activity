@@ -48,7 +48,6 @@ export default class Game extends EventEmitter {
     centerViewZ: number;
     centerViewScale: number;
     timeUpdates: boolean;
-    interval: any;
     mouseOut: boolean;
     mouseX: number;
     mouseY: number;
@@ -60,8 +59,9 @@ export default class Game extends EventEmitter {
     timeRenders: boolean = false;
     helpPanel: Panel | null;
     mapPanel: Panel | null;
+    destroyed : boolean = false;
     destroy() {
-        clearInterval(this.interval);
+        this.destroyed = true;
     }
 
     constructor(options: { step?: number }) {
@@ -83,8 +83,8 @@ export default class Game extends EventEmitter {
         this.mouseOver = null;
 
         var self = this;
-        this.interval = requestAnimationFrame(async () => {
-            if (self.crashed) return;
+        const intervalTick = async () => {
+            if (self.crashed || self.destroyed) return;
             var rightNow = performance.now();
             self.dt += rightNow - self.lastUpdate;
             //if((self.ticks & 7) == 0) console.log(delta);
@@ -102,7 +102,9 @@ export default class Game extends EventEmitter {
             }
             self.lastUpdate = performance.now();
             await util.sleep(this.step);
-        });
+            requestAnimationFrame(intervalTick);
+        };
+        requestAnimationFrame(intervalTick);
     }
 
 
