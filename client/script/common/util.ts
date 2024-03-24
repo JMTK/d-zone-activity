@@ -1,5 +1,6 @@
 'use strict';
 export default {
+    sleep: function (ms: number) { return new Promise(resolve => setTimeout(resolve, ms)); },
     randomIntRange: function (min: number, max: number) {
         return Math.floor(Math.random() * (+max - +min + 1)) + +min;
     },

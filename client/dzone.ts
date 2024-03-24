@@ -139,11 +139,13 @@ function addUIOverlay(game: Game) {
             game.ui.addButton({
                 text: 'Beach', top: 35, left: 'auto', parent: game.mapPanel, onPress: function () {
                     // game.world
-                } });
+                }
+            });
             game.ui.addButton({
                 text: 'Factory', top: 55, left: 'auto', parent: game.mapPanel, onPress: function () {
                     // game.world
-                } });
+                }
+            });
         }
     })
     const soundBtn = game.ui.addButton({
@@ -174,6 +176,7 @@ function addUIOverlay(game: Game) {
             game.ui.addLabel({
                 text: packageInfo.description, top: 20, left: 2, maxWidth: panelWidth - 8, parent: game.helpPanel
             });
+
             game.ui.addLabel({
                 text: ':icon-github: View on GitHub', hyperlink: 'https://github.com/JMTK/d-zone-activity',
                 top: 60, right: 8, parent: game.helpPanel

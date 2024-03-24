@@ -1,6 +1,7 @@
 'use strict';
 import { EventEmitter } from 'events';
 import ColorUtil from './../common/colorutil';
+import util from '../../script/common/util';
 
 export default class Renderer extends EventEmitter {
     canvases: any[];
@@ -30,13 +31,12 @@ export default class Renderer extends EventEmitter {
             self.updateDrawn = false;
         });
         var draw = function () {
-            if (self.updateDrawn == false) {
+            if (self.updateDrawn === false) {
                 if (self.canvases) {
-                    const timeThis = self.game.timeRenders && (self.game.ticks & 511) == 0;
+                    const timeThis = self.game.timeRenders && (self.game.ticks & 511) === 0;
                     const renderStart = performance.now();
 
-                    for (var c = 0; c < self.canvases.length; c++) {
-                        var canvas = self.canvases[c];
+                    for (let canvas of self.canvases) {
                         canvas.draw();
                         if (self.bgCanvas) canvas.drawBG(self.bgCanvas);
                         //self.emit('draw', self.canvases[c]);
@@ -101,12 +101,7 @@ export default class Renderer extends EventEmitter {
 
     removeFromZBuffer(obj, zDepth) {
         var zBufferDepth = this.zBuffer[zDepth];
-        for (var i = 0; i < zBufferDepth.length; i++) {
-            if (zBufferDepth[i] === obj) {
-                zBufferDepth.splice(i, 1);
-                break;
-            }
-        }
+        util.findAndRemove(obj, zBufferDepth);
     };
 
     addColorSheet(options) {

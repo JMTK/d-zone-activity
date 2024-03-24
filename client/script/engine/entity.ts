@@ -5,7 +5,7 @@ import type Game from '../engine/game';
 export default class Entity extends EventEmitter {
     exists: boolean = false;
     game: Game;
-    sprite: any;
+    sprite: Record<any, any>;
     zDepth: number;
     invisible: boolean;
 
@@ -37,18 +37,26 @@ export default class Entity extends EventEmitter {
         util.findAndRemove(this, this.game.entities);
     };
 
-    tickDelay(cb : Function, ticks: number) { // Execute callback after X ticks
-        this.game.schedule.push({ type: 'once', tick: this.game.ticks + ticks, cb: cb, entity: this });
+    tickDelay(cb: Function, ticks: number) { // Execute callback after X ticks
+        this.game.schedule.push({
+            type: 'once', tick: this.game.ticks + ticks, cb: cb, entity: this,
+            start: undefined,
+            count: undefined
+        });
     };
 
-    tickRepeat(cb: Function, ticks : number, afterCB?: Function) { // Execute callback every tick for X ticks
-        this.game.schedule.push({ type: 'repeat', start: this.game.ticks, count: ticks, cb: cb, afterCB: afterCB, entity: this });
+    tickRepeat(cb: Function, ticks: number, afterCB?: Function) { // Execute callback every tick for X ticks
+        this.game.schedule.push({
+            type: 'repeat', start: this.game.ticks, count: ticks, cb: cb, afterCB: afterCB, entity: this,
+            tick: 0
+        });
     };
 
-    removeFromSchedule(cb : Function) {
+    removeFromSchedule(cb: Function) {
         for (var i = 0; i < this.game.schedule.length; i++) {
-            if (this.game.schedule[i].entity === this && this.game.schedule[i].cb === cb) {
-                this.game.schedule[i].type = 'deleted';
+            const task = this.game.schedule[i]!;
+            if (task.entity === this && task.cb === cb) {
+                task.type = 'deleted';
                 break;
             }
         }

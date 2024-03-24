@@ -19,7 +19,8 @@ export default class Users extends EventEmitter {
         this.actors = {};
         this.messageQueue = {};
     }
-    addActor(data : { uid: string, username: string, status: string, roleColor?: string }) {
+    addActor(data: { uid: string, username: string, status: string, roleColor?: string }) {
+        if (!data.uid || !data.username) return;
         var grid = this.world.randomEmptyGrid();
         var actor = new Actor({
             x: +grid.split(':')[0], y: +grid.split(':')[1], z: 0,

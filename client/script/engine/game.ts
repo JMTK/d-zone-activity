@@ -9,7 +9,17 @@ import type Users from '../actors/users';
 import type Decorator from '../props/decorator';
 import type Actor from '../actors/actor';
 import type Panel from 'script/ui/panel';
+import type Entity from './entity';
 
+export interface Task {
+    start: any;
+    count: any;
+    type: string;
+    tick: number;
+    cb: Function;
+    entity: Entity;
+    afterCB?: Function;
+}
 export default class Game extends EventEmitter {
     users: Users;
     world: World;
@@ -23,8 +33,8 @@ export default class Game extends EventEmitter {
     mouseButtons: any[];
     centerMouseX: number;
     centerMouseY: number;
-    entities: any[];
-    schedule: any[];
+    entities: Entity[];
+    schedule: Task[];
     mouseOver: Actor | null;
     viewWidth: number;
     viewHeight: number;
@@ -73,7 +83,7 @@ export default class Game extends EventEmitter {
         this.mouseOver = null;
 
         var self = this;
-        this.interval = setInterval(function () {
+        this.interval = requestAnimationFrame(async () => {
             if (self.crashed) return;
             var rightNow = performance.now();
             self.dt += rightNow - self.lastUpdate;
@@ -91,7 +101,8 @@ export default class Game extends EventEmitter {
                 }
             }
             self.lastUpdate = performance.now();
-        }, this.step);
+            await util.sleep(this.step);
+        });
     }
 
 
@@ -104,7 +115,7 @@ export default class Game extends EventEmitter {
         this.emit('update');
         // TODO: Move scheduling to entity?
         for (var i = 0; i < this.schedule.length; i++) {
-            var task = this.schedule[i];
+            var task = this.schedule[i]!;
             var endTick;
             if (task.type == 'repeat') {
                 endTick = task.start + task.count;
@@ -135,17 +146,17 @@ export default class Game extends EventEmitter {
         this.input.bindCanvas(canvas);
         this.viewWidth = canvas.width;
         this.viewHeight = canvas.height;
-        this.input.on('mousemove', this.mousemove.bind(this));
-        this.input.on('mousedown', this.mousedown.bind(this));
-        this.input.on('mouseup', this.mouseup.bind(this));
-        this.input.on('mouseout', this.mouseout.bind(this));
-        this.input.on('mouseover', this.mouseover.bind(this));
-        this.input.on('mousewheel', this.mousewheel.bind(this));
-
-        this.input.on('touchmove', this.touchmove.bind(this));
-        this.input.on('touchstart', this.touchstart.bind(this));
-        this.input.on('touchend', this.touchend.bind(this));
-        this.input.on('touchcancel', this.touchcancel.bind(this));
+        this.input
+            .on('mousemove', this.mousemove.bind(this))
+            .on('mousedown', this.mousedown.bind(this))
+            .on('mouseup', this.mouseup.bind(this))
+            .on('mouseout', this.mouseout.bind(this))
+            .on('mouseover', this.mouseover.bind(this))
+            .on('mousewheel', this.mousewheel.bind(this))
+            .on('touchmove', this.touchmove.bind(this))
+            .on('touchstart', this.touchstart.bind(this))
+            .on('touchend', this.touchend.bind(this))
+            .on('touchcancel', this.touchcancel.bind(this));
         canvas.on('resize', this.viewResize.bind(this));
     };
 
@@ -243,7 +254,7 @@ export default class Game extends EventEmitter {
         this.removeAllListeners('update');
         this.schedule = [];
         while (this.entities.length > 0) {
-            this.entities[0].remove();
+            this.entities[0]!.remove();
         }
     };
 }
