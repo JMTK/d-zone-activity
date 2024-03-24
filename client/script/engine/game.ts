@@ -1,9 +1,9 @@
 import { EventEmitter } from 'events';
 import Input from './input';
 import util from './../common/util';
-import Canvas from './canvas';
-import Renderer from './renderer';
-import UI from '../ui/ui';
+import type Canvas from './canvas';
+import type Renderer from './renderer';
+import type UI from '../ui/ui';
 import type World from '../environment/world';
 import type Users from '../actors/users';
 import type Decorator from '../props/decorator';
@@ -59,7 +59,7 @@ export default class Game extends EventEmitter {
     timeRenders: boolean = false;
     helpPanel: Panel | null;
     mapPanel: Panel | null;
-    destroyed : boolean = false;
+    destroyed: boolean = false;
     destroy() {
         this.destroyed = true;
     }
@@ -67,7 +67,7 @@ export default class Game extends EventEmitter {
     constructor(options: { step?: number }) {
         super();
         this.setMaxListeners(0);
-        this.step = options.step || 1000 / 60;
+        this.step = options.step ?? 1000 / 60;
         this.lastUpdate = 0;
         this.dt = 0;
         this.ticks = 0;
@@ -82,10 +82,10 @@ export default class Game extends EventEmitter {
         this.schedule = [];
         this.mouseOver = null;
 
-        var self = this;
+        const self = this;
         const intervalTick = async () => {
             if (self.crashed || self.destroyed) return;
-            var rightNow = performance.now();
+            const rightNow = performance.now();
             self.dt += rightNow - self.lastUpdate;
             //if((self.ticks & 7) == 0) console.log(delta);
             if (self.lastUpdate > 0 && self.dt > 60000) {
@@ -109,23 +109,27 @@ export default class Game extends EventEmitter {
 
 
     update() {
-        var timeThis = this.timeUpdates && (this.ticks & 255) == 0;
+        const timeThis = this.timeUpdates && (this.ticks & 255) == 0;
         if (timeThis) console.time('update');
         //if(timeThis) console.log('entities:',this.entities.length, 'actors:', Object.keys(this.users.actors).length, 'update listeners', this.listenerCount('update'), 'message listeners',this.users.listenerCount('message'));
         //if(timeThis) var updateStart = now();
         //if(timeThis) console.log('entities:', this.entities.length);
         this.emit('update');
         // TODO: Move scheduling to entity?
-        for (var i = 0; i < this.schedule.length; i++) {
-            var task = this.schedule[i]!;
-            var endTick;
+        for (let i = 0; i < this.schedule.length; i++) {
+            const task = this.schedule[i]!;
+            let endTick;
             if (task.type == 'repeat') {
                 endTick = task.start + task.count;
                 if (task.start <= this.ticks) {
-                    var ticks = this.ticks - task.start;
-                    task.cb({ ticks: ticks, percent: ticks / task.count });
+                    const ticks = this.ticks - task.start;
+                    task.cb({
+                        ticks: ticks,
+                        percent: ticks / task.count
+                    });
                 }
-            } else if (task.type == 'once') {
+            }
+            else if (task.type == 'once') {
                 endTick = task.tick;
             }
             if (task.type == 'deleted' || endTick <= this.ticks) {
@@ -142,7 +146,7 @@ export default class Game extends EventEmitter {
         //if(timeThis && updateTimeChange <= 0) console.log('%c'+updateTimeChange, 'color: #00bb00');
         //if(timeThis && updateTimeChange > 0) console.log('%c'+updateTimeChange, 'color: #ff0000');
         //if(timeThis) lastUpdateTime = thisUpdateTime;
-    };
+    }
 
     bindCanvas(canvas: Canvas) {
         this.input.bindCanvas(canvas);
@@ -160,14 +164,14 @@ export default class Game extends EventEmitter {
             .on('touchend', this.touchend.bind(this))
             .on('touchcancel', this.touchcancel.bind(this));
         canvas.on('resize', this.viewResize.bind(this));
-    };
+    }
 
     viewResize(resize: { width: number, height: number, scale: number }) {
         this.viewWidth = resize.width;
         this.viewHeight = resize.height;
         this.input.mouseScale = resize.scale;
         this.emit('resize', resize);
-    };
+    }
 
     mousemove(mouseEvent: MouseEvent) {
         if (this.mouseOut) return;
@@ -180,7 +184,7 @@ export default class Game extends EventEmitter {
         //mouseEvent.centerMouseY = this.centerMouseY;
         //console.log({mouseX: this.mouseX, mouseY:this.mouseY, centerMouseX:this.centerMouseX, centerMouseY:this.centerMouseY});
         this.emit('mousemove', mouseEvent);
-    };
+    }
 
     mousedown(mouseEvent: MouseEvent) {
         if (this.mouseOver) {
@@ -189,12 +193,12 @@ export default class Game extends EventEmitter {
         }
         this.mouseButtons.push(mouseEvent.button);
         this.emit('mousedown', mouseEvent);
-    };
+    }
 
     touchend(mouseEvent: MouseEvent) {
         util.findAndRemove(mouseEvent.button, this.mouseButtons);
         this.emit('touchend', mouseEvent);
-    };
+    }
 
     touchmove(mouseEvent: MouseEvent) {
         if (this.mouseOut) return;
@@ -206,13 +210,13 @@ export default class Game extends EventEmitter {
         (mouseEvent as any).centerMouseX = this.centerMouseX;
         (mouseEvent as any).centerMouseY = this.centerMouseY;
         this.emit('touchmove', mouseEvent);
-    };
+    }
 
     touchcancel(mouseEvent: MouseEvent) {
         this.mouseOut = true;
         this.mouseOver = null;
         this.emit('touchcancel', mouseEvent);
-    };
+    }
 
     touchstart(mouseEvent: MouseEvent) {
         if (this.mouseOver) {
@@ -221,35 +225,35 @@ export default class Game extends EventEmitter {
         }
         this.mouseButtons.push(mouseEvent.button);
         this.emit('touchstart', mouseEvent);
-    };
+    }
 
     mouseup(mouseEvent: MouseEvent) {
         util.findAndRemove(mouseEvent.button, this.mouseButtons);
         this.emit('mouseup', mouseEvent);
-    };
+    }
 
     mouseout(mouseEvent: MouseEvent) {
         this.mouseOut = true;
         this.mouseOver = null;
         this.emit('mouseout', mouseEvent);
-    };
+    }
 
     mouseover(mouseEvent: MouseEvent) {
         this.mouseOut = false;
         this.emit('mouseover', mouseEvent);
-    };
+    }
 
     mousewheel(mouseEvent: MouseEvent) {
         this.emit('mousewheel', mouseEvent);
-    };
+    }
 
     keydown(keyEvent: KeyboardEvent) {
         this.emit('keydown', keyEvent);
-    };
+    }
 
     keyup(keyEvent: KeyboardEvent) {
         this.emit('keyup', keyEvent);
-    };
+    }
 
     reset() {
         this.emit('destroy');
@@ -258,5 +262,5 @@ export default class Game extends EventEmitter {
         while (this.entities.length > 0) {
             this.entities[0]!.remove();
         }
-    };
+    }
 }

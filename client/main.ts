@@ -1,20 +1,20 @@
-import { DiscordSDK } from "@discord/embedded-app-sdk";
-import { handleEventData, initDzone } from "./dzone";
-import type Game from "script/engine/game";
+import { DiscordSDK } from '@discord/embedded-app-sdk';
+import { handleEventData, initDzone } from './dzone';
+import type Game from 'script/engine/game';
 
 window.onunhandledrejection = (err) => console.error(err);
 const clientId = '1219346862423933098';
 const discordSdk = window.location.search.includes('frame_id') ? new DiscordSDK(clientId) : null;
 
-let setupDiscordSdkPromise = setupDiscordSdk();
-let dzone = initDzone();
+const setupDiscordSdkPromise = setupDiscordSdk();
+const dzone = initDzone();
 setupDiscordSdkPromise.then(async (auth) => {
-    console.log("Discord SDK is authenticated");
+    console.log('Discord SDK is authenticated');
 
     initializeBackgroundMusic();
-    let channel = await discordSdk?.commands.getChannel({ channel_id: discordSdk!.channelId! });
+    const channel = await discordSdk?.commands.getChannel({ channel_id: discordSdk!.channelId! });
 
-    let game = await dzone;
+    const game = await dzone;
     initializeUIOverlay(game, auth!.user);
     handleEventData({
         type: 'server-join',
@@ -25,7 +25,7 @@ setupDiscordSdkPromise.then(async (auth) => {
                     agg[curr.user.id] = {
                         username: curr.nick || curr.user.username,
                         status: curr.voice_state.deaf ? 'offline' : 'online'
-                    }
+                    };
                 }
                 return agg;
             }, {})
@@ -50,9 +50,9 @@ setupDiscordSdkPromise.then(async (auth) => {
         const users = activityInstanceParticipantsUpdateEvent.participants.reduce((agg, curr) => {
             if (!agg[curr.id]) {
                 agg[curr.id] = {
-                    username: curr.nickname || curr.username,
+                    username: curr.nickname ?? curr.username,
                     status: 'online'
-                }
+                };
             }
             return agg;
         }, {});
@@ -61,12 +61,12 @@ setupDiscordSdkPromise.then(async (auth) => {
             data: {
                 users
             }
-        })
+        });
     });
 
-    let userIsSpeaking = {} as Record<string, NodeJS.Timeout>;
+    const userIsSpeaking = {} as Record<string, any>;
     await discordSdk?.subscribe('SPEAKING_START', speakingStartEvent => {
-        let uid = speakingStartEvent.user_id;
+        const uid = speakingStartEvent.user_id;
         if (userIsSpeaking[uid]) return;
         const talkingHandler = () => handleEventData({
             type: 'message',
@@ -80,20 +80,23 @@ setupDiscordSdkPromise.then(async (auth) => {
         // small timeout initially incase the user is not actually speaking and was just a blip
         setTimeout(talkingHandler, 50);
     }, { channel_id: discordSdk.channelId });
-    
+
     await discordSdk?.subscribe('SPEAKING_STOP', speakingStartEvent => {
         clearInterval(userIsSpeaking[speakingStartEvent.user_id]);
         delete userIsSpeaking[speakingStartEvent.user_id];
     }, { channel_id: discordSdk.channelId });
-});
+
+    return;
+})
+    .catch(console.error);
 
 function generateText() {
-    var numWordsToGenerate = Math.floor(Math.random() * 10) + 1;
-    var punctuationSeed = Math.random();
-    var punctuation = punctuationSeed > 0.5 ? '.' : (punctuationSeed > 0.25 ? '!' : '?')
-    var words = ['flingin', 'gibbin', 'zib', 'zonk', 'flargle', 'argle', 'bargle', 'fop', 'doodle', 'swoop', 'zoodle', 'larkin', 'blarkin', 'zarkin', 'sul', 'feebee', 'dag', 'woofum', 'lalo', 'hooba', 'nobee', 'waa'];
+    const numWordsToGenerate = Math.floor(Math.random() * 10) + 1;
+    const punctuationSeed = Math.random();
+    const punctuation = punctuationSeed > 0.5 ? '.' : (punctuationSeed > 0.25 ? '!' : '?');
+    const words = ['flingin', 'gibbin', 'zib', 'zonk', 'flargle', 'argle', 'bargle', 'fop', 'doodle', 'swoop', 'zoodle', 'larkin', 'blarkin', 'zarkin', 'sul', 'feebee', 'dag', 'woofum', 'lalo', 'hooba', 'nobee', 'waa'];
 
-    let sentence = new Array(numWordsToGenerate).fill(null).map(() => words[Math.floor(Math.random() * words.length)]).join(' ') + punctuation;
+    const sentence = new Array(numWordsToGenerate).fill(null).map(() => words[Math.floor(Math.random() * words.length)]).join(' ') + punctuation;
     return sentence.charAt(0).toUpperCase() + sentence.slice(1);
 }
 
@@ -104,20 +107,20 @@ async function setupDiscordSdk() {
     // Authorize with Discord Client
     const { code } = await discordSdk.commands.authorize({
         client_id: clientId,
-        response_type: "code",
-        prompt: "none",
+        response_type: 'code',
+        prompt: 'none',
         scope: [
-            "identify",
-            "guilds",
-            "rpc.voice.read"
+            'identify',
+            'guilds',
+            'rpc.voice.read'
         ],
     });
 
     // Retrieve an access_token from your activity's server
-    const response = await fetch("/api/token", {
-        method: "POST",
+    const response = await fetch('/api/token', {
+        method: 'POST',
         headers: {
-            "Content-Type": "application/json"
+            'Content-Type': 'application/json'
         },
         body: JSON.stringify({
             code,
@@ -131,14 +134,14 @@ async function setupDiscordSdk() {
     });
 
     if (auth == null) {
-        throw new Error("Authenticate command failed");
+        throw new Error('Authenticate command failed');
     }
 
     return auth;
 }
 function initializeBackgroundMusic() {
     const audio = document.querySelector('audio');
-    if (!audio) return console.warn('No background music element found');;
+    if (!audio) return console.warn('No background music element found');
 
     audio.volume = 0.4;
     audio.loop = true;
@@ -153,16 +156,21 @@ function initializeUIOverlay(game: Game, user: {
     avatar?: string | null | undefined;
     global_name?: string | null | undefined;
 }) {
-    const avatarUrl = `${user.avatar ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png` : `https://cdn.discordapp.com/embed/avatars/${parseInt(user.discriminator) % 5}.png`}`
+    const avatarUrl = `${user.avatar ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png` : `https://cdn.discordapp.com/embed/avatars/${parseInt(user.discriminator) % 5}.png`}`;
     game.ui.addImage({
         url: avatarUrl,
-        top: 1, left: 3, w: 18, h: 18,
+        top: 1,
+        left: 3,
+        w: 18,
+        h: 18,
         parent: game.ui,
-        borderRadius: "25%"
-    })
+        borderRadius: '25%'
+    });
     game.ui.addLabel({
         text: `@${user.username}`,
-        top: 3, left: 21, h: 18,
+        top: 3,
+        left: 21,
+        h: 18,
         parent: game.ui,
-    })
+    });
 }

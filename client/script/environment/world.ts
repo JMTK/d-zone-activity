@@ -8,8 +8,8 @@ import TileSheet from './sheet2';
 import type Game from '../engine/game';
 import Canvas from '../common/bettercanvas';
 import type Actor from '../actors/actor';
-var testCanvas = new Canvas(200, 100);
-var unoccupiedGrids; // For faster actor placement on init
+//const testCanvas = new Canvas(200, 100);
+let unoccupiedGrids; // For faster actor placement on init
 
 export default class World {
     game: Game;
@@ -41,30 +41,35 @@ export default class World {
 
         geometry.generateClosestGrids(this.worldSize);
 
-        testCanvas.clear();
+        //testCanvas.clear();
 
-        var noiseBig = geometry.buildNoiseMap(this.worldRadius / 3 + 1, this.worldRadius / 3 + 1);
-        var noiseSmall = geometry.buildNoiseMap(this.worldRadius / 1.5 + 1, this.worldRadius / 1.5 + 1);
-        var bigBlur = (noiseBig.length - 1) / this.worldSize;
-        var smallBlur = (noiseSmall.length - 1) / this.worldSize;
-        this.mapBounds = { xl: 0, yl: 0, xh: 0, yh: 0 }; // TODO: Center canvas using this
-        for (var tx = 0; tx < this.worldSize; tx++) for (var ty = 0; ty < this.worldSize; ty++) {
-            var bigNoiseValue = geometry.getNoiseMapPoint(noiseBig, tx * bigBlur, ty * bigBlur);
-            var smallNoiseValue = geometry.getNoiseMapPoint(noiseSmall, tx * smallBlur, ty * smallBlur);
-            var noiseValue = (bigNoiseValue + smallNoiseValue * 2) / 3;
+        const noiseBig = geometry.buildNoiseMap(this.worldRadius / 3 + 1, this.worldRadius / 3 + 1);
+        const noiseSmall = geometry.buildNoiseMap(this.worldRadius / 1.5 + 1, this.worldRadius / 1.5 + 1);
+        const bigBlur = (noiseBig.length - 1) / this.worldSize;
+        const smallBlur = (noiseSmall.length - 1) / this.worldSize;
+        this.mapBounds = {
+            xl: 0,
+            yl: 0,
+            xh: 0,
+            yh: 0
+        }; // TODO: Center canvas using this
+        for (let tx = 0; tx < this.worldSize; tx++) for (let ty = 0; ty < this.worldSize; ty++) {
+            const bigNoiseValue = geometry.getNoiseMapPoint(noiseBig, tx * bigBlur, ty * bigBlur);
+            const smallNoiseValue = geometry.getNoiseMapPoint(noiseSmall, tx * smallBlur, ty * smallBlur);
+            const noiseValue = (bigNoiseValue + smallNoiseValue * 2) / 3;
             //var color = 'rgba(255,255,255,'+noiseValue+')'; // Draw debug noise map
             //testCanvas.fillRect(color, tx, ty, 1, 1);
-            var grid;
-            var x = (tx - this.worldRadius), y = (ty - this.worldRadius);
-            var farness = (this.worldRadius - (Math.abs(x) + Math.abs(y)) / 2) / this.worldRadius;
+            let grid;
+            const x = (tx - this.worldRadius), y = (ty - this.worldRadius);
+            const farness = (this.worldRadius - (Math.abs(x) + Math.abs(y)) / 2) / this.worldRadius;
             if (noiseValue / 1.1 < farness) {
                 this.mapBounds.xl = Math.min(x, this.mapBounds.xl);
                 this.mapBounds.yl = Math.min(y, this.mapBounds.yl);
                 this.mapBounds.xh = Math.max(x, this.mapBounds.xh);
                 this.mapBounds.yh = Math.max(y, this.mapBounds.yh);
                 grid = new Slab('grass', x, y, -0.5);
-                grid.grid = x + ':' + y;
-                this.map[x + ':' + y] = grid;
+                grid.grid = `${x}:${y}`;
+                this.map[`${x}:${y}`] = grid;
                 grid.addToGame(game);
             }
         }
@@ -72,10 +77,12 @@ export default class World {
         this.crawlMap(); // Examine map to determine islands, borders, etc
         this.createTiles(); // Create map tiles from grid intersections
 
-        var lowestScreenX = 0, lowestScreenY = 0, highestScreenX = 0, highestScreenY = 0;
-        for (var i = 0; i < this.staticMap.length; i++) {
-            var preTile = this.staticMap[i];
-            var preScreen = { x: preTile.screen.x, y: preTile.screen.y };
+        let lowestScreenX = 0, lowestScreenY = 0, highestScreenX = 0, highestScreenY = 0;
+        for (const preTile of this.staticMap) {
+            const preScreen = {
+                x: preTile.screen.x,
+                y: preTile.screen.y
+            };
             preScreen.x += preTile.sprite.metrics.ox || 0;
             preScreen.y += preTile.sprite.metrics.oy || 0;
             lowestScreenX = lowestScreenX < preScreen.x ? lowestScreenX : preScreen.x;
@@ -83,12 +90,14 @@ export default class World {
             highestScreenX = highestScreenX > preScreen.x ? highestScreenX : preScreen.x;
             highestScreenY = highestScreenY > preScreen.y ? highestScreenY : preScreen.y;
         }
-        var bgCanvas = new Canvas(
+        const bgCanvas = new Canvas(
             (highestScreenX - lowestScreenX) + 32 + 1, (highestScreenY - lowestScreenY) + 32 + 9
         );
-        for (var j = 0; j < this.staticMap.length; j++) {
-            var tile = this.staticMap[j];
-            var screen = { x: tile.screen.x, y: tile.screen.y };
+        for (const tile of this.staticMap) {
+            const screen = {
+                x: tile.screen.x,
+                y: tile.screen.y
+            };
             screen.x += tile.sprite.metrics.ox || 0;
             screen.y += tile.sprite.metrics.oy || 0;
             screen.x -= lowestScreenX;
@@ -102,7 +111,9 @@ export default class World {
         //bgCanvas.context.globalCompositeOperation = 'color';
         //bgCanvas.fill('rgba(30,30,50,0.7)');
         this.game.renderer.bgCanvas = {
-            x: lowestScreenX, y: lowestScreenY, image: bgCanvas.canvas
+            x: lowestScreenX,
+            y: lowestScreenY,
+            image: bgCanvas.canvas
         };
         Pathfinder.loadMap(this.walkable);
         unoccupiedGrids = Object.keys(this.map);
@@ -113,54 +124,61 @@ export default class World {
 
     crawlMap() {
         this.islands = [];
-        var crawled = {};
-        var thisIsland = 0;
-        for (var x = this.mapBounds.xl; x <= this.mapBounds.xh; x++) {
-            for (var y = this.mapBounds.yl; y <= this.mapBounds.yh; y++) {
-                var currentTile = this.map[x + ':' + y]; if (!currentTile) continue;
+        const crawled = {};
+        let thisIsland = 0;
+        for (let x = this.mapBounds.xl; x <= this.mapBounds.xh; x++) {
+            for (let y = this.mapBounds.yl; y <= this.mapBounds.yh; y++) {
+                let currentTile = this.map[`${x}:${y}`]; if (!currentTile) continue;
                 if (crawled[currentTile.grid]) continue; // Skip already-crawled tiles
-                var neighborsToCrawl: any[] = [];
+                const neighborsToCrawl: any[] = [];
+                // eslint-disable-next-line no-constant-condition
                 while (true) { // Keep crawling outward until no neighbors are left
                     crawled[currentTile.grid] = currentTile;
                     if (this.islands[thisIsland]) this.islands[thisIsland].push(currentTile);
                     else this.islands.push([currentTile]);
-                    var currentNeighbors = geometry.getNeighbors(currentTile.grid);
+                    let currentNeighbors = geometry.getNeighbors(currentTile.grid);
                     currentNeighbors = geometry.getNeighbors(currentTile.grid);
-                    for (var iKey in currentNeighbors) {
-                        if (!currentNeighbors.hasOwnProperty(iKey)) continue;
-                        var neighbor = this.map[currentNeighbors[iKey]];
-                        if (!neighbor) { currentTile.border = true; continue; }
+                    for (const iKey in currentNeighbors) {
+                        if (!(iKey in currentNeighbors)) continue;
+                        const neighbor = this.map[currentNeighbors[iKey]];
+                        if (!neighbor) {
+                            currentTile.border = true; continue;
+                        }
                         if (!crawled[neighbor.grid]) neighborsToCrawl.push(neighbor);
                     }
                     if (neighborsToCrawl.length > 0) {
                         currentTile = neighborsToCrawl.pop();
-                    } else { thisIsland++; break; } // No more neighbors, this island is done
+                    }
+                    else {
+                        thisIsland++; break;
+                    } // No more neighbors, this island is done
                 }
             }
         }
 
         this.mainIsland = 0;
-        for (var i = 1; i < this.islands.length; i++) {
+        for (let i = 1; i < this.islands.length; i++) {
             this.mainIsland = this.islands[i].length > this.islands[this.mainIsland].length ?
                 i : this.mainIsland;
         }
-        for (var i2 = 0; i2 < this.islands.length; i2++) {
+        for (let i2 = 0; i2 < this.islands.length; i2++) {
             if (i2 == this.mainIsland) continue;
-            for (var it = 0; it < this.islands[i2].length; it++) {
+            for (let it = 0; it < this.islands[i2].length; it++) {
                 delete this.map[this.islands[i2][it].grid];
                 this.islands[i2][it].remove();
             }
         }
         // Set border tiles to slab
-        for (var gKey in this.map) {
-            if (!this.map.hasOwnProperty(gKey)) continue;
-            var finalTile = this.map[gKey];
+        for (const gKey in this.map) {
+            if (!(gKey in this.map)) continue;
+            const finalTile = this.map[gKey];
             if (finalTile.border) {
                 finalTile.style = 'plain';
-            } else {
-                var finalNeighbors = geometry.get8Neighbors(finalTile.grid);
-                for (var nKey in finalNeighbors) {
-                    if (!finalNeighbors.hasOwnProperty(nKey)) continue;
+            }
+            else {
+                const finalNeighbors = geometry.get8Neighbors(finalTile.grid);
+                for (const nKey in finalNeighbors) {
+                    if (!(nKey in finalNeighbors)) continue;
                     if (!this.map[finalNeighbors[nKey]]) {
                         finalTile.style = 'plain';
                         break;
@@ -175,15 +193,15 @@ export default class World {
         this.map['0:-1'].style = 'plain';
 
         // Create flower patches
-        for (var fp = 0; fp < Math.ceil(Math.pow(this.worldRadius, 2) / 80); fp++) {
-            var safety = 0;
+        for (let fp = 0; fp < Math.ceil(Math.pow(this.worldRadius, 2) / 80); fp++) {
+            let safety = 0;
+            let valid = true;
+            const grid = this.map[util.pickInObject(this.map)];
             do {
-                var valid = true;
-                var grid = this.map[util.pickInObject(this.map)];
-                var flowerNeighbors = geometry.get8Neighbors(grid.grid);
-                for (var fKey in flowerNeighbors) {
-                    if (!flowerNeighbors.hasOwnProperty(fKey)) continue;
-                    var fNeighbor = this.map[flowerNeighbors[fKey]];
+                const flowerNeighbors = geometry.get8Neighbors(grid.grid);
+                for (const fKey in flowerNeighbors) {
+                    if (!(fKey in flowerNeighbors)) continue;
+                    const fNeighbor = this.map[flowerNeighbors[fKey]];
                     if (!fNeighbor || fNeighbor.style != 'grass') {
                         valid = false;
                         break;
@@ -193,16 +211,16 @@ export default class World {
             } while (safety < 1000 && (grid.style != 'grass' || !valid));
             if (safety == 1000) continue;
             grid.style = 'flowers';
-            var spread = util.randomIntRange(1, 4);
-            for (var s = 0; s < spread; s++) {
-                var canSpread = true;
-                var spreadX = grid.position.x + util.randomIntRange(-1, 1),
+            const spread = util.randomIntRange(1, 4);
+            for (let s = 0; s < spread; s++) {
+                let canSpread = true;
+                const spreadX = grid.position.x + util.randomIntRange(-1, 1),
                     spreadY = grid.position.y + util.randomIntRange(-1, 1);
-                var spreadGrid = this.map[spreadX + ':' + spreadY];
-                var spreadNeighbors = geometry.get8Neighbors(spreadGrid.grid);
-                for (var sKey in spreadNeighbors) {
-                    if (!spreadNeighbors.hasOwnProperty(sKey)) continue;
-                    var sNeighbor = this.map[spreadNeighbors[sKey]];
+                const spreadGrid = this.map[`${spreadX}:${spreadY}`];
+                const spreadNeighbors = geometry.get8Neighbors(spreadGrid.grid);
+                for (const sKey in spreadNeighbors) {
+                    if (!(sKey in spreadNeighbors)) continue;
+                    const sNeighbor = this.map[spreadNeighbors[sKey]];
                     if (!sNeighbor || (sNeighbor.style != 'grass' && sNeighbor.style != 'flowers')) {
                         canSpread = false;
                         break;
@@ -211,7 +229,7 @@ export default class World {
                 if (canSpread) spreadGrid.style = 'flowers';
             }
         }
-    };
+    }
 
     createTiles() {
         // Tile types:
@@ -222,46 +240,73 @@ export default class World {
         // Tile code constructed as NW-NE-SE-SW (eg. "S-X-X-B")
 
         this.tileMap = {};
-        var self = this;
+        const self = this;
 
-        function tileType(grid) { return self.map[grid].style[0].replace(/p/, 's').toUpperCase(); }
+        function tileType(grid) {
+            return self.map[grid].style[0].replace(/p/, 's').toUpperCase();
+        }
 
         function getTileCode(oGrid, nGrid) {
             if (oGrid == nGrid) return tileType(oGrid);
-            var neighbor = self.map[nGrid];
+            const neighbor = self.map[nGrid];
             if (!neighbor) return 'E';
             return tileType(nGrid);
         }
 
         function generateTile(oGrid, tile, grid, game) {
-            var nGrids = tile.grids;
-            var tileCode = getTileCode(oGrid, nGrids[0]) + '-' + getTileCode(oGrid, nGrids[1])
-                + '-' + getTileCode(oGrid, nGrids[2]) + '-' + getTileCode(oGrid, nGrids[3]);
-            var tileSprite = (new TileSheet('tile')).map[tileCode];
+            const nGrids = tile.grids;
+            const tileCode = `${getTileCode(oGrid, nGrids[0])}-${getTileCode(oGrid, nGrids[1])
+                }-${getTileCode(oGrid, nGrids[2])}-${getTileCode(oGrid, nGrids[3])}`;
+            const tileSprite = (new TileSheet('tile')).map[tileCode];
             if (!tileSprite) console.error('unknown tile code', tileCode, nGrids);
             return {
-                tileCode: tileCode, position: tile, grid: grid, game: game
+                tileCode: tileCode,
+                position: tile,
+                grid: grid,
+                game: game
             };
         }
 
-        for (var key in this.map) {
-            if (!this.map.hasOwnProperty(key)) continue;
-            var x = +key.split(':')[0]!, y = +key.split(':')[1]!, z = this.map[key].position.z;
-            var neighbors = geometry.get8Neighbors(key);
-            var nw = { x: x - 0.5, y: y - 0.5, z: z, grids: [neighbors.nw, neighbors.n, key, neighbors.w] },
-                ne = { x: x + 0.5, y: y - 0.5, z: z, grids: [neighbors.n, neighbors.ne, neighbors.e, key] },
-                se = { x: x + 0.5, y: y + 0.5, z: z, grids: [key, neighbors.e, neighbors.se, neighbors.s] },
-                sw = { x: x - 0.5, y: y + 0.5, z: z, grids: [neighbors.w, key, neighbors.s, neighbors.sw] };
-            var tiles = [nw, ne, se, sw];
-            for (var i = 0; i < tiles.length; i++) {
-                var tileGrid = z + ':' + tiles[i]!.x + ':' + tiles[i]!.y;
+        for (const key in this.map) {
+            if (!(key in this.map)) continue;
+            const x = +key.split(':')[0]!, y = +key.split(':')[1]!, z = this.map[key].position.z;
+            const neighbors = geometry.get8Neighbors(key);
+            const nw = {
+                x: x - 0.5,
+                y: y - 0.5,
+                z: z,
+                grids: [neighbors.nw, neighbors.n, key, neighbors.w]
+            },
+                ne = {
+                    x: x + 0.5,
+                    y: y - 0.5,
+                    z: z,
+                    grids: [neighbors.n, neighbors.ne, neighbors.e, key]
+                },
+                se = {
+                    x: x + 0.5,
+                    y: y + 0.5,
+                    z: z,
+                    grids: [key, neighbors.e, neighbors.se, neighbors.s]
+                },
+                sw = {
+                    x: x - 0.5,
+                    y: y + 0.5,
+                    z: z,
+                    grids: [neighbors.w, key, neighbors.s, neighbors.sw]
+                };
+            const tiles = [nw, ne, se, sw];
+            for (let i = 0; i < tiles.length; i++) {
+                const tileGrid = `${z}:${tiles[i]!.x}:${tiles[i]!.y}`;
                 if (this.tileMap[tileGrid]) continue;
                 this.tileMap[tileGrid] = new Tile(generateTile(key, tiles[i], tileGrid, this.game));
                 this.staticMap.push(this.tileMap[tileGrid]);
             }
         }
-        this.staticMap.sort(function (a, b) { return a.zDepth - b.zDepth; });
-    };
+        this.staticMap.sort(function (a, b) {
+            return a.zDepth - b.zDepth;
+        });
+    }
 
     addToWorld(obj) {
         //console.log('world: adding object at',obj.position.x,obj.position.y,obj.position.z);
@@ -271,83 +316,88 @@ export default class World {
                     console.trace('occupado!', obj, this.objects);
                     return false;
                 }
-            } else {
+            }
+            else {
                 this.objects[obj.position.x][obj.position.y] = {};
             }
-        } else {
+        }
+        else {
             this.objects[obj.position.x] = {};
             this.objects[obj.position.x][obj.position.y] = {};
         }
         this.objects[obj.position.x][obj.position.y][obj.position.z] = obj;
         this.updateWalkable(obj.position.x, obj.position.y);
-    };
+    }
 
     removeFromWorld(obj) {
         //console.log('world: removing object at',obj.position.x,obj.position.y,obj.position.z);
         delete this.objects[obj.position.x][obj.position.y][obj.position.z];
         this.updateWalkable(obj.position.x, obj.position.y);
-    };
+    }
 
     moveObject(obj, x, y, z) {
         //console.log('world: moving object from',obj.position.x,obj.position.y,obj.position.z,'to',x,y,z);
         this.removeFromWorld(obj);
         obj.position.x = x; obj.position.y = y; obj.position.z = z;
-        this.addToWorld(obj)
-    };
+        this.addToWorld(obj);
+    }
 
     updateWalkable(x, y) {
         //console.log('world: updating walkable at',x,y);
-        var objects = this.objects[x][y];
+        const objects = this.objects[x][y];
         if (!objects || Object.keys(objects).length == 0) {
-            delete this.walkable[x + ':' + y];
+            delete this.walkable[`${x}:${y}`];
             //console.log('world: ',x,y,'is now unwalkable');
             return;
         }
-        var zKeys = Object.keys(objects).sort(function (a : any , b : any) { return a - b; });
-        var topObject = objects[zKeys[zKeys.length - 1]!];
+        const zKeys = Object.keys(objects).sort(function (a: any, b: any) {
+            return a - b;
+        });
+        const topObject = objects[zKeys[zKeys.length - 1]!];
         if (topObject.unWalkable) {
-            delete this.walkable[x + ':' + y];
+            delete this.walkable[`${x}:${y}`];
             //console.log('world: ',x,y,'is now unwalkable');
-        } else {
-            this.walkable[x + ':' + y] = topObject.position.z + topObject.height;
+        }
+        else {
+            this.walkable[`${x}:${y}`] = topObject.position.z + topObject.height;
             //console.log('world: ',x,y,'is now walkable',this.walkable[x+':'+y]);
         }
-    };
+    }
 
     randomEmptyGrid() {
         return unoccupiedGrids.splice(util.randomIntRange(0, unoccupiedGrids.length - 1), 1)[0];
-    };
+    }
 
     objectAtXYZ(x, y, z) {
         if (!this.objects[x]) return false;
         if (!this.objects[x][y]) return false;
         return this.objects[x][y][z];
-    };
+    }
 
     objectUnderXYZ(x, y, z) {
         if (!this.objects[x]) return false;
         if (!this.objects[x][y]) return false;
-        var highest = -1000;
-        for (var zKey in this.objects[x][y]) {
-            if (!this.objects[x][y].hasOwnProperty(zKey)) continue;
+        let highest = -1000;
+        for (const zKey in this.objects[x][y]) {
+            if (!(zKey in this.objects[x][y])) continue;
             if (+zKey > z) continue;
             highest = +zKey > highest ? +zKey : highest;
         }
         return this.objects[x][y][highest];
-    };
+    }
 
     findObject(obj) { // For debugging
-        for (var xKey in this.objects) {
-            if (!this.objects.hasOwnProperty(xKey)) continue;
-            var xObjects = this.objects[xKey];
-            for (var yKey in xObjects) {
-                if (!xObjects.hasOwnProperty(yKey)) continue;
-                var yObjects = xObjects[yKey];
-                for (var zKey in yObjects) {
-                    if (!yObjects.hasOwnProperty(zKey)) continue;
+        for (const xKey in this.objects) {
+            if (!(xKey in this.objects)) continue;
+            const xObjects = this.objects[xKey];
+            for (const yKey in xObjects) {
+                if (!(yKey in xObjects)) continue;
+                const yObjects = xObjects[yKey];
+                for (const zKey in yObjects) {
+                    if (!(zKey in yObjects)) continue;
                     if (obj === yObjects[zKey]) return [xKey, yKey, zKey];
                 }
             }
         }
-    };
+    }
 }

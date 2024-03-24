@@ -13,17 +13,25 @@ export default class Seed extends WorldObject {
     boundGrow: any;
     boundWither: any;
     unwalkable: boolean;
-    
+
     constructor(options) {
         super({
-            position: { x: options.destination.x, y: options.destination.y, z: options.destination.z },
-            pixelSize: { x: 12, y: 12, z: 16 },
+            position: {
+                x: options.destination.x,
+                y: options.destination.y,
+                z: options.destination.z
+            },
+            pixelSize: {
+                x: 12,
+                y: 12,
+                z: 16
+            },
             height: 1
         });
         this.unwalkable = true;
         this.origin = options.origin;
         //var canvas = new BetterCanvas(1,1);
-        var self = this;
+        const self = this;
         this.on('draw', function (canvas) {
             if (self.exists) canvas.drawEntity(self);
         });
@@ -39,29 +47,30 @@ export default class Seed extends WorldObject {
     addToGame(game) {
         super.addToGame(game);
         this.tickDelay(this.boundGrow, this.growTime + util.randomIntRange(this.growTime / -6, this.growTime / 6));
-    };
+    }
 
     grow() {
         this.growStage++;
-        var metrics = JSON.parse(JSON.stringify(this.sheet.map.plant));
+        const metrics = JSON.parse(JSON.stringify(this.sheet.map.plant));
         metrics.x += this.sprite.metrics.w * this.growStage;
         this.sprite.metrics = metrics;
-        var nextGrowth = this.growTime + util.randomIntRange(this.growTime / -6, this.growTime / 6);
+        const nextGrowth = this.growTime + util.randomIntRange(this.growTime / -6, this.growTime / 6);
         if (this.growStage < 5) {
             this.tickDelay(this.boundGrow, nextGrowth);
-        } else {
+        }
+        else {
             this.tickDelay(this.boundWither, Math.floor(nextGrowth / 2));
         }
-    };
+    }
 
     wither() {
-        var metrics = this.sheet.map.orb;
+        const metrics = this.sheet.map.orb;
         this.sprite.metrics = JSON.parse(JSON.stringify(metrics));
         this.tickRepeat((progress) => {
             this.sprite.metrics.oy = Math.round(metrics.oy + progress.ticks / 2);
             if (progress.percent >= 1) this.growthStage = 6;
         }, 26, () => { });
-    };
+    }
 
     //onUpdate() {
     //if(this.position.z > 0) {

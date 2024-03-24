@@ -1,5 +1,6 @@
 'use strict';
-import UIElement, { UIElementOptions } from './uielement'
+import type { UIElementOptions } from './uielement';
+import UIElement from './uielement';
 
 export interface ImageOptions extends UIElementOptions {
     url: string,
@@ -9,6 +10,7 @@ export interface ImageOptions extends UIElementOptions {
     onPress?: any,
     autosize?: boolean
 }
+// eslint-disable-next-line no-redeclare
 export default class Image extends UIElement {
     url: string;
     hyperlink: string;
@@ -33,7 +35,7 @@ export default class Image extends UIElement {
         this.url = url;
         this.reposition();
         this.draw();
-    };
+    }
 
     draw() {
         this.canvas.clear();
@@ -48,7 +50,7 @@ export default class Image extends UIElement {
             this.canvas.drawImage(imageElement, 0, 0, this.options.w!, this.options.h!);
             this.emit('redraw');
         };
-    };
+    }
 
     onMouseOn(mouseEvent) {
         if (this.mouseOn) return;
@@ -56,7 +58,7 @@ export default class Image extends UIElement {
         if (this.hyperlink) document.body.style.cursor = 'pointer';
         this.emit('mouse-on-element', this);
         this.draw();
-    };
+    }
 
     onMouseOff(mouseEvent) {
         if (!this.mouseOn) return;
@@ -65,13 +67,13 @@ export default class Image extends UIElement {
         this.pressed = false;
         this.emit('mouse-off-element', this);
         this.draw();
-    };
+    }
 
     onMouseDown(mouseEvent) {
         if (!this.mouseOn) return;
         this.pressed = true;
         this.draw();
-    };
+    }
 
     onMouseUp(mouseEvent) {
         if (!this.mouseOn) return;
@@ -79,5 +81,5 @@ export default class Image extends UIElement {
         if (this.onPress) this.onPress();
         if (this.hyperlink) window.open(this.hyperlink);
         this.draw();
-    };
+    }
 }

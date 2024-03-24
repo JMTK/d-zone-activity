@@ -13,5 +13,5 @@ export default class Panel extends UIElement {
         this.canvas.clearRect(1, 1, this.w - 2, this.h - 2);
         this.canvas.fillRect('rgba(0,0,0,0.8)', 1, 1, this.w - 2, this.h - 2);
         this.emit('redraw');
-    };
+    }
 }

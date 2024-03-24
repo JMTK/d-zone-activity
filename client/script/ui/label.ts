@@ -1,6 +1,7 @@
 'use strict';
-import UIElement, { UIElementOptions } from './uielement'
-import TextBlotter from '../common/textblotter'
+import type { UIElementOptions } from './uielement';
+import UIElement from './uielement';
+import TextBlotter from '../common/textblotter';
 
 export interface LabelOptions extends UIElementOptions {
     text: string,
@@ -29,23 +30,26 @@ export default class Label extends UIElement {
         this.on('mouse-up', this.onMouseUp.bind(this));
     }
 
-    changeText(text : string) {
+    changeText(text: string) {
         this.text = text;
-        this.textCanvas = TextBlotter.blot({ text: this.text, maxWidth: this.maxWidth });
+        this.textCanvas = TextBlotter.blot({
+            text: this.text,
+            maxWidth: this.maxWidth
+        });
         if (this.autosize) {
             this.w = this.canvas.canvas.width = this.textCanvas.width;
             this.h = this.canvas.canvas.height = this.textCanvas.height;
         }
         this.reposition();
         this.draw();
-    };
+    }
 
     draw() {
         this.canvas.clear();
         this.canvas.drawImage(this.textCanvas, 0, 0, this.textCanvas.width, this.textCanvas.height,
             0, 0, this.textCanvas.width, this.textCanvas.height, 1);
         this.emit('redraw');
-    };
+    }
 
     onMouseOn(mouseEvent) {
         if (this.mouseOn) return;
@@ -53,7 +57,7 @@ export default class Label extends UIElement {
         if (this.hyperlink) document.body.style.cursor = 'pointer';
         this.emit('mouse-on-element', this);
         this.draw();
-    };
+    }
 
     onMouseOff(mouseEvent) {
         if (!this.mouseOn) return;
@@ -62,13 +66,13 @@ export default class Label extends UIElement {
         this.pressed = false;
         this.emit('mouse-off-element', this);
         this.draw();
-    };
+    }
 
     onMouseDown(mouseEvent) {
         if (!this.mouseOn) return;
         this.pressed = true;
         this.draw();
-    };
+    }
 
     onMouseUp(mouseEvent) {
         if (!this.mouseOn) return;
@@ -76,5 +80,5 @@ export default class Label extends UIElement {
         if (this.onPress) this.onPress();
         if (this.hyperlink) window.open(this.hyperlink);
         this.draw();
-    };
+    }
 }

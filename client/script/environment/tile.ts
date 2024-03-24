@@ -30,18 +30,23 @@ export default class Tile {
         this.imageName = 'static-tiles';
         this.sheet = new Sheet('tile');
 
-        var spriteMap = this.sheet.map[this.tileCode];
+        const spriteMap = this.sheet.map[this.tileCode];
         this.sprite = {
             metrics: {
-                x: spriteMap.x, y: spriteMap.y,
-                w: spriteMap.w, h: spriteMap.h,
-                ox: spriteMap.ox, oy: spriteMap.oy
+                x: spriteMap.x,
+                y: spriteMap.y,
+                w: spriteMap.w,
+                h: spriteMap.h,
+                ox: spriteMap.ox,
+                oy: spriteMap.oy
             },
-            image: this.imageName, position: this.position, screen: this.screen
+            image: this.imageName,
+            position: this.position,
+            screen: this.screen
         };
         if (this.tileCode == 'G-G-G-G') {
-            var variation = util.randomIntRange(0, 2);
-            var random = Math.random();
+            let variation = util.randomIntRange(0, 2);
+            const random = Math.random();
             if (Math.random() > 0.98) variation = 8;
             else if (Math.random() > 0.95) variation = util.randomIntRange(5, 7);
             else if (random > 0.6) variation = util.randomIntRange(3, 4);

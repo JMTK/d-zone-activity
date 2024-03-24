@@ -30,26 +30,26 @@ export default class Button extends UIElement {
             this.h = this.canvas.canvas.height = this.textCanvas.height + 2;
         }
         this.draw();
-    };
+    }
 
     draw() {
         this.canvas.clear();
         this.canvas.fillRect('rgba(255,255,255,0.8)', 0, 0, this.w, this.h);
         this.canvas.clearRect(1, 1, this.w - 2, this.h - 2);
-        var buttonColor = 'rgba(' + (this.mouseOn ? '77,102,184,0.9)' : this.disabled ? '245,240,213,0.3)' : '0,0,0,0.8)');
+        const buttonColor = `rgba(${this.mouseOn ? '77,102,184,0.9)' : this.disabled ? '245,240,213,0.3)' : '0,0,0,0.8)'}`;
         this.canvas.fillRect(buttonColor, 1, 1, this.w - 2, this.h - 2);
-        var textOffset = Math.floor((this.canvas.canvas.width - this.textCanvas.width) / 2);
+        const textOffset = Math.floor((this.canvas.canvas.width - this.textCanvas.width) / 2);
         this.canvas.drawImage(this.textCanvas, 0, 0, this.textCanvas.width, this.textCanvas.height,
             textOffset, 1, this.textCanvas.width, this.textCanvas.height, 1);
         this.emit('redraw');
-    };
+    }
 
     onMouseOn(mouseEvent) {
         if (this.disabled || this.mouseOn) return;
         this.mouseOn = true;
         this.emit('mouse-on-element', this);
         this.draw();
-    };
+    }
 
     onMouseOff(mouseEvent) {
         if (this.disabled || !this.mouseOn) return;
@@ -57,18 +57,18 @@ export default class Button extends UIElement {
         this.pressed = false;
         this.emit('mouse-off-element', this);
         this.draw();
-    };
+    }
 
     onMouseDown(mouseEvent) {
         if (this.disabled || !this.mouseOn) return;
         this.pressed = true;
         this.draw();
-    };
+    }
 
     onMouseUp(mouseEvent) {
         if (this.disabled || !this.mouseOn) return;
         this.pressed = false;
         if (this.onPress) this.onPress();
         this.draw();
-    };
+    }
 }

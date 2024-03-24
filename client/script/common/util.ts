@@ -1,6 +1,8 @@
 'use strict';
 export default {
-    sleep: function (ms: number) { return new Promise(resolve => setTimeout(resolve, ms)); },
+    sleep: function (ms: number) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    },
     randomIntRange: function (min: number, max: number) {
         return Math.floor(Math.random() * (+max - +min + 1)) + +min;
     },
@@ -11,38 +13,43 @@ export default {
         return this.pickInArray(Object.keys(obj));
     },
     findAndRemove: function (elem: any, arr: any[]) {
-        for (var i = 0; i < arr.length; i++) {
+        for (let i = 0; i < arr.length; i++) {
             if (arr[i] === elem) {
                 arr.splice(i, 1);
                 i--;
             }
         }
     },
-    right: function (text: string, length: number) { return text.substring(text.length - length, text.length); },
-    clamp: function (val: number, min: number, max: number) { return Math.min(max, Math.max(min, val)); },
-    clampWrap: function (val : number, min : number, max : number) { // Clamp to range by wrapping value
-        var wrap = (val - min) % (max + 1 - min);
+    right: function (text: string, length: number) {
+        return text.substring(text.length - length, text.length);
+    },
+    clamp: function (val: number, min: number, max: number) {
+        return Math.min(max, Math.max(min, val));
+    },
+    clampWrap: function (val: number, min: number, max: number) { // Clamp to range by wrapping value
+        const wrap = (val - min) % (max + 1 - min);
         return wrap >= 0 ? min + wrap : max + 1 + wrap;
     },
-    fractionalArrayIndex: function (arr : any[], index : number) {
-        var floorX = Math.floor(index);
-        var lower = arr[floorX];
+    fractionalArrayIndex: function (arr: any[], index: number) {
+        const floorX = Math.floor(index);
+        const lower = arr[floorX];
         if (floorX == index) return lower;
-        var upper = arr[Math.ceil(index)];
-        var fraction = index - Math.floor(index);
+        const upper = arr[Math.ceil(index)];
+        const fraction = index - Math.floor(index);
         return (lower + ((upper - lower) * fraction));
     },
-    getURLParameter: function (name : string) {
+    getURLParameter: function (name: string) {
         return decodeURIComponent(
-            (new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)')
-                .exec(location.search) || [, ""])[1].replace(/\+/g, '%20')) || null
+            (new RegExp(`[?|&]${name}=([^&;]+?)(&|#|;|$)`)
+                // eslint-disable-next-line no-sparse-arrays
+                .exec(location.search) ?? [, ''])[1].replace(/\+/g, '%20')) || null;
     },
     abbreviate: function (text: string, blacklist: any[]) {
-        var split = text.split(' ');
-        var alpha = /[a-z0-9]/i;
-        var result = '';
-        for (var w = 0; w < split.length; w++) {
-            for (var l = 0; l < split[w]!.length; l++) {
+        const split = text.split(' ');
+        const alpha = /[a-z0-9]/i;
+        let result = '';
+        for (let w = 0; w < split.length; w++) {
+            for (let l = 0; l < split[w]!.length; l++) {
                 if (alpha.test(split[w]![l]!)) {
                     result += split[w]![l];
                     break;
@@ -51,12 +58,12 @@ export default {
         }
         if (result.trim() == '') result = '1';
         if (blacklist && blacklist.indexOf(result) >= 0) {
-            var variation = 0;
+            let variation = 0;
             result += variation;
             do {
                 variation++;
                 result = result.substring(0, result.length - 1) + variation;
-            } while (blacklist.indexOf(result) >= 0)
+            } while (blacklist.indexOf(result) >= 0);
         }
         return result;
     },

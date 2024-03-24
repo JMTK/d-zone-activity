@@ -1,7 +1,7 @@
 'use strict';
 import { EventEmitter } from 'events';
-import Canvas from './canvas';
-var buttons = ['left', 'middle', 'right'];
+import type Canvas from './canvas';
+const buttons = ['left', 'middle', 'right'];
 
 export default class Input extends EventEmitter {
     mouseScale: number;
@@ -39,143 +39,178 @@ export default class Input extends EventEmitter {
 
         document.addEventListener('mouseout', this.mouseout.bind(this));
         document.addEventListener('mouseover', this.mouseover.bind(this));
-        var wheelSupport = 'onwheel' in document.createElement('div') ? 'wheel' : 'mousewheel';
-        window.addEventListener(wheelSupport, this.mousewheel.bind(this))
-    };
+        const wheelSupport = 'onwheel' in document.createElement('div') ? 'wheel' : 'mousewheel';
+        window.addEventListener(wheelSupport, this.mousewheel.bind(this));
+    }
 
     mousemove(e: MouseEvent) {
         if (this.mouseOut) return;
         this.mouseX = Math.floor(e.pageX / this.mouseScale);
         this.mouseY = Math.floor(e.pageY / this.mouseScale);
-        this.emit('mousemove', { x: this.mouseX, y: this.mouseY });
-    };
+        this.emit('mousemove', {
+            x: this.mouseX,
+            y: this.mouseY
+        });
+    }
 
 
     touchstart(e: TouchEvent) {
-        var touch = e.changedTouches[0];
+        const touch = e.changedTouches[0];
         if (!touch) return;
         this.mouseX = Math.floor(touch.pageX / this.mouseScale);
         this.mouseY = Math.floor(touch.pageY / this.mouseScale);
-        this.emit('touchstart', { button: 'touch', x: this.mouseX, y: this.mouseY });
-    };
+        this.emit('touchstart', {
+            button: 'touch',
+            x: this.mouseX,
+            y: this.mouseY
+        });
+    }
 
     touchend(e: TouchEvent) {
-        var touch = e.changedTouches[0];
+        const touch = e.changedTouches[0];
         if (!touch) return;
-        this.emit('touchend', { button: 'touch', x: touch.pageX, y: touch.pageY });
-    };
+        this.emit('touchend', {
+            button: 'touch',
+            x: touch.pageX,
+            y: touch.pageY
+        });
+    }
 
     touchmove(e: TouchEvent) {
-        var touch = e.changedTouches[0];
+        const touch = e.changedTouches[0];
         if (!touch) return;
         this.mouseX = Math.floor(touch.pageX / this.mouseScale);
         this.mouseY = Math.floor(touch.pageY / this.mouseScale);
-        this.emit('touchmove', { button: 'touch', x: this.mouseX, y: this.mouseY });
-    };
+        this.emit('touchmove', {
+            button: 'touch',
+            x: this.mouseX,
+            y: this.mouseY
+        });
+    }
 
     mousedown(e: MouseEvent) {
-        var button = buttons[e.button];
+        const button = buttons[e.button];
         switch (button) {
             case 'left': this.mouseLeft = true; break;
             case 'right': this.mouseRight = true; break;
         }
-        this.emit('mousedown', { button: button, x: this.mouseX, y: this.mouseY });
-    };
+        this.emit('mousedown', {
+            button: button,
+            x: this.mouseX,
+            y: this.mouseY
+        });
+    }
 
     mouseup(e: MouseEvent) {
-        var button = buttons[e.button];
+        const button = buttons[e.button];
         switch (button) {
             case 'left': this.mouseLeft = false; break;
             case 'right': this.mouseRight = false; break;
         }
-        this.emit('mouseup', { button: button, x: this.mouseX, y: this.mouseY });
-    };
+        this.emit('mouseup', {
+            button: button,
+            x: this.mouseX,
+            y: this.mouseY
+        });
+    }
 
     mouseout(e: MouseEvent) {
-        var button = buttons[e.button];
+        const button = buttons[e.button];
         this.mouseOut = true;
         this.mouseX = Math.floor(e.pageX / this.mouseScale);
         this.mouseY = Math.floor(e.pageY / this.mouseScale);
-        this.emit('mouseout', { x: this.mouseX, y: this.mouseY, button: button });
-    };
+        this.emit('mouseout', {
+            x: this.mouseX,
+            y: this.mouseY,
+            button: button
+        });
+    }
 
     mouseover(e: MouseEvent) {
-        var buttonNumber = e.buttons & 1 ? 1 : e.buttons & 2 ? 2 : e.buttons & 4 ? 3 : 0;
-        var button = buttons[buttonNumber - 1];
+        const buttonNumber = e.buttons & 1 ? 1 : e.buttons & 2 ? 2 : e.buttons & 4 ? 3 : 0;
+        const button = buttons[buttonNumber - 1];
         this.mouseOut = false;
         this.mouseX = Math.floor(e.pageX / this.mouseScale);
         this.mouseY = Math.floor(e.pageY / this.mouseScale);
-        this.emit('mouseover', { x: this.mouseX, y: this.mouseY, button: button });
-    };
+        this.emit('mouseover', {
+            x: this.mouseX,
+            y: this.mouseY,
+            button: button
+        });
+    }
 
     mousewheel(e: any) {
         if (!e.deltaY) return;
-        var direction = e.deltaY > 0 ? 'down' : 'up';
-        this.emit('mousewheel', { direction: direction, x: this.mouseX, y: this.mouseY });
-    };
+        const direction = e.deltaY > 0 ? 'down' : 'up';
+        this.emit('mousewheel', {
+            direction: direction,
+            x: this.mouseX,
+            y: this.mouseY
+        });
+    }
 
     keydown(e: any) {
-        var key = e.code >= 48 && e.code <= 90 ?
+        const key = e.code >= 48 && e.code <= 90 ?
             String.fromCharCode(parseInt(e.code)).toLowerCase() : codes[e.code];
         if (key == 'backspace') e.preventDefault();
         if (this.keys[key]) return; // Ignore if key already held
         this.keys[key] = true;
         this.emit('keydown', { key: key });
-    };
+    }
 
     keyup(e: any) {
-        var key = e.code >= 48 && e.code <= 90 ?
+        const key = e.code >= 48 && e.code <= 90 ?
             String.fromCharCode(parseInt(e.code)).toLowerCase() : codes[e.code];
         if (!this.keys[key]) return; // Ignore if key already up
         this.keys[key] = false;
         this.emit('keyup', { key: key });
-    };
+    }
 }
 
-var codes = {
-    37: "left",
-    38: "up",
-    39: "right",
-    40: "down",
-    45: "insert",
-    46: "delete",
-    8: "backspace",
-    9: "tab",
-    13: "enter",
-    16: "shift",
-    17: "ctrl",
-    18: "alt",
-    19: "pause",
-    20: "capslock",
-    27: "escape",
-    32: "space",
-    33: "pageup",
-    34: "pagedown",
-    35: "end",
-    36: "home",
-    112: "f1",
-    113: "f2",
-    114: "f3",
-    115: "f4",
-    116: "f5",
-    117: "f6",
-    118: "f7",
-    119: "f8",
-    120: "f9",
-    121: "f10",
-    122: "f11",
-    123: "f12",
-    144: "numlock",
-    145: "scrolllock",
-    186: "semicolon",
-    187: "equal",
-    188: "comma",
-    189: "dash",
-    190: "period",
-    191: "slash",
-    192: "graveaccent",
-    219: "openbracket",
-    220: "backslash",
-    221: "closebraket",
-    222: "singlequote"
+const codes = {
+    37: 'left',
+    38: 'up',
+    39: 'right',
+    40: 'down',
+    45: 'insert',
+    46: 'delete',
+    8: 'backspace',
+    9: 'tab',
+    13: 'enter',
+    16: 'shift',
+    17: 'ctrl',
+    18: 'alt',
+    19: 'pause',
+    20: 'capslock',
+    27: 'escape',
+    32: 'space',
+    33: 'pageup',
+    34: 'pagedown',
+    35: 'end',
+    36: 'home',
+    112: 'f1',
+    113: 'f2',
+    114: 'f3',
+    115: 'f4',
+    116: 'f5',
+    117: 'f6',
+    118: 'f7',
+    119: 'f8',
+    120: 'f9',
+    121: 'f10',
+    122: 'f11',
+    123: 'f12',
+    144: 'numlock',
+    145: 'scrolllock',
+    186: 'semicolon',
+    187: 'equal',
+    188: 'comma',
+    189: 'dash',
+    190: 'period',
+    191: 'slash',
+    192: 'graveaccent',
+    219: 'openbracket',
+    220: 'backslash',
+    221: 'closebraket',
+    222: 'singlequote'
 } as any;
