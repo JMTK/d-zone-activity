@@ -175,6 +175,7 @@ function addUIOverlay(game: Game) {
                 parent: game.mapPanel,
                 onPress: function () {
                     game.level = 'plain';
+                    game.emit('levelChange');
                 }
             });
             game.ui.addButton({
@@ -184,6 +185,7 @@ function addUIOverlay(game: Game) {
                 parent: game.mapPanel,
                 onPress: function () {
                     game.level = 'beach';
+                    game.emit('levelChange');
                 }
             });
             game.ui.addButton({
