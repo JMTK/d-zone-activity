@@ -174,7 +174,7 @@ function addUIOverlay(game: Game) {
                 left: 'auto',
                 parent: game.mapPanel,
                 onPress: function () {
-                    // game.world
+                    game.level = 'plain';
                 }
             });
             game.ui.addButton({
@@ -183,7 +183,7 @@ function addUIOverlay(game: Game) {
                 left: 'auto',
                 parent: game.mapPanel,
                 onPress: function () {
-                    // game.world
+                    game.level = 'beach';
                 }
             });
             game.ui.addButton({
@@ -192,7 +192,8 @@ function addUIOverlay(game: Game) {
                 left: 'auto',
                 parent: game.mapPanel,
                 onPress: function () {
-                    // game.world
+                    game.level = 'factory';
+                    game.emit('levelChange');
                 }
             });
         }

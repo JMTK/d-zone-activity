@@ -60,6 +60,7 @@ export default class Game extends EventEmitter {
     helpPanel: Panel | null;
     mapPanel: Panel | null;
     destroyed: boolean = false;
+    level : string;
     destroy() {
         this.destroyed = true;
     }

@@ -1,7 +1,7 @@
 'use strict';
 import BetterCanvas from './../common/bettercanvas';
 import { EventEmitter } from 'events';
-const imageList = ['actors', 'environment', 'static-tiles', 'props', 'font'];
+const imageList = ['actors', 'environment', 'static-tiles-plain', 'static-tiles-beach', 'props', 'font'];
 
 export default class Preloader extends EventEmitter {
     images: Record<string, HTMLCanvasElement>;

@@ -37,11 +37,7 @@ export default class World {
         this.map = {}; // Grid-based map to hold world tiles
         this.walkable = {}; // Grid-based map to hold walkable surfaces
 
-        // TODO: Move world generation into a new module
-
         geometry.generateClosestGrids(this.worldSize);
-
-        //testCanvas.clear();
 
         const noiseBig = geometry.buildNoiseMap(this.worldRadius / 3 + 1, this.worldRadius / 3 + 1);
         const noiseSmall = geometry.buildNoiseMap(this.worldRadius / 1.5 + 1, this.worldRadius / 1.5 + 1);
@@ -255,8 +251,7 @@ export default class World {
 
         function generateTile(oGrid, tile, grid, game) {
             const nGrids = tile.grids;
-            const tileCode = `${getTileCode(oGrid, nGrids[0])}-${getTileCode(oGrid, nGrids[1])
-                }-${getTileCode(oGrid, nGrids[2])}-${getTileCode(oGrid, nGrids[3])}`;
+            const tileCode = `${getTileCode(oGrid, nGrids[0])}-${getTileCode(oGrid, nGrids[1])}-${getTileCode(oGrid, nGrids[2])}-${getTileCode(oGrid, nGrids[3])}`;
             const tileSprite = (new TileSheet('tile')).map[tileCode];
             if (!tileSprite) console.error('unknown tile code', tileCode, nGrids);
             return {
@@ -296,10 +291,10 @@ export default class World {
                     grids: [neighbors.w, key, neighbors.s, neighbors.sw]
                 };
             const tiles = [nw, ne, se, sw];
-            for (let i = 0; i < tiles.length; i++) {
-                const tileGrid = `${z}:${tiles[i]!.x}:${tiles[i]!.y}`;
+            for (const tile of tiles) {
+                const tileGrid = `${z}:${tile.x}:${tile.y}`;
                 if (this.tileMap[tileGrid]) continue;
-                this.tileMap[tileGrid] = new Tile(generateTile(key, tiles[i], tileGrid, this.game));
+                this.tileMap[tileGrid] = new Tile(generateTile(key, tile, tileGrid, this.game));
                 this.staticMap.push(this.tileMap[tileGrid]);
             }
         }

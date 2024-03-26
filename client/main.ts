@@ -16,7 +16,8 @@ setupDiscordSdkPromise.then(async (auth) => {
 
     const game = await dzone;
     initializeUIOverlay(game, auth!.user);
-    handleEventData({
+
+    const triggerWorldBuild = () => handleEventData({
         type: 'server-join',
         data: {
             serverID: discordSdk?.guildId ?? '',
@@ -31,7 +32,8 @@ setupDiscordSdkPromise.then(async (auth) => {
             }, {})
         }
     });
-
+    game.on('levelChange', triggerWorldBuild);
+    triggerWorldBuild();
     // Override open function with Discord's SDK to allow opening external links
     window.open = (url: string) => discordSdk?.commands.openExternalLink({ url }) as any;
     await discordSdk?.subscribe('VOICE_STATE_UPDATE', voiceStateUpdateEvent => {

@@ -1,9 +1,10 @@
 'use strict';
+import type Game from 'script/engine/game';
 import util from './../common/util';
 import Sheet from './sheet2';
 
 export default class Tile {
-    game: any;
+    game: Game;
     grid: any;
     tileCode: string;
     position: any;
@@ -13,7 +14,7 @@ export default class Tile {
     sheet: any;
     sprite: any;
     constructor(options: {
-        game: any,
+        game: Game,
         grid: any,
         tileCode: string,
         position: any
@@ -27,7 +28,8 @@ export default class Tile {
             x: (this.position.x - this.position.y) * 16 - 16,
             y: (this.position.x + this.position.y) * 8 - (this.position.z) * 16 - 8
         };
-        this.imageName = 'static-tiles';
+        this.game.level ??= 'plain';
+        this.imageName = `static-tiles-${this.game.level}`;
         this.sheet = new Sheet('tile');
 
         const spriteMap = this.sheet.map[this.tileCode];
