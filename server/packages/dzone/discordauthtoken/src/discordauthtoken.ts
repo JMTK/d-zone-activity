@@ -1,6 +1,13 @@
 import 'dotenv/config'
 import express from 'express';
 
+process
+    .on('unhandledRejection', (error) => {
+        console.error(error);
+    })
+    .on('uncaughtException', (error) => {
+        console.error(error);
+    })
 export async function main(args) {
     const { code } = args;
     if (!code) return { error: 'No code provided' };
@@ -59,25 +66,16 @@ async function getDiscordAccessToken(code: string, redirectUri: string, clientId
     }
 }
 
-const app = express();
-
-app.use(express.json());
+const app = express()
+    .use(express.json())
+    .use(express.static('public'))
+    .post('/api/token', async (req, res) => {
+        const { code } = req.body;
+        // ... handle the code parameter
+        let response = await main({ code });
+        res.status(code.statusCode ?? 200).json(response);
+    });
 
 app.listen(3009, () => {
     console.log('Server running on port 3009');
-});
-
-process
-    .on('unhandledRejection', (error) => {
-        console.error(error);
-    })
-    .on('uncaughtException', (error) => {
-        console.error(error);
-    })
-
-app.post('/api/token', async (req, res) => {
-    const { code } = req.body;
-    // ... handle the code parameter
-    let response = await main({ code });
-    res.status(code.statusCode ?? 200).json(response);
 });
