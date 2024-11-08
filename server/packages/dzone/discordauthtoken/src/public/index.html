@@ -1,1 +1,100 @@
-Home page!
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D-Zone</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
+    <link href="https://fonts.cdnfonts.com/css/04b-03" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .hero {
+            background: linear-gradient(to right, #6a11cb, #2575fc);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hero .title,
+        .hero .subtitle {
+            color: white;
+            font-family: '04b_03', sans-serif;
+        }
+
+        .hero-image {
+            height: auto;
+            margin-bottom: 2rem;
+            border-radius: 15px;
+        }
+
+        .navbar {
+            display: flex;
+            position: absolute;
+            right: 0;
+            left: 0;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.5rem 2rem;
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            font-family: Arial, sans-serif;
+            font-size: 1rem;
+            margin: 0 1rem;
+            transition: color 0.3s ease;
+        }
+
+        .navbar a:hover {
+            color: #ffd700;
+            /* Gold color on hover */
+        }
+
+        .navbar-logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+            /* Text shadow for better readability */
+        }
+
+        footer {
+            margin-top: 20px;
+            color: #ccc;
+        }
+    </style>
+</head>
+
+<body>
+    <section class="hero is-bold">
+        <div class=" hero-body">
+            <div class="container has-text-centered">
+                <figure class="image is-inline-block">
+                    <img src="https://cdn.discordapp.com/app-assets/1219346862423933098/1220080646299582554.png?size=1024"
+                        alt="D-Zone Image" class="hero-image">
+                </figure>
+                <h1 class="title">Welcome to D-Zone</h1>
+                <h2 class="subtitle">D-Zone is a graphical simulation meant to abstractly represent the activity in your
+                    Discord server.</h2>
+                <div class="buttons is-centered">
+                    <a class="button is-primary is-medium" href="https://discord.gg/J6Jqv3mK8M">Join The Discord</a>
+                </div>
+                <hr class="my-4">
+                <p>This is not meant for any actual monitoring or diagnostics, only an experiment in the abstraction of
+                    chatroom data represented via autonomous characters in a scene.</p>
+                <footer class="blockquote-footer">Original concept by <cite>@vegeta897</cite></footer>
+            </div>
+        </div>
+    </section>
+</body>
