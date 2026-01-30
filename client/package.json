@@ -6,7 +6,7 @@
     "lint": "eslint . --ext .ts"
   },
   "dependencies": {
-    "@discord/embedded-app-sdk": "^1.0.0",
+    "@discord/embedded-app-sdk": "^2.4.0",
     "@types/events": "^3.0.3",
     "browserify": "^17.0.0",
     "eslint": "^8.57.0",
