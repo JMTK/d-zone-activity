@@ -99,7 +99,7 @@ export async function handleEventData(eventData: { type: 'server-join' | 'presen
 
 export function initWebsocket(options: { ServerID: string, ChannelID: string, token: string }) {
 
-    let users: Users, world: World, decorator: Decorator;
+    let users: Users, world: World, decorator: Decorator | null = null;
 
     const socketURL = `wss://${window.location.hostname}?ServerID=${options.ServerID}&ChannelID=${options.ChannelID}&Token=${options.token}`;
     console.log('Initializing websocket on', socketURL);
