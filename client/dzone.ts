@@ -12,7 +12,7 @@ console.time('Init');
 // TODO: Loading screen while preloading images, connecting to websocket, and generating world
 const version = packageInfo.version;
 console.log('Loading...', version);
-let game: Game, ws: WebSocket, decorator: Decorator;
+let game: Game, ws: WebSocket, decorator: Decorator | null = null;
 
 export async function initDzone() {
     const preloader = new Preloader();
