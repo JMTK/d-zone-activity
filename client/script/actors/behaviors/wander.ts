@@ -1,15 +1,14 @@
-'use strict';
 import Geometry from './../../common/geometry';
 import util from './../../common/util';
 import type Actor from './../../actors/actor';
 export default class Wander {
     actor: Actor;
     state: string;
-    impulseCompleteBound: any;
-    impulseBound: any;
+    impulseCompleteBound: (...args: any[]) => void;
+    impulseBound: (...args: any[]) => void;
     impulseInterval: number;
 
-    constructor(actor) {
+    constructor(actor: Actor) {
         this.actor = actor;
         this.state = 'idle';
         this.impulseInterval = 300;
@@ -31,7 +30,7 @@ export default class Wander {
         else {
             const direction = util.pickInObject(Geometry.DIRECTIONS);
             //direction = util.pickInArray(['east','south']);
-            const moveXY = Geometry.DIRECTIONS[direction];
+            const moveXY = Geometry.DIRECTIONS[direction];  
             const canMove = this.actor.tryMove(moveXY.x, moveXY.y);
             if (canMove) {
                 this.actor.destination = canMove;

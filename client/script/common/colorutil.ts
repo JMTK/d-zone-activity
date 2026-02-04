@@ -1,4 +1,3 @@
-'use strict';
 
 function applyAlpha(source, target) {
     const sourceData = source.getContext('2d').getImageData(0, 0, source.width, source.height),

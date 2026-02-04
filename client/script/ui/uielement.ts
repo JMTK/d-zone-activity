@@ -1,10 +1,18 @@
-'use strict';
 import { EventEmitter } from 'events';
 import BetterCanvas from '../common/bettercanvas';
 import util from '../common/util';
 import type UI from './ui';
 
-export interface UIElementOptions { ui: UI, parent: any, w?: number, h?: number, top?: number | 'auto', bottom?: number | 'auto', left?: number | 'auto', right?: number | 'auto' }
+export interface UIElementOptions {
+    ui: UI,
+    parent: any,
+    w?: number,
+    h?: number,
+    top?: number | 'auto',
+    bottom?: number | 'auto',
+    left?: number | 'auto',
+    right?: number | 'auto'
+}
 export default class UIElement extends EventEmitter {
     ui: UI;
     parent: any;

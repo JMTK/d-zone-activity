@@ -1,13 +1,12 @@
-'use strict';
-import WorldObject from '../engine/worldobject';
+import IWorldObject from '../engine/worldobject';
 
-export default class Placeholder extends WorldObject {
-    parent: any;
+export default class Placeholder extends IWorldObject {
+    parent: IWorldObject;
     invisible: boolean;
     image: any;
     metrics: any;
     unWalkable: boolean;
-    constructor(parent: any, options: { x: number, y: number, z: number }) {
+    constructor(parent: IWorldObject, options: { x: number, y: number, z: number }) {
         super({
             position: {
                 x: options.x,

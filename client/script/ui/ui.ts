@@ -1,4 +1,3 @@
-'use strict';
 import { EventEmitter } from 'events';
 import BetterCanvas from '../common/bettercanvas';
 import TextBlotter from '../common/textblotter';
@@ -12,8 +11,9 @@ import type { ImageOptions } from './image';
 import Image from './image';
 import type Game from '../engine/game';
 import type UIElement from './uielement';
+import Entity from 'script/engine/entity';
 
-export default class UI extends EventEmitter {
+export default class UI extends Entity {
     game: Game;
     elements: UIElement[];
     x: number;

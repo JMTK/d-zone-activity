@@ -1,4 +1,3 @@
-'use strict';
 
 function isNumeric(n: any): n is number {
     return typeof n === 'number'; //!isNaN(parseFloat(n)) && isFinite(n);

@@ -1,4 +1,3 @@
-'use strict';
 import BetterCanvas from './../common/bettercanvas';
 import { EventEmitter } from 'events';
 const imageList = ['actors', 'environment', 'static-tiles-plain', 'static-tiles-beach', 'props', 'font'];

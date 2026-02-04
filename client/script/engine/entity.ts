@@ -1,4 +1,3 @@
-'use strict';
 import EventEmitter from 'events';
 import util from '../common/util';
 import type Game from '../engine/game';

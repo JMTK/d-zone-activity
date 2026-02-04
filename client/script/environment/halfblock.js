@@ -1,4 +1,3 @@
-'use strict';
 var inherits = require('inherits');
 var util = require('./../common/util.js');
 var WorldObject = require('./../engine/worldobject.js');
