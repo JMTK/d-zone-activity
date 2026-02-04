@@ -2,11 +2,10 @@ import { EventEmitter } from 'events';
 import BetterCanvas from '../common/bettercanvas';
 import util from '../common/util';
 import type UI from './ui';
-import type WorldObject from 'script/engine/worldobject';
 
 export interface UIElementOptions {
     ui: UI,
-    parent: UIElement,
+    parent: any,
     w?: number,
     h?: number,
     top?: number | 'auto',
@@ -16,7 +15,7 @@ export interface UIElementOptions {
 }
 export default class UIElement extends EventEmitter {
     ui: UI;
-    parent: UIElement;
+    parent: any;
     elements: any[];
     w: number;
     h: number;
