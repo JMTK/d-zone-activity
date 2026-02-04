@@ -180,7 +180,7 @@ export default class Actor extends WorldObject {
         this.facing = x < 0 ? 'west' : x > 0 ? 'east' : y < 0 ? 'north' : 'south';
         this.updateSprite();
         if (this.underneath()) {
-            //console.log('actor: object on top');
+            //util.log('actor: object on top');
             this.emit('getoffme');
             return; // Can't move with object on top
         }
@@ -188,7 +188,7 @@ export default class Actor extends WorldObject {
         const newY = this.position.y + y;
         const walkable = this.game.world.walkable[`${newX}:${newY}`];
         if (walkable >= 0 && Math.abs(this.position.z - walkable) <= 0.5) {
-            //console.log('actor: destination walkable at height',walkable);
+            //util.log('actor: destination walkable at height',walkable);
             return {
                 x: newX,
                 y: newY,
@@ -198,9 +198,9 @@ export default class Actor extends WorldObject {
     }
 
     startMove() {
-        //console.log('actor: startMove');
+        //util.log('actor: startMove');
         this.moveStart = this.game.ticks;
-        //console.log('actor: creating placeholder at',this.destination.x,this.destination.y,this.destination.z);
+        //util.log('actor: creating placeholder at',this.destination.x,this.destination.y,this.destination.z);
         this.movePlaceholder = new Placeholder(this, {
             x: this.destination.x,
             y: this.destination.y,
@@ -208,7 +208,7 @@ export default class Actor extends WorldObject {
         });
         this.unWalkable = true; // Prevent others from jumping on me
         delete this.game.world.walkable[`${this.position.x}:${this.position.y}`];
-        //console.log('actor: deleting walkable at',this.position.x,this.position.y);
+        //util.log('actor: deleting walkable at',this.position.x,this.position.y);
         this.destDelta = {
             x: this.destination.x - this.position.x,
             y: this.destination.y - this.position.y,
@@ -228,27 +228,27 @@ export default class Actor extends WorldObject {
             let newFrame = false;
             if (progress.ticks > 0 && progress.ticks % 3 == 0) {
                 self.frame++; newFrame = true;
-                //console.log('actor: new move frame');
+                //util.log('actor: new move frame');
             }
             if (self.frame == animation.frames) {
-                //console.log('actor: move complete');
-                //console.log('actor: removing placeholder');
+                //util.log('actor: move complete');
+                //util.log('actor: removing placeholder');
                 self.movePlaceholder.remove();
                 delete self.movePlaceholder;
                 self.unWalkable = false;
-                //console.log('actor: moving to',self.destination.x,self.destination.y,self.destination.z);
+                //util.log('actor: moving to',self.destination.x,self.destination.y,self.destination.z);
                 self.move(self.destination.x, self.destination.y, self.destination.z, true);
                 self.destination = false;
                 delete self.frame;
                 self.emit('movecomplete');
             }
             else if (newFrame && self.frame == 6) { // Move zDepth half-way between tiles
-                //console.log('actor: half zdepth');
+                //util.log('actor: half zdepth');
                 self.game.renderer.updateZBuffer(self.zDepth, self.sprite, halfZDepth);
                 self.zDepth = halfZDepth;
             }
             else if (newFrame && self.frame == 8) { // Move zDepth all the way
-                //console.log('actor: full zdepth');
+                //util.log('actor: full zdepth');
                 self.game.renderer.updateZBuffer(
                     halfZDepth, self.sprite, self.destination.x + self.destination.y
                 );
@@ -265,14 +265,14 @@ export default class Actor extends WorldObject {
         const newX = (absolute ? 0 : this.position.x) + x;
         const newY = (absolute ? 0 : this.position.y) + y;
         const newZ = (absolute ? 0 : this.position.z) + z;
-        //console.log('actor: moving to',newX,newY,newZ);
+        //util.log('actor: moving to',newX,newY,newZ);
         this.game.world.moveObject(this, newX, newY, newZ);
         this.updateScreen();
         this.nametag.updateScreen();
         this.preciseScreen = this.toScreenPrecise();
         const newZDepth = this.calcZDepth();
         if (newZDepth != this.zDepth) {
-            //console.log('actor: updating zbuffer after move');
+            //util.log('actor: updating zbuffer after move');
             this.game.renderer.updateZBuffer(this.zDepth, this.sprite, newZDepth);
             this.zDepth = newZDepth;
         }

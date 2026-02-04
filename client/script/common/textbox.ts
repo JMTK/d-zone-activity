@@ -115,7 +115,7 @@ export default class TextBox extends Entity {
             nextLine = self.textMetrics.lines[lineNumber + nl];
             if (nextLine) lineChars += nextLine.chars.length; else break;
         }
-        //console.log(this.parent.username,'says:',this.text);
+        //util.log(this.parent.username,'says:',this.text);
         const addLetter = function () {
             lineChar++;
             self.blotText({

@@ -113,7 +113,7 @@ export default class World {
         Pathfinder.loadMap(this.walkable);
         unoccupiedGrids = Object.keys(this.map);
         unoccupiedGrids.splice(unoccupiedGrids.indexOf('0:0'), 1); // 0,0 is taken by beacon
-        console.log('Created world with', Object.keys(this.map).length, 'tiles');
+        util.log('Created world with', Object.keys(this.map).length, 'tiles');
         // TODO: Retry if tile count is too high/low
     }
 
@@ -252,7 +252,7 @@ export default class World {
             const nGrids = tile.grids;
             const tileCode = `${getTileCode(oGrid, nGrids[0])}-${getTileCode(oGrid, nGrids[1])}-${getTileCode(oGrid, nGrids[2])}-${getTileCode(oGrid, nGrids[3])}`;
             const tileSprite = (new TileSheet('tile')).map[tileCode];
-            if (!tileSprite) console.error('unknown tile code', tileCode, nGrids);
+            if (!tileSprite) util.log('unknown tile code', tileCode, nGrids);
             return {
                 tileCode: tileCode,
                 position: tile,
@@ -303,11 +303,11 @@ export default class World {
     }
 
     addToWorld(obj) {
-        //console.log('world: adding object at',obj.position.x,obj.position.y,obj.position.z);
+        //util.log('world: adding object at',obj.position.x,obj.position.y,obj.position.z);
         if (this.objects[obj.position.x]) {
             if (this.objects[obj.position.x][obj.position.y]) {
                 if (this.objects[obj.position.x][obj.position.y][obj.position.z]) {
-                    console.trace('occupado!', obj, this.objects);
+                    util.log('occupado!', obj, this.objects);
                     return false;
                 }
             }
@@ -324,24 +324,24 @@ export default class World {
     }
 
     removeFromWorld(obj) {
-        //console.log('world: removing object at',obj.position.x,obj.position.y,obj.position.z);
+        //util.log('world: removing object at',obj.position.x,obj.position.y,obj.position.z);
         delete this.objects[obj.position.x][obj.position.y][obj.position.z];
         this.updateWalkable(obj.position.x, obj.position.y);
     }
 
     moveObject(obj, x, y, z) {
-        //console.log('world: moving object from',obj.position.x,obj.position.y,obj.position.z,'to',x,y,z);
+        //util.log('world: moving object from',obj.position.x,obj.position.y,obj.position.z,'to',x,y,z);
         this.removeFromWorld(obj);
         obj.position.x = x; obj.position.y = y; obj.position.z = z;
         this.addToWorld(obj);
     }
 
     updateWalkable(x, y) {
-        //console.log('world: updating walkable at',x,y);
+        //util.log('world: updating walkable at',x,y);
         const objects = this.objects[x][y];
         if (!objects || Object.keys(objects).length == 0) {
             delete this.walkable[`${x}:${y}`];
-            //console.log('world: ',x,y,'is now unwalkable');
+            //util.log('world: ',x,y,'is now unwalkable');
             return;
         }
         const zKeys = Object.keys(objects).sort(function (a: any, b: any) {
@@ -350,11 +350,11 @@ export default class World {
         const topObject = objects[zKeys[zKeys.length - 1]!];
         if (topObject.unWalkable) {
             delete this.walkable[`${x}:${y}`];
-            //console.log('world: ',x,y,'is now unwalkable');
+            //util.log('world: ',x,y,'is now unwalkable');
         }
         else {
             this.walkable[`${x}:${y}`] = topObject.position.z + topObject.height;
-            //console.log('world: ',x,y,'is now walkable',this.walkable[x+':'+y]);
+            //util.log('world: ',x,y,'is now walkable',this.walkable[x+':'+y]);
         }
     }
 

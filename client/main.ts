@@ -1,15 +1,16 @@
 import { DiscordSDK } from '@discord/embedded-app-sdk';
 import { handleEventData, initDzone } from './dzone';
 import type Game from 'script/engine/game';
+import util from 'script/common/util';
 
-window.onunhandledrejection = (err) => console.error(err);
+window.onunhandledrejection = (err) => util.log(err);
 const clientId = '1219346862423933098';
 const discordSdk = new DiscordSDK(clientId);
 
 const setupDiscordSdkPromise = setupDiscordSdk();
 const dzone = initDzone();
 setupDiscordSdkPromise.then(async (auth) => {
-    console.log('Discord SDK is authenticated');
+    util.log('Discord SDK is authenticated');
 
     initializeBackgroundMusic();
     const channel = await discordSdk?.commands.getChannel({ channel_id: discordSdk!.channelId! });
@@ -53,7 +54,7 @@ setupDiscordSdkPromise.then(async (auth) => {
             if (!agg[curr.id]) {
                 agg[curr.id] = {
                     username: curr.nickname ?? curr.username,
-                    status: 'online'
+                    status: 'online',
                 };
             }
             return agg;
@@ -90,7 +91,7 @@ setupDiscordSdkPromise.then(async (auth) => {
 
     return;
 })
-    .catch(console.error);
+    .catch(util.log);
 
 function generateText() {
     const numWordsToGenerate = Math.floor(Math.random() * 10) + 1;
@@ -119,13 +120,13 @@ async function setupDiscordSdk() {
     });
 
     // Retrieve an access_token from your activity's server
-    const response = await fetch(`/${discordSdk ? '.proxy' : ''}/api/token`, {
+    const response = await fetch(`/api/token`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            code,
+            code
         }),
     });
     const { access_token } = await response.json();
@@ -143,7 +144,7 @@ async function setupDiscordSdk() {
 }
 function initializeBackgroundMusic() {
     const audio = document.querySelector('audio');
-    if (!audio) return console.warn('No background music element found');
+    if (!audio) return util.log('No background music element found');
 
     audio.volume = 0.4;
     audio.loop = true;

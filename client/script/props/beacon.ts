@@ -32,7 +32,7 @@ export default class Beacon extends WorldObject {
             },
             height: 2.5
         });
-        //console.log('beacon:',this.position);
+        //util.log('beacon:',this.position);
         this.unWalkable = true;
         const self = this;
         this.on('draw', function (canvas) {

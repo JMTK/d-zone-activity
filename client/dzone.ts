@@ -7,12 +7,13 @@ import World from './script/environment/world';
 import Users from './script/actors/users';
 import Decorator from './script/props/decorator';
 import Preloader from './script/engine/preloader';
+import util from 'script/common/util';
 
 console.time('Init');
 // TODO: Loading screen while preloading images, connecting to websocket, and generating world
 const version = packageInfo.version;
-console.log('Loading...', version);
-let game: Game, ws: WebSocket, decorator: Decorator | null = null;
+util.log('Loading...', version);
+let game: Game, decorator: Decorator | null = null;
 
 export async function initDzone() {
     const preloader = new Preloader();
@@ -49,13 +50,13 @@ export async function handleEventData(eventData: { type: 'server-join' | 'presen
 
     if (eventData.type === 'server-join') { // Initial server status
         const requestServer = eventData.data.serverID;
-        console.log('Joined server', requestServer);
+        util.log('Joined server', requestServer);
         game.reset();
         game.renderer.clear();
 
         const userlistLength = Object.keys(userList).length;
         world = game.world = new World(game, Math.round(3.3 * Math.sqrt(userlistLength)));
-        decorator ??= new Decorator(game, world);
+        decorator = new Decorator(game, world);
         users = game.users = new Users(game, world);
         game.decorator = decorator;
         game.setMaxListeners(userlistLength + 50);
@@ -63,7 +64,7 @@ export async function handleEventData(eventData: { type: 'server-join' | 'presen
         for (const uid in userList) {
             users.updateActor(userList[uid]!);
         }
-        console.log(userlistLength, 'actors created');
+        util.log(userlistLength, 'actors created');
         game.renderer.canvases[0].onResize();
         console.timeEnd('Init');
     }
@@ -89,10 +90,10 @@ export async function handleEventData(eventData: { type: 'server-join' | 'presen
         users.queueMessage(eventData.data);
     }
     else if (eventData.type === 'error') {
-        console.log('Error', eventData);
+        util.log('Error', eventData);
     }
     else {
-        console.log('Unmapped Websocket data:', eventData);
+        util.log('Unmapped Event Type:', eventData);
     }
 }
 

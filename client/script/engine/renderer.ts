@@ -56,15 +56,15 @@ export default class Renderer extends EventEmitter {
                         const thisRenderTime = performance.now() - renderStart;
                         if (thisRenderTime > 1) {
                             const renderTimeChange = thisRenderTime - lastRenderTime;
-                            if (renderTimeChange <= 0) console.log(`%c${renderTimeChange}`, 'color: #00bb00');
-                            else if (renderTimeChange > 0) console.log(`%c${renderTimeChange}`, 'color: #ff0000');
+                            if (renderTimeChange <= 0) util.log(`%c${renderTimeChange}`, 'color: #00bb00');
+                            else if (renderTimeChange > 0) util.log(`%c${renderTimeChange}`, 'color: #ff0000');
                             lastRenderTime = thisRenderTime;
                         }
                     }
                 }
                 //self.frames++;
                 //if((self.game.ticks & 63) == 0) {
-                //    console.log(self.frames * 60 / 64);
+                //    util.log(self.frames * 60 / 64);
                 //    self.frames = 0;
                 //}
                 self.updateDrawn = true;

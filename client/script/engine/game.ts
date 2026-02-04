@@ -88,9 +88,9 @@ export default class Game extends EventEmitter {
             if (self.crashed || self.destroyed) return;
             const rightNow = performance.now();
             self.dt += rightNow - self.lastUpdate;
-            //if((self.ticks & 7) == 0) console.log(delta);
+            //if((self.ticks & 7) == 0) util.log(delta);
             if (self.lastUpdate > 0 && self.dt > 60000) {
-                console.log('too many updates missed! game crash...');
+                util.log('too many updates missed! game crash...');
                 window.location.reload();
             }
             if (self.dt > self.step) {
@@ -112,9 +112,9 @@ export default class Game extends EventEmitter {
     update() {
         const timeThis = this.timeUpdates && (this.ticks & 255) == 0;
         if (timeThis) console.time('update');
-        //if(timeThis) console.log('entities:',this.entities.length, 'actors:', Object.keys(this.users.actors).length, 'update listeners', this.listenerCount('update'), 'message listeners',this.users.listenerCount('message'));
+        //if(timeThis) util.log('entities:',this.entities.length, 'actors:', Object.keys(this.users.actors).length, 'update listeners', this.listenerCount('update'), 'message listeners',this.users.listenerCount('message'));
         //if(timeThis) var updateStart = now();
-        //if(timeThis) console.log('entities:', this.entities.length);
+        //if(timeThis) util.log('entities:', this.entities.length);
         this.emit('update');
         // TODO: Move scheduling to entity?
         for (let i = 0; i < this.schedule.length; i++) {
@@ -144,8 +144,8 @@ export default class Game extends EventEmitter {
         if (timeThis) console.timeEnd('update');
         //if(timeThis) var thisUpdateTime = now() - updateStart;
         //if(timeThis) var updateTimeChange = thisUpdateTime-lastUpdateTime;
-        //if(timeThis && updateTimeChange <= 0) console.log('%c'+updateTimeChange, 'color: #00bb00');
-        //if(timeThis && updateTimeChange > 0) console.log('%c'+updateTimeChange, 'color: #ff0000');
+        //if(timeThis && updateTimeChange <= 0) util.log('%c'+updateTimeChange, 'color: #00bb00');
+        //if(timeThis && updateTimeChange > 0) util.log('%c'+updateTimeChange, 'color: #ff0000');
         //if(timeThis) lastUpdateTime = thisUpdateTime;
     }
 
@@ -183,13 +183,13 @@ export default class Game extends EventEmitter {
         this.centerMouseY = Math.floor(mouseEvent.y - this.viewHeight / 2);
         //mouseEvent.centerMouseX = this.centerMouseX;
         //mouseEvent.centerMouseY = this.centerMouseY;
-        //console.log({mouseX: this.mouseX, mouseY:this.mouseY, centerMouseX:this.centerMouseX, centerMouseY:this.centerMouseY});
+        //util.log({mouseX: this.mouseX, mouseY:this.mouseY, centerMouseX:this.centerMouseX, centerMouseY:this.centerMouseY});
         this.emit('mousemove', mouseEvent);
     }
 
     mousedown(mouseEvent: MouseEvent) {
         if (this.mouseOver) {
-            console.log(this.mouseOver);
+            util.log(this.mouseOver);
             (window as any).actor = this.mouseOver;
         }
         this.mouseButtons.push(mouseEvent.button);
@@ -221,7 +221,7 @@ export default class Game extends EventEmitter {
 
     touchstart(mouseEvent: MouseEvent) {
         if (this.mouseOver) {
-            console.log(this.mouseOver);
+            util.log(this.mouseOver);
             (window as any).actor = this.mouseOver;
         }
         this.mouseButtons.push(mouseEvent.button);

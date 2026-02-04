@@ -1,4 +1,7 @@
 export default {
+    log: function (...args: any[]) {
+        console.log('DZONE:', ...args);
+    },
     sleep: function (ms: number) {
         return new Promise(resolve => setTimeout(resolve, ms));
     },

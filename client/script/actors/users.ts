@@ -2,6 +2,7 @@ import EventEmitter from 'events';
 import Actor from './actor';
 import type Game from '../engine/game';
 import type World from '../environment/world';
+import util from 'script/common/util';
 
 export default class Users extends EventEmitter {
     game: Game;
@@ -39,7 +40,7 @@ export default class Users extends EventEmitter {
         const actor = this.actors[data.uid];
         
         if (!data.username) {
-            console.trace('No username', data);
+            util.log('No username', data);
         }
         if (actor) {
             if (data.delete) {
