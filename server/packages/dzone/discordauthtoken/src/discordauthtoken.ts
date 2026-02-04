@@ -30,7 +30,6 @@ async function getDiscordAccessToken(code: string, redirectUri: string, clientId
         code: code
     };
 
-    console.log(data);
     try {
         const response = await fetch('https://discord.com/api/oauth2/token', {
             method: 'POST',
@@ -48,6 +47,7 @@ async function getDiscordAccessToken(code: string, redirectUri: string, clientId
                 refresh_token: string;
                 scope: string;
             };
+            console.log(json);
             return {
                 accessToken: json.access_token,
                 tokenType: json.token_type,
