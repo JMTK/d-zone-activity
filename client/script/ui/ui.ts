@@ -1,4 +1,3 @@
-'use strict';
 import { EventEmitter } from 'events';
 import BetterCanvas from '../common/bettercanvas';
 import TextBlotter from '../common/textblotter';

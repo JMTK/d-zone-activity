@@ -1,4 +1,3 @@
-'use strict';
 import type Game from 'script/engine/game';
 import util from './../common/util';
 import Sheet from './sheet2';

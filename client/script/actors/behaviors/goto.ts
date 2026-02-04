@@ -1,4 +1,3 @@
-'use strict';
 import Geometry from './../../common/geometry';
 import util from './../../common/util';
 import Pathfinder from './../pathfinder';

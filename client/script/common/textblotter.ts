@@ -1,4 +1,3 @@
-'use strict';
 import BetterCanvas from './bettercanvas';
 
 const charSets = {

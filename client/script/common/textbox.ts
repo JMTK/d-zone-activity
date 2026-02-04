@@ -1,8 +1,9 @@
-'use strict';
 import Entity from './../engine/entity';
 import type { BlotOptions } from './../common/textblotter';
 import TextBlotter from './../common/textblotter';
 import miscConfig from '../../misc-config.json';
+import type WorldObject from 'script/engine/worldobject';
+import type Actor from 'script/actors/actor';
 
 const textboxConfig = miscConfig.textbox || {};
 const TEXTBOX_MAX_WIDTH = textboxConfig.maxWidth || 96;
@@ -37,14 +38,14 @@ function calcScrollSpeed(text) {
 }
 
 export default class TextBox extends Entity {
-    parent: any;
+    parent: Actor;
     text: string;
     screen: any;
     sprite: any;
     textMetrics: any;
     canvas: any;
 
-    constructor(parent: any, text: string, stay: boolean = false) {
+    constructor(parent: Actor, text: string, stay: boolean = false) {
         super();
         this.parent = parent;
         this.text = text;

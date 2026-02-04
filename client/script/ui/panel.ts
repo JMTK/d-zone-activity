@@ -1,4 +1,3 @@
-'use strict';
 import UIElement from './uielement';
 
 export default class Panel extends UIElement {

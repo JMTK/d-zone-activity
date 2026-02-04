@@ -1,4 +1,3 @@
-'use strict';
 import { EventEmitter } from 'events';
 import type Canvas from './canvas';
 const buttons = ['left', 'middle', 'right'];

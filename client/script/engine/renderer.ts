@@ -1,7 +1,7 @@
-'use strict';
 import { EventEmitter } from 'events';
 import ColorUtil from './../common/colorutil';
 import util from '../../script/common/util';
+import type Game from './game';
 
 export default class Renderer extends EventEmitter {
     canvases: any[];
@@ -11,7 +11,7 @@ export default class Renderer extends EventEmitter {
     updateDrawn: boolean;
     overlay: any[];
     frames: number;
-    game: any;
+    game: Game;
     images: any;
 
     constructor(options) {

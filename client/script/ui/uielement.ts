@@ -1,13 +1,22 @@
-'use strict';
 import { EventEmitter } from 'events';
 import BetterCanvas from '../common/bettercanvas';
 import util from '../common/util';
 import type UI from './ui';
+import type WorldObject from 'script/engine/worldobject';
 
-export interface UIElementOptions { ui: UI, parent: any, w?: number, h?: number, top?: number | 'auto', bottom?: number | 'auto', left?: number | 'auto', right?: number | 'auto' }
+export interface UIElementOptions {
+    ui: UI,
+    parent: UIElement,
+    w?: number,
+    h?: number,
+    top?: number | 'auto',
+    bottom?: number | 'auto',
+    left?: number | 'auto',
+    right?: number | 'auto'
+}
 export default class UIElement extends EventEmitter {
     ui: UI;
-    parent: any;
+    parent: UIElement;
     elements: any[];
     w: number;
     h: number;

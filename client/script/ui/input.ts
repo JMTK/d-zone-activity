@@ -1,4 +1,3 @@
-'use strict';
 import UIElement from './uielement';
 import TextBlotter from '../common/textblotter';
 import util from '../common/util';

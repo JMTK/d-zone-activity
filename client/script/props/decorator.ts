@@ -1,4 +1,3 @@
-'use strict';
 import geometry from './../common/geometry';
 import Beacon from './../props/beacon';
 import Seed from './../props/seed';

@@ -1,4 +1,3 @@
-'use strict';
 import EventEmitter from 'events';
 import Actor from './actor';
 import type Game from '../engine/game';
@@ -38,6 +37,7 @@ export default class Users extends EventEmitter {
 
     updateActor(data: { uid: string, delete?: boolean, status: string, username: string }) {
         const actor = this.actors[data.uid];
+        
         if (!data.username) {
             console.trace('No username', data);
         }

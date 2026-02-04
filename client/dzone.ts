@@ -33,7 +33,6 @@ export async function initDzone() {
     game.ui = new UI(game);
     game.showGrid = true;
     game.timeRenders = true;
-    //initWebsocket(options);
 
     addUIOverlay(game);
     (window as any).game = game;
@@ -97,51 +96,6 @@ export async function handleEventData(eventData: { type: 'server-join' | 'presen
     }
 }
 
-export function initWebsocket(options: { ServerID: string, ChannelID: string, token: string }) {
-
-    let users: Users, world: World;
-
-    const socketURL = `wss://${window.location.hostname}?ServerID=${options.ServerID}&ChannelID=${options.ChannelID}&Token=${options.token}`;
-    console.log('Initializing websocket on', socketURL);
-
-    // Swap the comments on the next 3 lines to switch between your websocket server and a virtual one
-    ws = new WebSocket(socketURL);
-    //var TestSocket from './script/engine/tester.js'),
-    //ws = new TestSocket(50, 3000);
-    ws.addEventListener('message', function (event) {
-        const eventData = JSON.parse(event.data) as any;
-        if (decorator) decorator.beacon.ping();
-        handleEventData(eventData);
-    });
-    ws.addEventListener('open', function () {
-        console.log('Websocket connected');
-    });
-    ws.addEventListener('close', function () {
-        console.log('Websocket disconnected');
-    });
-    ws.addEventListener('error', function (err) {
-        console.log('Websocket error:', err);
-    });
-
-    // window.testMessage = function(message) {
-    //     var msg = message ? message.text : 'hello, test message yo!';
-    //     var uid = message ? message.uid : users.actors[Object.keys(users.actors)[0]].uid;
-    //     var channel = message ? message.channel : '1';
-    //     ws.send('data', JSON.stringify({ type: 'message', data: {
-    //         uid: uid, message: msg, channel: channel
-    //     }}));
-    // };
-}
-
-function joinServer(server: any) {
-    const connectionMessage = {
-        type: 'connect',
-        data: { server: server.id }
-    };
-    console.log('Requesting to join server', server.id);
-    ws.send(JSON.stringify(connectionMessage));
-}
-
 function addUIOverlay(game: Game) {
     game.ui.addButton({
         text: 'Map',
@@ -188,6 +142,7 @@ function addUIOverlay(game: Game) {
                     game.emit('levelChange');
                 }
             });
+            
             game.ui.addButton({
                 text: 'Factory',
                 top: 55,
@@ -201,21 +156,21 @@ function addUIOverlay(game: Game) {
         }
     });
     const soundBtn = game.ui.addButton({
-        text: '♪ On',
+        text: 'Music On',
         bottom: 25,
         right: 3,
-        w: 40,
+        w: 60,
         h: 18,
         onPress: function () {
             const audio = document.querySelector('audio');
             if (!audio) return;
             if (audio.volume > 0) {
                 audio.volume = 0;
-                soundBtn.changeText('♪ Off');
+                soundBtn.changeText('Music Off');
             }
             else {
                 audio.volume = 0.4;
-                soundBtn.changeText('♪ On');
+                soundBtn.changeText('Music On');
             }
         }
     });

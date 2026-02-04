@@ -1,4 +1,3 @@
-'use strict';
 import util from './../common/util';
 import WorldObject from './../engine/worldobject';
 import BetterCanvas from './../common/bettercanvas';

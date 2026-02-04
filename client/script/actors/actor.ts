@@ -1,4 +1,3 @@
-'use strict';
 import Geometry from './../common/geometry';
 import util from './../common/util';
 import WorldObject from './../engine/worldobject';
@@ -52,6 +51,7 @@ export default class Actor extends WorldObject {
         this.nametag = new TextBox(this, this.username);
         this.nametag.blotText();
         this.sheet = new Sheet('actor');
+        this.sprite ??= new Placeholder(this, options);
         this.sprite.image = 'actors';
         this.presence = 'online';
         this.talking = false;

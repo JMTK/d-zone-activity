@@ -1,4 +1,3 @@
-'use strict';
 import type { UIElementOptions } from './uielement';
 import UIElement from './uielement';
 

@@ -1,5 +1,5 @@
-'use strict';
 import Entity from './entity';
+import type Game from './game';
 
 export default class WorldObject extends Entity {
     height: number;
@@ -8,7 +8,7 @@ export default class WorldObject extends Entity {
     screen: any;
     position: any;
     pixelSize: any;
-    game: any;
+    game: Game;
 
     constructor(options: {
         position: { x: number, y: number, z: number },
