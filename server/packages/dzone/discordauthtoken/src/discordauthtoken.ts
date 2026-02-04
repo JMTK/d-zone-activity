@@ -66,9 +66,8 @@ async function getDiscordAccessToken(code: string, redirectUri: string, clientId
     }
 }
 
-console.log(__dirname);
 const app = express()
-    .use(express.static('public'))
+    .use(express.static(import.meta.dirname + '/public'))
     .use(express.json())
     .post('/api/token', async (req, res) => {
         const { code } = req.body;
